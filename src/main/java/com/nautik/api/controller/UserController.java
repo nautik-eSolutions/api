@@ -20,6 +20,7 @@ public class UserController {
 
         return new User();
     }
+
     @PostMapping("/create")
     public void createUser(
     @RequestBody String firstName,
@@ -30,4 +31,6 @@ public class UserController {
     {
        userService.saveUser(firstName,lastName,email,password);
     }
+
+
 }
