@@ -1,4 +1,4 @@
-package com.nautik.api.Model;
+package com.nautik.api.domain;
 
 
 import jakarta.persistence.Column;
@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity(name = "user")
-public class UserModel {
+public class User {
     @Id
     private long id;
     @Column(name = "first_name")
