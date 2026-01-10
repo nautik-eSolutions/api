@@ -9,9 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
-@AllArgsConstructor
 public class UserDto {
 
     private String firstName;
