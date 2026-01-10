@@ -1,7 +1,17 @@
 package com.nautik.api.dto.boat;
 
-/**
- * DTO for {@link com.nautik.api.domain.BoatType}
- */
-public class BoatTypeDto {
-  }
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Value;
+
+import java.io.Serializable;
+
+@Value
+@Getter
+@Setter
+@AllArgsConstructor
+public class BoatTypeDto implements Serializable {
+    Integer id;
+    Integer name;
+}
