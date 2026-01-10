@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -17,8 +15,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDto getUserByFirstName(String firstName) {
-
-        return new UserDto(userRepository.findByFirstName(firstName));
+        return new UserDto(userRepository.findByFirstName(firstName).orElseThrow());
+    }
+    public User saveUser(String firstName, String lastName, String email,String password){
+        User user = new User(firstName,lastName,email,password);
+        return userRepository.save(user);
     }
 
 
