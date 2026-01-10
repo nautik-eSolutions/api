@@ -1,7 +1,6 @@
-package com.nautik.api.domain;
+package com.nautik.api.domain.users;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 

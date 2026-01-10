@@ -1,13 +1,10 @@
 package com.nautik.api.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nautik.api.domain.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
+import com.nautik.api.domain.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Getter;
 import lombok.Setter;
 
 @Data

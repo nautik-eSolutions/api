@@ -1,6 +1,6 @@
 package com.nautik.api.controller;
 
-import com.nautik.api.domain.User;
+import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.service.UserService;
 import lombok.RequiredArgsConstructor;

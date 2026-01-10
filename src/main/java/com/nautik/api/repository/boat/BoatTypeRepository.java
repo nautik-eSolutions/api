@@ -1,4 +1,4 @@
-package com.nautik.api.repository;
+package com.nautik.api.repository.boat;
 
 import com.nautik.api.domain.BoatType;
 import org.springframework.data.jpa.repository.JpaRepository;
