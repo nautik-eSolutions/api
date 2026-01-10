@@ -19,6 +19,7 @@ public class UserController {
 
     @GetMapping("/{firstName}")
     public User getUserByFirstName (@PathVariable String firstName){
-        UserDto
+
+        return new User();
     }
 }
