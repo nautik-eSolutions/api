@@ -1,5 +1,6 @@
 package com.nautik.api.service;
 
+import com.nautik.api.domain.User;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDto getUserByFirstName(String firstName) {
-        return new UserDto(userRepository.findByFirstName(firstName));
+        return new UserDto(userRepository.findByFirstName(firstName).orElseThrow());
+    }
+    public void saveUser(String firstName, String lastName, String email,String password){
+        User user = new User(firstName,lastName,email,password);
+        userRepository.save(user);
     }
 
 
