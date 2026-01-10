@@ -8,9 +8,7 @@ import lombok.Value;
 
 import java.io.Serializable;
 
-@Getter
-@Setter
-@AllArgsConstructor
+
 @Value
 public class BoatDto implements Serializable {
     Integer id;

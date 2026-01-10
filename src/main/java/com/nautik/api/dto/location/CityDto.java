@@ -1,4 +1,4 @@
-package com.nautik.api.dto.boat;
+package com.nautik.api.dto.location;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +7,10 @@ import lombok.Value;
 
 import java.io.Serializable;
 
+
 @Value
-public class BoatTypeDto implements Serializable {
+public class CityDto implements Serializable {
     Integer id;
-    Integer name;
+    String name;
+    CommunityDto community;
 }
