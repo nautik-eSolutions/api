@@ -13,7 +13,7 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
-    public UserDto getUserByFirstName(String firstName){
+    public UserDto getUserByFirstName(String firstName) {
         return new UserDto(userRepository.findByFirstName(firstName));
     }
 
