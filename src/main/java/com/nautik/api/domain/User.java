@@ -1,6 +1,7 @@
 package com.nautik.api.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,8 +17,10 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+
     @Column(name = "first_name", nullable = false, length = 45)
     private String firstName;
+
 
     @Column(name = "last_name", nullable = false, length = 45)
     private String lastName;

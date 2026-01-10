@@ -17,9 +17,9 @@ public class UserService {
     public UserDto getUserByFirstName(String firstName) {
         return new UserDto(userRepository.findByFirstName(firstName).orElseThrow());
     }
-    public void saveUser(String firstName, String lastName, String email,String password){
+    public User saveUser(String firstName, String lastName, String email,String password){
         User user = new User(firstName,lastName,email,password);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 
