@@ -1,4 +1,4 @@
-package com.nautik.api.service;
+package com.nautik.api.service.users;
 
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
@@ -13,11 +13,10 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
-    public UserDto getUserById(Integer id) {
+    public UserDto findUserById(Integer id) {
         return new UserDto(userRepository.findById(id).orElseThrow());
     }
-    public UserDto saveUser(UserDto userDto){
-
+    public UserDto createUser(UserDto userDto){
         User user = new User(userDto);
         return new UserDto(userRepository.save(user));
     }
