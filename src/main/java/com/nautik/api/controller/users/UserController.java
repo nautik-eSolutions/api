@@ -1,4 +1,4 @@
-package com.nautik.api.controller;
+package com.nautik.api.controller.users;
 
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
@@ -19,8 +19,8 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById (@PathVariable Long id){
-        return ResponseEntity.ok(new User());
+    public ResponseEntity<UserDto> getUserById (@PathVariable Integer id){
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PostMapping
