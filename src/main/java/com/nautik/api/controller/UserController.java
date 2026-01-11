@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -21,10 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public User createUser(
-    @RequestBody UserDto user
-
-    )
+    public User createUser(@RequestBody UserDto user)
     {
        return userService.saveUser(user.getFirstName(),user.getLastName(),user.getEmail(),user.getPassword());
     }

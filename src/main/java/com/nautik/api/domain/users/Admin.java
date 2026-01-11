@@ -11,10 +11,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "admin")
 public class Admin {
-    @EmbeddedId
-    private AdminId id;
+    @Id
+    private Long id;
 
-    @MapsId("userId")
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)

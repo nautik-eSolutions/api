@@ -11,13 +11,12 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "port_admin")
 public class PortAdmin {
-    @EmbeddedId
-    private PortAdminId id;
+    @Id
+    private Long id;
 
-    @MapsId("adminId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "admin_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "admin_id", nullable = false)
     private Admin admin;
 
 
