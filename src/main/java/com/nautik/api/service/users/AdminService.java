@@ -24,18 +24,18 @@ public class AdminService {
     }
 
     public void deleteAdminById(Long id){
-
+        adminRepository.deleteById(id);
     }
 
-    public AdminDto updateAdmin(AdminDto adminDto){
+    public AdminDto updateAdmin(Integer userId){
 
-        User user = userRepository.findById(Math.toIntExact(adminDto.getUserId())).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         return new AdminDto(adminRepository.save(new Admin(user)));
     }
-    public AdminDto CreateAdmin(AdminDto adminDto){
+    public AdminDto createAdmin(Integer userId){
 
-        User user = userRepository.findById(Math.toIntExact(adminDto.getUserId())).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         return new AdminDto(adminRepository.save(new Admin(user)));
     }
