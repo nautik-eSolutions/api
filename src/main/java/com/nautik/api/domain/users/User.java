@@ -1,6 +1,7 @@
 package com.nautik.api.domain.users;
 
 
+import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,12 @@ public class User {
         this.lastName=lastName;
         this.email=email;
         this.password=password;
+    }
+    public User(UserDto userDto){
+        this.firstName=userDto.getFirstName();
+        this.lastName= userDto.getLastName();
+        this.email= userDto.getEmail();
+        this.password= userDto.getPassword();
     }
 
 }

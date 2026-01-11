@@ -16,10 +16,20 @@ public class UserService {
     public UserDto getUserByFirstName(String firstName) {
         return new UserDto(userRepository.findByFirstName(firstName).orElseThrow());
     }
-    public User saveUser(String firstName, String lastName, String email,String password){
-        User user = new User(firstName,lastName,email,password);
-        return userRepository.save(user);
+    public UserDto saveUser(UserDto userDto){
+
+        User user = new User(userDto);
+        return new UserDto(userRepository.save(user));
     }
+
+    public UserDto updateUser(UserDto userDto){
+        User user = new User(userDto);
+        return new UserDto(userRepository.save(user));
+    }
+    public void deleteUser(Integer id){
+        userRepository.deleteById(id);
+    }
+
 
 
 }
