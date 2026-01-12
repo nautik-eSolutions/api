@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -27,9 +29,8 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "admin", nullable = false, referencedColumnName = "id")
-    private CompanyAdmin admin;
+    @OneToMany(mappedBy = "companyID")
+    private List<CompanyAdmin> admin;
 
 
 }
