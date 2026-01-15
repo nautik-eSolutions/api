@@ -29,7 +29,7 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @OneToMany(mappedBy = "companyID")
+    @OneToMany(mappedBy = "companyId")
     private List<CompanyAdmin> admin;
 
 
