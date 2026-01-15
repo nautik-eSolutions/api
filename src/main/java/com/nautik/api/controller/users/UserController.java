@@ -18,27 +18,24 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById (@PathVariable Integer id){
+    public ResponseEntity<UserDto> getUserById(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(
-               userService.createUser(user)
-       );
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createUser(user));
     }
 
     @PatchMapping
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto user) {
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(
-                userService.updateUser(user)
-        );
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.updateUser(user));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@RequestBody Integer id){
+    public ResponseEntity<Void> deleteUser(@RequestBody Integer id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
