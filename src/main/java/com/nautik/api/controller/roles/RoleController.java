@@ -1,8 +1,10 @@
 package com.nautik.api.controller.roles;
 
+import com.nautik.api.dto.roles.CapabilityDto;
 import com.nautik.api.dto.roles.RoleCreateDto;
 import com.nautik.api.service.roles.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,15 @@ public class RoleController {
 
 
         return "Ok";
+    }
+
+    @PostMapping("/{companyId}/capability")
+    public ResponseEntity<Void> createCapability(
+            @PathVariable int companyId,
+            @RequestBody CapabilityDto capabilityDto
+            ){
+
+        return ResponseEntity.ok().build();
     }
 
 

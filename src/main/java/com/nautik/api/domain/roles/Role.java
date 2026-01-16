@@ -27,6 +27,9 @@ public class Role {
     @OneToMany(mappedBy = "role")
     List<User>users;
 
+    @ManyToOne
+    @JoinColumn(name = "roles_configuration")
+    private RolesConfiguration rolesConfiguration;
 
 
 

@@ -16,6 +16,7 @@ public class RoleService {
     @Autowired
     private RoleRepository repository;
 
+
     @Autowired
     private ModelMapperConfiguration mapper;
 
@@ -28,6 +29,11 @@ public class RoleService {
         Role role = mapper.modelMapper().map(roleDto, Role.class);
         return mapper.modelMapper().map(repository.save(role), RoleResponseDto.class);
     }
+
+
+
+
+
 
 
 
