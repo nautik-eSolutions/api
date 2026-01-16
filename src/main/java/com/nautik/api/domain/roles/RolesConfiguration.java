@@ -15,6 +15,9 @@ public class RolesConfiguration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
+
     @OneToMany(mappedBy = "rolesConfiguration")
     private List<Port> port;
 
