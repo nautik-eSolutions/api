@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class RoleDto {
+public class RoleResponseDto {
 
     String name;
     String description;

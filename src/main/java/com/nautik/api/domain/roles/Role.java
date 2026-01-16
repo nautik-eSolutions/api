@@ -1,5 +1,6 @@
 package com.nautik.api.domain.roles;
 
+import com.nautik.api.domain.users.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,6 +23,9 @@ public class Role {
             inverseJoinColumns = @JoinColumn(name = "capability_id")
     )
     private List<Capability> capabilities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "role")
+    List<User>users;
 
 
 
