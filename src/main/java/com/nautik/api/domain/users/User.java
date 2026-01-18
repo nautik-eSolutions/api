@@ -1,6 +1,8 @@
 package com.nautik.api.domain.users;
 
 
+import com.nautik.api.domain.roles.Role;
+import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,11 +32,21 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     public User(String firstName, String lastName, String email, String password){
         this.firstName=firstName;
         this.lastName=lastName;
         this.email=email;
         this.password=password;
+    }
+    public User(UserDto userDto){
+        this.firstName=userDto.getFirstName();
+        this.lastName= userDto.getLastName();
+        this.email= userDto.getEmail();
+        this.password= userDto.getPassword();
     }
 
 }

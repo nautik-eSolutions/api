@@ -1,9 +1,10 @@
 package com.nautik.api.domain;
 
-import com.nautik.api.domain.users.CompanyAdmin;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,9 +28,6 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "admin", nullable = false, referencedColumnName = "id")
-    private CompanyAdmin admin;
 
 
 }

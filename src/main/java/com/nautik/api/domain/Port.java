@@ -1,5 +1,7 @@
 package com.nautik.api.domain;
 
+import com.nautik.api.domain.roles.Role;
+import com.nautik.api.domain.roles.RolesConfiguration;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,5 +31,8 @@ public class Port {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
+    @ManyToOne
+    @JoinColumn(name = "roles_configuration")
+    private RolesConfiguration rolesConfiguration;
 
 }
