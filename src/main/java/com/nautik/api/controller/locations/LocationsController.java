@@ -24,7 +24,7 @@ public class LocationsController {
     }
     @GetMapping("/{community}/")
     public ResponseEntity<CityDto>getCommunity(
-            @PathVariable String community,
+            @PathVariable String community
     ){
         return ResponseEntity.ok().build();
     }
