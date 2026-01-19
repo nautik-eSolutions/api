@@ -1,6 +1,7 @@
 package com.nautik.api.domain.users;
 
 
+import com.nautik.api.domain.Company;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +21,8 @@ public class Admin {
     @JoinColumn(name = "user_id")
     private User user;
 
-
+    @OneToOne(mappedBy = "admin")
+    private Company company;
     public Admin (User user){
         this.user = user;
     }
