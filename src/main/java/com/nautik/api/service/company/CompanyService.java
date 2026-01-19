@@ -22,6 +22,14 @@ public class CompanyService {
     @Autowired
     private ModelMapper modelMapper;
 
+
+    public CompanyDtoResponse findCompanyByName(String name){
+        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+
+        return modelMapper.map(searchedCompany, CompanyDtoResponse.class);
+    }
+
+
     public CompanyDtoResponse createCompany(CompanyDto companyDto) {
 
         Company providedCompany = modelMapper.map(companyDto, Company.class);
@@ -54,6 +62,7 @@ public class CompanyService {
     }
 
     public List<CompanyDtoResponse> getAllCompanies(){
+
         List<Company>companies =  companyRepository.findAll();
         return companies.stream().map(
                 company -> modelMapper.map(company, CompanyDtoResponse.class))
