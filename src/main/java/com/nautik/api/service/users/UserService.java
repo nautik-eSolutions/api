@@ -54,10 +54,15 @@ public class UserService {
         userRepository.deleteById(searchedUser.getId());
     }
 
-    public void assignUserToAdmin(String userName){
-        User searchedUser = userRepository.getByUserName(userName).orElseThrow();
-        Admin admin =  new Admin(searchedUser);
-        adminRepository.save(admin);
+
+
+    public UserDtoResponse createAdminUser(UserDto userDto){
+        User providedUser = modelMapper.map(userDto, User.class);
+        User createdUser   = userRepository.save(providedUser);
+        adminRepository.save(new Admin(createdUser));
+        return modelMapper.map(
+                userRepository.save(providedUser),
+                UserDtoResponse.class);
 
     }
 
