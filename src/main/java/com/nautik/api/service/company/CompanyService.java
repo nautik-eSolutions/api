@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
@@ -32,7 +35,7 @@ public class CompanyService {
 
 
     public CompanyDtoResponse updateCompany(CompanyDto companyDto,String name) {
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name);
+        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
 
         companyDto.setId(searchedCompany.getId());
 
@@ -45,8 +48,16 @@ public class CompanyService {
         return updatedCompany;
     }
 
-    public CompanyDtoResponse deleteCompany(String firstName) {
+    public void deleteCompany(String name) {
+        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+        companyRepository.deleteById(searchedCompany.getId());
+    }
 
+    public List<CompanyDtoResponse> getAllCompanies(){
+        List<Company>companies =  companyRepository.findAll();
+        return companies.stream().map(
+                company -> modelMapper.map(company, CompanyDtoResponse.class))
+                .collect(Collectors.toList());
     }
 
 
