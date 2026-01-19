@@ -13,22 +13,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDto {
 
-    @JsonProperty("first_name")
     private String firstName;
-
-    @JsonProperty("last_name")
     private String lastName;
-
-    @JsonProperty("email")
     private String email;
-
-    @JsonProperty("password")
     private String password;
 
     public UserDto(User user){
         this.firstName= user.getFirstName();
         this.lastName= user.getLastName();
         this.email = user.getEmail();
+
     }
 
 }
