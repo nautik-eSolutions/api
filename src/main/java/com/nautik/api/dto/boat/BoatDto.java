@@ -14,5 +14,5 @@ public class BoatDto {
     Double length;
     Double beam;
     Double draft;
-
+//d
 }
