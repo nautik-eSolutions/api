@@ -4,6 +4,8 @@ import com.nautik.api.domain.Company;
 import com.nautik.api.dto.port.company.CompanyDto;
 import com.nautik.api.dto.port.company.CompanyDtoResponse;
 import com.nautik.api.repository.port.CompanyRepository;
+import com.nautik.api.repository.user.UserRepository;
+import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
 
     public CompanyDtoResponse findCompanyByName(String name){
@@ -30,7 +30,7 @@ public class CompanyService {
     }
 
 
-    public CompanyDtoResponse createCompany(CompanyDto companyDto) {
+    public CompanyDtoResponse createCompany(CompanyDto companyDto, String userName) {
 
         Company providedCompany = modelMapper.map(companyDto, Company.class);
 
