@@ -1,17 +1,13 @@
-package com.nautik.api.dto.port;
+package com.nautik.api.dto.port.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyDto implements Serializable {
-    private Integer id;
+public class CompanyDtoResponse {
     private String name;
     private String vat;
     private String email;

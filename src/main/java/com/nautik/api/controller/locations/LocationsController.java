@@ -52,7 +52,7 @@ public class LocationsController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{community}/")
+    @GetMapping("/{community}/cities")
     public ResponseEntity<List<CityDto>>getAllCities(
             @PathVariable String community){
         return ResponseEntity.ok().build();

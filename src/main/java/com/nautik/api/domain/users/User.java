@@ -6,6 +6,8 @@ import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,6 +33,8 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    private Timestamp created_at;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

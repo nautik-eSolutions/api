@@ -4,6 +4,7 @@ package com.nautik.api.repository.user;
 
 import com.nautik.api.domain.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 

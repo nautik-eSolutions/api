@@ -1,6 +1,7 @@
 package com.nautik.api.controller.users;
 
 import com.nautik.api.dto.user.UserDto;
+import com.nautik.api.dto.user.UserDtoResponse;
 import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,33 +11,37 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     @Autowired
     private final UserService userService;
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(userService.findUserById(id));
+    @GetMapping("/{firstName}")
+    public ResponseEntity<UserDtoResponse> getUserByFirstName(@PathVariable String firstName) {
+        return ResponseEntity.ok(userService.findUserByFirstName(firstName));
     }
 
+
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
+    public ResponseEntity<UserDtoResponse> createUser(@RequestBody UserDto user) {
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createUser(user));
     }
 
-    @PatchMapping
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto user) {
-
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.updateUser(user));
+    @PatchMapping("/{firstName}")
+    public ResponseEntity<UserDtoResponse> updateUser(
+            @RequestBody UserDto user,
+            @PathVariable String firstName) {
+        return ResponseEntity
+                .status(HttpStatusCode.valueOf(201))
+                .body(userService.updateUser(user,firstName));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@RequestBody Integer id) {
-        userService.deleteUser(id);
+    @DeleteMapping("/{firstName}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String firstName) {
+        userService.deleteUser(firstName);
         return ResponseEntity.ok().build();
     }
 

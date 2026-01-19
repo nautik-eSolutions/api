@@ -1,4 +1,4 @@
-package com.nautik.api.controller.port;
+package com.nautik.api.controller.ports;
 
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.service.port.PortService;
