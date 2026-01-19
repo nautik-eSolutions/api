@@ -30,15 +30,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createUser(user));
     }
 
-    @PatchMapping
-    public ResponseEntity<UserDtoResponse> updateUser(@RequestBody UserDto user) {
-
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.updateUser(user));
+    @PatchMapping("/{firstName}")
+    public ResponseEntity<UserDtoResponse> updateUser(
+            @RequestBody UserDto user,
+            @PathVariable String firstName) {
+        return ResponseEntity
+                .status(HttpStatusCode.valueOf(201))
+                .body(userService.updateUser(user,firstName));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@RequestBody Integer id) {
-        userService.deleteUser(id);
+    @DeleteMapping("/{firstName}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String firstName) {
+        userService.deleteUser(firstName);
         return ResponseEntity.ok().build();
     }
 
