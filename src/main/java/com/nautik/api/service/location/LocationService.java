@@ -24,9 +24,8 @@ public class LocationService {
 
     public CommunityDto createCommunity(CommunityDto communityDto) {
         Community providedCommunity = modelMapper.map(communityDto, Community.class);
-        CommunityDto savedCommunity = modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
 
-        return savedCommunity;
+        return modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
     }
 
     public CommunityDto updateCommunity(CommunityDto communityDto) {
@@ -35,9 +34,7 @@ public class LocationService {
         Community providedCommunity = modelMapper.map(communityDto, Community.class);
         providedCommunity.setId(community.getId());
 
-        CommunityDto updatedCommunity = modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
-
-        return updatedCommunity;
+        return modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
     }
 
 
@@ -66,13 +63,13 @@ public class LocationService {
     }
 
 
-    public CityDto getCityByName(String cityName,String communityName) {
-        City city = cityRepository.findByNameAndCommunity_Name(cityName,communityName).orElseThrow();
+    public CityDto getCityByName(String cityName, String communityName) {
+        City city = cityRepository.findByNameAndCommunity_Name(cityName, communityName).orElseThrow();
         return modelMapper.map(city, CityDto.class);
     }
 
-    public List<CityDto>getAllCitiesByCommunityName(String communityName){
-        List<City> cities =  cityRepository.getAllByCommunity_Name(communityName);
+    public List<CityDto> getAllCitiesByCommunityName(String communityName) {
+        List<City> cities = cityRepository.getAllByCommunity_Name(communityName);
         return cities.stream().map(city -> modelMapper.map(city, CityDto.class)).collect(Collectors.toList());
     }
 
@@ -90,7 +87,7 @@ public class LocationService {
 
 
         City searchedCity = cityRepository
-                .findByNameAndCommunity_Name(cityDto.getName(),communityName)
+                .findByNameAndCommunity_Name(cityDto.getName(), communityName)
                 .orElseThrow();
 
         City providedCity = modelMapper.map(cityDto, City.class);
@@ -101,17 +98,13 @@ public class LocationService {
         return modelMapper.map(cityRepository.save(providedCity), CityDto.class);
     }
 
-    public void deleteCity(CityDto cityDto, String communityName){
+    public void deleteCity(CityDto cityDto, String communityName) {
         City searchedCity = cityRepository
-                .findByNameAndCommunity_Name(cityDto.getName(),communityName)
+                .findByNameAndCommunity_Name(cityDto.getName(), communityName)
                 .orElseThrow();
 
         cityRepository.delete(searchedCity);
     }
-
-
-
-
 
 
 }
