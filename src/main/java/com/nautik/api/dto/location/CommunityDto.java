@@ -10,6 +10,5 @@ import java.io.Serializable;
 
 @Value
 public class CommunityDto implements Serializable {
-    Integer id;
     String name;
 }

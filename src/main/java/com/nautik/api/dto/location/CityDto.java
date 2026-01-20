@@ -1,16 +1,12 @@
 package com.nautik.api.dto.location;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
 import java.io.Serializable;
 
 
-@Value
-public class CityDto implements Serializable {
-    Integer id;
+@Data
+public class CityDto  {
     String name;
-    CommunityDto community;
+    String communityName;
 }

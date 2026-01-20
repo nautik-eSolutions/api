@@ -24,15 +24,17 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.findCompanyByName(name));
 
     }
-
+    @GetMapping
     public ResponseEntity<List<CompanyDtoResponse>> getAllCompanies(){
         return ResponseEntity.ok(companyService.getAllCompanies());
     }
 
 
-    @PostMapping
-    public ResponseEntity<CompanyDtoResponse> createCompany(@RequestBody CompanyDto companyDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto));
+    @PostMapping("/administrators/{userName}")
+    public ResponseEntity<CompanyDtoResponse> createCompany(
+            @RequestBody CompanyDto companyDto,
+            @PathVariable String userName){
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,userName));
     }
 
     @PatchMapping("/{name}")

@@ -24,6 +24,13 @@ public class UserController {
     }
 
 
+    @PostMapping("/administrators")
+    public ResponseEntity<UserDtoResponse> createAdminUser(@RequestBody UserDto user) {
+
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createAdminUser(user));
+    }
+
+
     @PostMapping
     public ResponseEntity<UserDtoResponse> createUser(@RequestBody UserDto user) {
 
