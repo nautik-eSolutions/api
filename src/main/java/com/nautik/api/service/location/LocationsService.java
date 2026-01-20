@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class LocationService {
+public class LocationsService {
 
     public final ModelMapper modelMapper;
     public final CityRepository cityRepository;
@@ -28,8 +28,8 @@ public class LocationService {
         return modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
     }
 
-    public CommunityDto updateCommunity(CommunityDto communityDto) {
-        Community community = communityRepository.findByName(communityDto.getName()).orElseThrow();
+    public CommunityDto updateCommunity(String communityName,CommunityDto communityDto) {
+        Community community = communityRepository.findByName(communityName).orElseThrow();
 
         Community providedCommunity = modelMapper.map(communityDto, Community.class);
         providedCommunity.setId(community.getId());
@@ -98,9 +98,9 @@ public class LocationService {
         return modelMapper.map(cityRepository.save(providedCity), CityDto.class);
     }
 
-    public void deleteCity(CityDto cityDto, String communityName) {
+    public void deleteCity(String  cityName, String communityName) {
         City searchedCity = cityRepository
-                .findByNameAndCommunity_Name(cityDto.getName(), communityName)
+                .findByNameAndCommunity_Name(cityName, communityName)
                 .orElseThrow();
 
         cityRepository.delete(searchedCity);
