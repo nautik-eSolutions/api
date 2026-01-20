@@ -19,9 +19,9 @@ public class ZoneController {
 
     @GetMapping
     public ResponseEntity<List<ZoneDto>> getZonesByPort(
-            @PathVariable Long portId
+            @PathVariable String portName
     ) {
-        List<ZoneDto> zoneList = zoneService.findByPort(portId);
+        List<ZoneDto> zoneList = zoneService.findByPort(portName);
         return ResponseEntity.ok(zoneList);
     }
 
@@ -30,7 +30,7 @@ public class ZoneController {
             @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
-        ZoneDto zone = zoneService.findById(portId,zoneId);
+        ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId));
         return ResponseEntity.ok(zone);
     }
 
@@ -49,7 +49,7 @@ public class ZoneController {
             @PathVariable Long zoneId,
             @RequestBody ZoneDto dto
     ) {
-        ZoneDto zone = zoneService.update(portId,zoneId,dto);
+        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto);
         return ResponseEntity.ok(zone);
     }
 
@@ -58,7 +58,7 @@ public class ZoneController {
             @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
-        zoneService.delete(portId, zoneId);
+        zoneService.delete(Math.toIntExact(zoneId));
         return ResponseEntity.ok().build();
     }
 }
