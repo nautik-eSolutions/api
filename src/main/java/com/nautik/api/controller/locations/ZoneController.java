@@ -21,42 +21,47 @@ public class ZoneController {
     public ResponseEntity<List<ZoneDto>> getZonesByPort(
             @PathVariable Long portId
     ) {
-        return zoneService.findByPort(portId);
+        List<ZoneDto> zoneList = zoneService.findByPort(portId);
+        return ResponseEntity.ok(zoneList);
     }
 
     @GetMapping("/{zoneId}")
-    public ZoneDto getZoneById(
+    public ResponseEntity<ZoneDto> getZoneById(
             @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
-        return zoneService.findById(portId, zoneId);
+        ZoneDto zone = zoneService.findById(portId,zoneId);
+        return ResponseEntity.ok(zone);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ZoneDto createZone(
+    public ResponseEntity<ZoneDto> createZone(
             @PathVariable Long portId,
             @RequestBody ZoneDto dto
     ) {
-        return zoneService.create(portId, dto);
+        ZoneDto zone = zoneService.create(portId, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(zone);
     }
 
     @PutMapping("/{zoneId}")
-    public ZoneDto updateZone(
+    public ResponseEntity<ZoneDto> updateZone(
             @PathVariable Long portId,
             @PathVariable Long zoneId,
             @RequestBody ZoneDto dto
     ) {
-        return zoneService.update(portId, zoneId, dto);
+        ZoneDto zone = zoneService.update(portId,zoneId,dto);
+        return ResponseEntity.ok(zone);
     }
 
     @DeleteMapping("/{zoneId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteZone(
+    public ResponseEntity<Void> deleteZone(
             @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
         zoneService.delete(portId, zoneId);
+        return ResponseEntity.ok().build();
     }
 }
 
