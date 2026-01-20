@@ -5,6 +5,7 @@ import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.service.location.ZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ZoneController {
     private final ZoneService zoneService;
 
     @GetMapping
-    public List<ZoneDto> getZonesByPort(
+    public ResponseEntity<List<ZoneDto>> getZonesByPort(
             @PathVariable Long portId
     ) {
         return zoneService.findByPort(portId);
