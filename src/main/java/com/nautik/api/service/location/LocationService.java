@@ -22,34 +22,33 @@ public class LocationService {
     public final CommunityRepository communityRepository;
 
 
-
-    public CommunityDto createCommunity(CommunityDto communityDto){
-        Community providedCommunity =  modelMapper.map(communityDto, Community.class);
-        CommunityDto savedCommunity =  modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
+    public CommunityDto createCommunity(CommunityDto communityDto) {
+        Community providedCommunity = modelMapper.map(communityDto, Community.class);
+        CommunityDto savedCommunity = modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
 
         return savedCommunity;
     }
 
-    public CommunityDto updateCommunity(CommunityDto communityDto){
+    public CommunityDto updateCommunity(CommunityDto communityDto) {
         Community community = communityRepository.findByName(communityDto.getName()).orElseThrow();
 
-        Community providedCommunity =  modelMapper.map(communityDto, Community.class);
+        Community providedCommunity = modelMapper.map(communityDto, Community.class);
         providedCommunity.setId(community.getId());
 
-        CommunityDto updatedCommunity =  modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
+        CommunityDto updatedCommunity = modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
 
         return updatedCommunity;
     }
 
 
-    public CommunityDto getCommunity(String name){
-        Community searchedCommunity =  communityRepository.findByName(name).orElseThrow();
+    public CommunityDto getCommunity(String name) {
+        Community searchedCommunity = communityRepository.findByName(name).orElseThrow();
 
         return modelMapper.map(searchedCommunity, CommunityDto.class);
 
     }
 
-    public List<CommunityDto> getAllCommunities(){
+    public List<CommunityDto> getAllCommunities() {
         List<Community> communities = communityRepository.findAll();
 
         return communities
@@ -61,21 +60,56 @@ public class LocationService {
     }
 
 
-    public void deleteCommunity(String name){
+    public void deleteCommunity(String name) {
         Community searchedCommunity = communityRepository.findByName(name).orElseThrow();
         communityRepository.delete(searchedCommunity);
     }
 
 
-
-    public CityDto getCityByName(String name){
-        City city = cityRepository.getByNameContainsIgnoreCase(name).orElseThrow();
+    public CityDto getCityByName(String cityName,String communityName) {
+        City city = cityRepository.findByNameAndCommunity_Name(cityName,communityName).orElseThrow();
         return modelMapper.map(city, CityDto.class);
     }
 
-    public CityDto createCity(String cityName, String communityName){
-
+    public List<CityDto>getAllCitiesByCommunityName(String communityName){
+        List<City> cities =  cityRepository.getAllByCommunity_Name(communityName);
+        return cities.stream().map(city -> modelMapper.map(city, CityDto.class)).collect(Collectors.toList());
     }
+
+    public CityDto createCity(CityDto cityDto, String communityName) {
+        Community searchedCommunity = communityRepository.findByName(communityName).orElseThrow();
+
+        City providedCity = modelMapper.map(cityDto, City.class);
+        providedCity.setCommunity(searchedCommunity);
+        return modelMapper.map(cityRepository.save(providedCity), CityDto.class);
+    }
+
+    public CityDto updateCity(CityDto cityDto, String communityName) {
+        Community searchedCommunity = communityRepository
+                .findByName(communityName).orElseThrow();
+
+
+        City searchedCity = cityRepository
+                .findByNameAndCommunity_Name(cityDto.getName(),communityName)
+                .orElseThrow();
+
+        City providedCity = modelMapper.map(cityDto, City.class);
+
+        providedCity.setId(searchedCity.getId());
+        providedCity.setCommunity(searchedCommunity);
+
+        return modelMapper.map(cityRepository.save(providedCity), CityDto.class);
+    }
+
+    public void deleteCity(CityDto cityDto, String communityName){
+        City searchedCity = cityRepository
+                .findByNameAndCommunity_Name(cityDto.getName(),communityName)
+                .orElseThrow();
+
+        cityRepository.delete(searchedCity);
+    }
+
+
 
 
 
