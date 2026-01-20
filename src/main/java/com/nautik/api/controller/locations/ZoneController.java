@@ -35,7 +35,6 @@ public class ZoneController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ZoneDto> createZone(
             @PathVariable Long portId,
             @RequestBody ZoneDto dto
@@ -55,7 +54,6 @@ public class ZoneController {
     }
 
     @DeleteMapping("/{zoneId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteZone(
             @PathVariable Long portId,
             @PathVariable Long zoneId
