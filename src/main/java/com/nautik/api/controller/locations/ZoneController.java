@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ports/{portId}/zones")
+@RequestMapping("/ports/{portName}/zones")
 @RequiredArgsConstructor
 public class ZoneController {
 
@@ -27,7 +27,6 @@ public class ZoneController {
 
     @GetMapping("/{zoneId}")
     public ResponseEntity<ZoneDto> getZoneById(
-            @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
         ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId));
@@ -36,18 +35,18 @@ public class ZoneController {
 
     @PostMapping
     public ResponseEntity<ZoneDto> createZone(
-            @PathVariable Long portId,
+            @PathVariable String portName,
             @RequestBody ZoneDto dto
     ) {
-        ZoneDto zone = zoneService.create(portId, dto);
+        ZoneDto zone = zoneService.create(portName, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(zone);
     }
 
     @PutMapping("/{zoneId}")
     public ResponseEntity<ZoneDto> updateZone(
-            @PathVariable Long portId,
             @PathVariable Long zoneId,
-            @RequestBody ZoneDto dto
+            @RequestBody ZoneDto dto,
+            @PathVariable String portName
     ) {
         ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto);
         return ResponseEntity.ok(zone);
@@ -55,7 +54,7 @@ public class ZoneController {
 
     @DeleteMapping("/{zoneId}")
     public ResponseEntity<Void> deleteZone(
-            @PathVariable Long portId,
+            @PathVariable String portName,
             @PathVariable Long zoneId
     ) {
         zoneService.delete(Math.toIntExact(zoneId));

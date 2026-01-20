@@ -30,7 +30,7 @@ public class ZoneService {
         return modelMapper.map(zoneRepository.findZoneById(zoneId), ZoneDto.class);
     }
 
-    public ZoneDto create(Long portId, ZoneDto zone){
+    public ZoneDto create(String portName, ZoneDto zone){
         Zone addZone = modelMapper.map(zone, Zone.class);
         return modelMapper.map(zoneRepository.save(addZone), ZoneDto.class);
     }
