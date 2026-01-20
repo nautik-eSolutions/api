@@ -8,9 +8,8 @@ import lombok.Value;
 import java.io.Serializable;
 
 
-@Value
-public class CityDto implements Serializable {
-    Integer id;
+
+public class CityDto  {
     String name;
-    CommunityDto community;
+    String communityName;
 }

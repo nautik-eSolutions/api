@@ -1,6 +1,9 @@
 package com.nautik.api.service.location;
 
+import com.nautik.api.domain.City;
+import com.nautik.api.domain.Community;
 import com.nautik.api.dto.location.CityDto;
+import com.nautik.api.dto.location.CommunityDto;
 import com.nautik.api.repository.location.CityRepository;
 import com.nautik.api.repository.location.CommunityRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +18,34 @@ public class LocationService {
     public final CityRepository cityRepository;
     public final CommunityRepository communityRepository;
 
+
+
+    public CommunityDto createCommunity(CommunityDto communityDto){
+        Community providedCommunity =  modelMapper.map(communityDto, Community.class);
+        CommunityDto savedCommunity =  modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
+
+        return savedCommunity;
+    }
+
+    public CommunityDto updateCommunity(CommunityDto communityDto){
+        Community community = communityRepository.findByName(communityDto.getName()).orElseThrow();
+
+        Community providedCommunity =  modelMapper.map(communityDto, Community.class);
+        providedCommunity.setId(community.getId());
+
+        CommunityDto updatedCommunity =  modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
+
+        return updatedCommunity;
+    }
+
+
+
     public CityDto getCityByName(String name){
+        City city = cityRepository.getByNameContainsIgnoreCase(name).orElseThrow();
+        return modelMapper.map(city, CityDto.class);
+    }
+
+    public CityDto createCity(String cityName, String communityName){
 
     }
 
