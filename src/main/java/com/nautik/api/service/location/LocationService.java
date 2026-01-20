@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class LocationService {
@@ -36,6 +39,31 @@ public class LocationService {
         CommunityDto updatedCommunity =  modelMapper.map(communityRepository.save(providedCommunity), CommunityDto.class);
 
         return updatedCommunity;
+    }
+
+
+    public CommunityDto getCommunity(String name){
+        Community searchedCommunity =  communityRepository.findByName(name).orElseThrow();
+
+        return modelMapper.map(searchedCommunity, CommunityDto.class);
+
+    }
+
+    public List<CommunityDto> getAllCommunities(){
+        List<Community> communities = communityRepository.findAll();
+
+        return communities
+                .stream()
+                .map(
+                        community ->
+                                modelMapper.map(community, CommunityDto.class))
+                .collect(Collectors.toList());
+    }
+
+
+    public void deleteCommunity(String name){
+        Community searchedCommunity = communityRepository.findByName(name).orElseThrow();
+        communityRepository.delete(searchedCommunity);
     }
 
 
