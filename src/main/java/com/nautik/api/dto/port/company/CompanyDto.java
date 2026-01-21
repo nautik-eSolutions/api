@@ -16,4 +16,5 @@ public class CompanyDto  {
     private String vat;
     private String email;
     private String phone;
+    private Long adminId;
 }

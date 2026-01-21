@@ -27,7 +27,7 @@ public class CompanyService {
 
 
     public CompanyDtoResponse findCompanyByName(String name){
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+        Company searchedCompany = companyRepository.findByName(name).orElseThrow();
 
         return modelMapper.map(searchedCompany, CompanyDtoResponse.class);
     }
@@ -45,7 +45,7 @@ public class CompanyService {
 
 
     public CompanyDtoResponse updateCompany(CompanyDto companyDto,String name) {
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+        Company searchedCompany = companyRepository.findByNameContainingIgnoreCase(name).stream().findFirst().orElseThrow();
 
         companyDto.setId(searchedCompany.getId());
 
@@ -57,7 +57,7 @@ public class CompanyService {
     }
 
     public void deleteCompany(String name) {
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+        Company searchedCompany = companyRepository.findByNameContainingIgnoreCase(name).stream().findFirst().orElseThrow();
         companyRepository.deleteById(searchedCompany.getId());
     }
 

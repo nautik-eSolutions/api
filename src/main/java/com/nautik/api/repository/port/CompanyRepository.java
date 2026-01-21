@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
-    public Optional<Company> getCompanyByNameContainingIgnoreCase(String name);
+    public List<Company> findByNameContainingIgnoreCase(String name);
+
+    Optional<Company> findByName(String name);
 
 
 }
