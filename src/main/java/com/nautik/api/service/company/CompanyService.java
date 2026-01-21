@@ -38,11 +38,9 @@ public class CompanyService {
 
         providedCompany.setAdmin(adminRepository.findByUser_UserName(userName).orElseThrow());
 
-        CompanyDtoResponse createdCompany = modelMapper.map(
+        return modelMapper.map(
                 companyRepository.save(providedCompany),
                 CompanyDtoResponse.class);
-
-        return createdCompany;
     }
 
 
@@ -53,11 +51,9 @@ public class CompanyService {
 
         Company mappedCompany =  modelMapper.map(companyDto, Company.class);
 
-        CompanyDtoResponse updatedCompany = modelMapper.map(
+        return modelMapper.map(
                 companyRepository.save(mappedCompany),
                 CompanyDtoResponse.class);
-
-        return updatedCompany;
     }
 
     public void deleteCompany(String name) {
