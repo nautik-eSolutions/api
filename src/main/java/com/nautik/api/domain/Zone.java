@@ -1,6 +1,5 @@
 package com.nautik.api.domain;
 
-import com.nautik.api.domain.moorings.MooringCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
