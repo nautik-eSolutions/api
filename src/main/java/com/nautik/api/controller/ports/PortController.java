@@ -22,9 +22,10 @@ public class PortController {
         return ResponseEntity.ok(allPorts);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PortDto> getPortById(@PathVariable Long id) {
-        PortDto port = portService.findById(id);
+    @GetMapping("/{portName}")
+    public ResponseEntity<PortDto> getPortById(
+            @PathVariable String portName) {
+        PortDto port = portService.findByName(portName);
         return ResponseEntity.ok(port);
     }
 
