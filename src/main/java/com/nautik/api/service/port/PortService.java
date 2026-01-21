@@ -1,6 +1,8 @@
 package com.nautik.api.service.port;
 
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.repository.port.PortRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,8 +11,20 @@ import java.util.List;
 public class PortService {
 
 
+    PortRepository portRepository;
+    ModelMapper modelMapper;
+
+    public PortService(PortRepository portRepository) {
+        this.portRepository = portRepository;
+    }
+
+
     public List<PortDto> findAll(){
-        return null;
+        return portRepository.findAll()
+                .stream()
+                .map(port -> modelMapper.map(port, PortDto.class))
+                .toList();
+
     }
 
     public PortDto findById(Long portId){

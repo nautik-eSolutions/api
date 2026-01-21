@@ -17,12 +17,6 @@ public class UserDto {
     private String lastName;
     private String email;
     private String password;
-
-    public UserDto(User user){
-        this.firstName= user.getFirstName();
-        this.lastName= user.getLastName();
-        this.email = user.getEmail();
-
-    }
+    private String userName;
 
 }

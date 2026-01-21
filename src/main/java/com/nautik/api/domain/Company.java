@@ -1,5 +1,6 @@
 package com.nautik.api.domain;
 
+import com.nautik.api.domain.users.Admin;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,8 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-
+    @OneToOne
+    @JoinColumn(name = "admin")
+    private Admin admin;
 
 }

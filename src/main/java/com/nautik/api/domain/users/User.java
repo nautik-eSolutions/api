@@ -20,6 +20,7 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    private String userName;
 
     @Column(name = "first_name", nullable = false, length = 45)
     private String firstName;
@@ -39,6 +40,11 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToOne(mappedBy = "user")
+    private Admin admin;
+
+
 
     public User(String firstName, String lastName, String email, String password){
         this.firstName=firstName;
