@@ -1,13 +1,15 @@
 package com.nautik.api.dto.mooring;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link com.nautik.api.domain.moorings.Mooring}
- */
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MooringDto implements Serializable {
     Long id;
     Long number;
