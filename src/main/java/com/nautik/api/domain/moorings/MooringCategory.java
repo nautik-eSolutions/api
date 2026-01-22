@@ -16,10 +16,10 @@ public class MooringCategory {
     private Integer id;
 
 
-    @MapsId
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "zone_id", nullable = false)
-    private Zone zone;
+//    @MapsId
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "zone_id", nullable = false)
+//    private Zone zone;
 
     @Column(name = "max_length", nullable = false)
     private Long maxLength;

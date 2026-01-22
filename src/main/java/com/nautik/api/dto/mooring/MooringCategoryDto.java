@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class MooringCategoryDto implements Serializable {
     Integer id;
-    ZoneDto zone;
+//    ZoneDto zone;
     Long maxLength;
     Long maxBeam;
 }
