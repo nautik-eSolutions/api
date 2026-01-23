@@ -31,8 +31,8 @@ public class MooringController {
     public ResponseEntity<MooringDto> getMooringById(
             @PathVariable Long mooringId,
             @PathVariable String portName) {
-        MooringDto zone = mooringService.findById(Math.toIntExact(mooringId));
-        return ResponseEntity.ok(zone);
+        MooringDto mooring = mooringService.findById(Math.toIntExact(mooringId));
+        return ResponseEntity.ok(mooring);
     }
 
     @PostMapping()
@@ -41,9 +41,18 @@ public class MooringController {
             @RequestBody MooringDto mooring
     ){
         MooringDto dto = mooringService.createMooring(portName, mooring);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(mooring);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
 
     }
+
+    @DeleteMapping("/{mooringId}")
+    public ResponseEntity<MooringDto> deleteMooringById(
+            @PathVariable Long mooringId,
+            @PathVariable String portName) {
+        mooringService.delete(mooringId);
+        return ResponseEntity.ok().build();
+
+    }
 }
+

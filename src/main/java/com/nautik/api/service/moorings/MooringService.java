@@ -6,6 +6,7 @@ import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +37,9 @@ public class MooringService {
         Mooring mooring = modelMapper.map(dto, Mooring.class);
         return modelMapper.map(mooringRepository.save(mooring), MooringDto.class);
 
+    }
+    public void delete(long id){
+        Mooring mooring = mooringRepository.findById(id).orElseThrow();
+        mooringRepository.delete(mooring);
     }
 }
