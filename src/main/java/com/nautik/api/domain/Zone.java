@@ -31,7 +31,7 @@ public class Zone {
     @JoinColumn(name = "port_id", nullable = false)
     private Port port;
 
-    @OneToMany
+    @OneToMany(mappedBy = "zone")
     private List<MooringCategory> mooringCategories;
 
 

@@ -11,6 +11,11 @@ import java.util.List;
 @RequestMapping("/api/v1/boats")
 public class BoatController {
 
+    @GetMapping
+    public ResponseEntity<BoatDto> getAll(){
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{userName}/{boatName}")
     public ResponseEntity<BoatDto> getBoat(@PathVariable String userName, @PathVariable String boatName) {
         return ResponseEntity.ok().build();
