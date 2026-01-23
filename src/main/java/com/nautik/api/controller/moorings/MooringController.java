@@ -59,9 +59,10 @@ public class MooringController {
     public ResponseEntity<MooringDto> updateMooring(
             @PathVariable String portName,
             @RequestBody MooringDto mooring,
-            @PathVariable String mooringId
+            @PathVariable long mooringId
     ){
-        return ResponseEntity.ok().build();
+        MooringDto mooringDtp = mooringService.update(mooringId, mooring);
+        return ResponseEntity.ok(mooringDtp);
 
     }
 
@@ -70,6 +71,7 @@ public class MooringController {
             @PathVariable Long zoneId,
             @PathVariable String portName
     ){
+        List<MooringDto> moorings = mooringService.findAllByZoneId(Math.toIntExact(zoneId));
         return ResponseEntity.ok().build();
     }
 

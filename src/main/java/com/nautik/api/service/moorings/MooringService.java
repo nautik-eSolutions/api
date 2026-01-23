@@ -42,4 +42,21 @@ public class MooringService {
         Mooring mooring = mooringRepository.findById(id).orElseThrow();
         mooringRepository.delete(mooring);
     }
+
+    public MooringDto update(long id, MooringDto dto){
+        Mooring mooring = mooringRepository.findById(id).orElseThrow();
+        Mooring providedMooring = modelMapper.map(dto, Mooring.class);
+        providedMooring.setId(mooring.getId());
+        return modelMapper.map(mooringRepository.save(providedMooring), MooringDto.class);
+    }
+
+    public List<MooringDto> findAllByZoneId(long zoneId){
+        return mooringRepository.findAllByMooringCategory_Zone_Id(zoneId).stream()
+                .map(mooring -> modelMapper.map(mooring, MooringDto.class))
+                .toList();
+    }
+
+//    public List<MooringDto> findAllByZoneAvailable(long zoneId){
+//
+//    }
 }
