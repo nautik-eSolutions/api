@@ -54,5 +54,32 @@ public class MooringController {
         return ResponseEntity.ok().build();
 
     }
+
+    @PutMapping("/{mooringId}")
+    public ResponseEntity<MooringDto> updateMooring(
+            @PathVariable String portName,
+            @RequestBody MooringDto mooring,
+            @PathVariable String mooringId
+    ){
+        return ResponseEntity.ok().build();
+
+    }
+
+    @GetMapping("/zone/{zoneId}")
+    public ResponseEntity<MooringDto> getMooringByZoneId(
+            @PathVariable Long zoneId,
+            @PathVariable String portName
+    ){
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/zone/{zoneId}/available")
+    public ResponseEntity<ZoneDto> getAvailableMooringsByZoneId(
+            @PathVariable String portName,
+            @PathVariable String zoneId){
+        return ResponseEntity.ok().build();
+    }
+
+
 }
 
