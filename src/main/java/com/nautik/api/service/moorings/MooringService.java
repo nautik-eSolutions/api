@@ -2,7 +2,10 @@ package com.nautik.api.service.moorings;
 
 
 import com.nautik.api.domain.moorings.Mooring;
+import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.mooring.MooringDto;
+import com.nautik.api.dto.mooring.create.CreateMooringDto;
+import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,6 +19,7 @@ import java.util.List;
 public class MooringService {
 
     public final MooringRepository mooringRepository;
+    public final MooringCategoryRepository mooringCategoryRepository;
     public final ModelMapper modelMapper;
 
     public List<MooringDto> findAll(){
@@ -33,8 +37,12 @@ public class MooringService {
                 .map(mooring -> modelMapper.map(mooring, MooringDto.class))
                 .toList();
     }
-    public MooringDto createMooring(String portName, MooringDto dto){
-        Mooring mooring = modelMapper.map(dto, Mooring.class);
+    public MooringDto createMooring(String portName, CreateMooringDto dto){
+        MooringCategory mooringCategory = mooringCategoryRepository.findById(dto.getCategoryId()).orElseThrow();
+
+        Mooring mooring = new Mooring();
+        mooring.setMooringCategory(mooringCategory);
+        mooring.setNumber(dto.getNumber());
         return modelMapper.map(mooringRepository.save(mooring), MooringDto.class);
 
     }

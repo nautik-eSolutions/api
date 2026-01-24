@@ -3,6 +3,7 @@ package com.nautik.api.controller.moorings;
 
 import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.mooring.MooringDto;
+import com.nautik.api.dto.mooring.create.CreateMooringDto;
 import com.nautik.api.service.moorings.MooringService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/{portName}/moorings")
+@RequestMapping("/api/v1/moorings")
 @RequiredArgsConstructor
 
 public class MooringController {
@@ -20,27 +21,25 @@ public class MooringController {
     public final MooringService mooringService;
 
     @GetMapping
-    public ResponseEntity<List<MooringDto>> getAllMoorings(
-
-            @PathVariable String portName) {
-        List<MooringDto> moorings  = mooringService.findAllByPort(portName);
+    public ResponseEntity<List<MooringDto>> getAllMoorings(){
+        List<MooringDto> moorings  = mooringService.findAll();
         return ResponseEntity.ok(moorings);
     }
 
     @GetMapping("/{mooringId}")
     public ResponseEntity<MooringDto> getMooringById(
-            @PathVariable Long mooringId,
-            @PathVariable String portName) {
+            @PathVariable Long mooringId) {
         MooringDto mooring = mooringService.findById(Math.toIntExact(mooringId));
         return ResponseEntity.ok(mooring);
     }
 
-    @PostMapping()
+    @PostMapping("/{portName}")
     public ResponseEntity<MooringDto> createMooring(
             @PathVariable String portName,
-            @RequestBody MooringDto mooring
+            @RequestBody CreateMooringDto mooring
     ){
-        MooringDto dto = mooringService.createMooring(portName, mooring);
+        String name = portName.replace("_", " ");
+        MooringDto dto = mooringService.createMooring(name, mooring);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
 
@@ -50,6 +49,7 @@ public class MooringController {
     public ResponseEntity<MooringDto> deleteMooringById(
             @PathVariable Long mooringId,
             @PathVariable String portName) {
+        String name = portName.replace("_", " ");
         mooringService.delete(mooringId);
         return ResponseEntity.ok().build();
 
@@ -67,16 +67,16 @@ public class MooringController {
     }
 
     @GetMapping("/zone/{zoneId}")
-    public ResponseEntity<MooringDto> getMooringByZoneId(
+    public ResponseEntity<List<MooringDto>> getMooringByZoneId(
             @PathVariable Long zoneId,
             @PathVariable String portName
     ){
         List<MooringDto> moorings = mooringService.findAllByZoneId(Math.toIntExact(zoneId));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(moorings);
     }
 
     @GetMapping("/zone/{zoneId}/available")
-    public ResponseEntity<ZoneDto> getAvailableMooringsByZoneId(
+    public ResponseEntity<MooringDto> getAvailableMooringsByZoneId(
             @PathVariable String portName,
             @PathVariable String zoneId){
         return ResponseEntity.ok().build();

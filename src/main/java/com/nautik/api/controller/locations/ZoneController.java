@@ -27,7 +27,8 @@ public class ZoneController {
 
     @GetMapping("/{zoneId}")
     public ResponseEntity<ZoneDto> getZoneById(
-            @PathVariable Long zoneId
+            @PathVariable Long zoneId,
+            @PathVariable String portName
     ) {
         ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId));
         return ResponseEntity.ok(zone);

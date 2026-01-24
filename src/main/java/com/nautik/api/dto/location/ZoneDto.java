@@ -1,6 +1,7 @@
 package com.nautik.api.dto.location;
 
 import com.nautik.api.domain.moorings.MooringCategory;
+import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.port.PortDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,5 +20,5 @@ public class ZoneDto implements Serializable {
     String name;
     String description;
     PortDto port;
-    List<MooringCategory> mooringCategories;
+    List<MooringCategoryDto> mooringCategories;
 }
