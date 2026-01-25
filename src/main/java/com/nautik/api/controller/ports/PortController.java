@@ -25,7 +25,8 @@ public class PortController {
     @GetMapping("/{portName}")
     public ResponseEntity<PortDto> getPortById(
             @PathVariable String portName) {
-        PortDto port = portService.findByName(portName);
+        String name = portName.replace("_", " ");
+        PortDto port = portService.findByName(name);
         return ResponseEntity.ok(port);
     }
 

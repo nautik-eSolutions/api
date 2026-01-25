@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyDto  {
-    private Integer id;
+    private Long id;
     private String name;
     private String vat;
     private String email;

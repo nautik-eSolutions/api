@@ -4,10 +4,10 @@ import com.nautik.api.dto.roles.CapabilityDto;
 import com.nautik.api.dto.roles.RoleResponseDto;
 import com.nautik.api.dto.roles.RolesConfigurationDto;
 import com.nautik.api.dto.roles.RoleCreateDto;
-import com.nautik.api.service.roles.RoleService;
-import com.nautik.api.service.users.UserService;
+import com.nautik.api.service.roles.RolesService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,151 +21,155 @@ import java.util.List;
 public class RolesController {
 
 
-    private final RoleService roleService;
+    private final RolesService roleService;
 
-
-    //RolesConfiguration
-    @PostMapping("/{companyName}/{portName}/")
-    public ResponseEntity<Void> createConfiguration(
+    //RolesConfigurationRepository
+    @PostMapping("/{companyName}")
+    public ResponseEntity<RolesConfigurationDto> createRolesConfiguration(
             @PathVariable String companyName,
-            @PathVariable String portName,
             @RequestBody RolesConfigurationDto rolesConfigurationDto
 
     ) {
-        return ResponseEntity.ok().build();
+
+        RolesConfigurationDto createdRoleConfiguration = roleService.createRolesConfiguration(companyName,rolesConfigurationDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRoleConfiguration);
     }
 
-    @DeleteMapping("/{companyName}/{portName}/{configurationId}")
+    @DeleteMapping("/{companyName}/{configurationName}")
     public ResponseEntity<Void> deleteConfiguration(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId
+            @PathVariable String configurationName
     ) {
-        return ResponseEntity.ok().build();
+
+        roleService.deleteRolesConfiguration(companyName,configurationName);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{companyName}/{portName}/")
+    @GetMapping("/{companyName}")
     public ResponseEntity<List<RolesConfigurationDto>> getAllRolesConfiguration(
-            @PathVariable String companyName,
-            @PathVariable String portName
-
+            @PathVariable String companyName
     ) {
-        return ResponseEntity.ok().build();
+        List<RolesConfigurationDto> rolesConfigurations = roleService.getAllCompanyConfigurations(companyName);
+        return ResponseEntity.ok(rolesConfigurations);
     }
 
     //Roles
-    @PostMapping("/{companyName}/{portName}/{configurationId}/roles/")
-    public String createRole(
+    @PostMapping("/{companyName}/{configurationName}/roles")
+    public ResponseEntity<RoleResponseDto> createRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
-        System.out.println(roleCreateDto.getCapabilities());
+    RoleResponseDto roleResponseDto = roleService.createRole(companyName, configurationName, roleCreateDto);
 
+    return ResponseEntity.status(HttpStatus.CREATED).body(roleResponseDto);
 
-        return "Ok";
     }
 
-    @GetMapping("/{companyName}/{portName}/{configurationId}/roles/")
+    @GetMapping("/{companyName}/{configurationName}/roles")
     public ResponseEntity<List<RoleResponseDto>> getAllRoles(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId
+            @PathVariable String configurationName
     ) {
 
-
-        return ResponseEntity.ok().build();
+        List<RoleResponseDto>roles = roleService.getAllRolesByConfigurationName(companyName, configurationName);
+        return ResponseEntity.ok(roles);
     }
 
-    @DeleteMapping("/{companyName}/{portName}/{configurationId}/roles/{roleName}")
-    public ResponseEntity<RoleResponseDto> deleteRole(
-            @PathVariable int configurationId,
-            @PathVariable String portName,
+    @DeleteMapping("/{companyName}/{configurationName}/roles/{roleName}")
+    public ResponseEntity<Void> deleteRole(
+            @PathVariable String configurationName,
             @PathVariable String companyName,
             @PathVariable String roleName) {
-        return ResponseEntity.ok().build();
+
+        roleService.deleteRole(configurationName,companyName,roleName);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{companyName}/{portName}/{configurationId}/roles/")
-    public String updateRole(
+    @PutMapping("/{companyName}/{configurationName}/roles")
+    public ResponseEntity<RoleResponseDto> updateRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
-        System.out.println(roleCreateDto.getCapabilities());
 
+        RoleResponseDto role =  roleService.updateRole(companyName,configurationName,roleCreateDto);
 
-        return "Ok";
+        return ResponseEntity.ok(role);
     }
 
 
     // Capabilities
 
-    @PostMapping("/{companyName}/{portName}/capabilities/")
-    public ResponseEntity<Void> createCapability(
+    @PostMapping("/{companyName}/{configurationName}/capabilities")
+    public ResponseEntity<CapabilityDto> createCapability(
             @PathVariable String companyName,
-            @PathVariable String portName,
+            @PathVariable String configurationName,
             @RequestBody CapabilityDto capabilityDto
     ) {
 
-        return ResponseEntity.ok().build();
+        CapabilityDto capability = roleService.createCapability(companyName,configurationName,capabilityDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(capability);
+
     }
 
-    @PutMapping("/{companyName}/{portName}/capabilities/")
-    public ResponseEntity<Void> updateCapability(
+    @PutMapping("/{companyName}/{configurationName}/capabilities")
+    public ResponseEntity<CapabilityDto> updateCapability(
             @PathVariable String companyName,
-            @PathVariable String portName,
+            @PathVariable String configurationName,
             @RequestBody CapabilityDto capabilityDto
     ) {
+        CapabilityDto capability = roleService.updateCapability(companyName,configurationName,capabilityDto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(capability);
     }
 
-    @GetMapping("/{companyName}/{portName}/capabilities")
+    @GetMapping("/{companyName}/{configurationName}/capabilities")
     public ResponseEntity<List<CapabilityDto>> getAllCapabilities(
             @PathVariable String companyName,
-            @PathVariable String portName
+            @PathVariable String configurationName
     ) {
-        return ResponseEntity.ok().build();
+        List<CapabilityDto> capabilities =  roleService.getAllCapabilities(companyName, configurationName);
+        return ResponseEntity.ok(capabilities);
     }
 
 
-    @GetMapping("/{companyName}/{portName}/capabilities/{capabilityId}")
+    @GetMapping("/{companyName}/{configurationName}/capabilities/{capabilityName}")
     public ResponseEntity<CapabilityDto> getCapability(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int capabilityId
+            @PathVariable String configurationName,
+            @PathVariable String capabilityName
     ) {
-        return ResponseEntity.ok().build();
+        CapabilityDto capability = roleService.getCapability(companyName, configurationName, capabilityName);
+
+        return ResponseEntity.ok(capability);
     }
 
 
-    @PostMapping("/{companyName}/{portName}/{configurationId}/roles/{roleName}/capability/{capabilityName}")
-    public ResponseEntity<Void> assignCapabilityRole(
+    @PostMapping("/{companyName}/{configurationName}/roles/{roleName}/capability/{capabilityName}")
+    public ResponseEntity<List<CapabilityDto>> assignCapabilityRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @PathVariable String roleName,
-            @PathVariable String capabilityName,
-            @RequestBody CapabilityDto capabilityDto
+            @PathVariable String capabilityName
     ) {
+        List<CapabilityDto> capabilities = roleService.assignCapabilityToRole(companyName, configurationName, roleName, capabilityName);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(capabilities);
     }
 
-    @DeleteMapping("/{companyName}/{portName}/{configurationId}/roles/{roleName}/capability/{capabilityName}")
-    public ResponseEntity<Void> removeCapabilityRole(
+    @DeleteMapping("/{companyName}/{configurationName}/roles/{roleName}/capability/{capabilityName}")
+    public ResponseEntity<List<CapabilityDto>> removeCapabilityRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @PathVariable String roleName,
-            @PathVariable String capabilityName,
-            @RequestBody CapabilityDto capabilityDto
+            @PathVariable String capabilityName
     ) {
-
-        return ResponseEntity.ok().build();
+        List<CapabilityDto> capabilites =  roleService.removeCapabilityToRole(companyName, configurationName, roleName, capabilityName);
+        return ResponseEntity.ok(capabilites);
     }
 
 

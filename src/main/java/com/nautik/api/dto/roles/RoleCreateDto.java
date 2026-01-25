@@ -11,7 +11,4 @@ public class RoleCreateDto {
     String name;
     String description;
     //List for the capabilities id if each role, has to be passed as an array
-
-    @JsonProperty("capabilities")
-    List<Integer> capabilities;
 }

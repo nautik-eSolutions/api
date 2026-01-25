@@ -1,17 +1,19 @@
 package com.nautik.api.dto.mooring;
 
 import com.nautik.api.dto.location.ZoneDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link com.nautik.api.domain.moorings.MooringCategory}
- */
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MooringCategoryDto implements Serializable {
     Integer id;
-    ZoneDto zone;
+//    ZoneDto zone;
     Long maxLength;
     Long maxBeam;
 }

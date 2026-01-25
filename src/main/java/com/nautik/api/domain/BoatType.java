@@ -15,7 +15,7 @@ public class BoatType {
     private Integer id;
 
     @Column(name = "name", nullable = false)
-    private Integer name;
+    private String name;
 
 
 }
