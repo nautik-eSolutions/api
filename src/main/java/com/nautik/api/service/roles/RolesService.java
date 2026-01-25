@@ -139,13 +139,6 @@ public class RolesService {
     }
 
 
-
-
-
-
-
-
-
     public CapabilityDto createCapability(String companyName, String configurationName, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
@@ -157,14 +150,6 @@ public class RolesService {
         return modelMapper
                 .map(capabilityRepository.save(capability), CapabilityDto.class);
     }
-
-
-
-
-
-
-
-
 
 
     public CapabilityDto updateCapability(String companyName, String configurationName, CapabilityDto capabilityDto) {
@@ -182,20 +167,29 @@ public class RolesService {
     }
 
 
-
-
-
-
-
-
-
     public List<CapabilityDto> getAllCapabilities(String companyName, String configurationName) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
 
-        List<Capability> capabilities =capabilityRepository.findByRolesConfiguration(rolesConfiguration);
+        List<Capability> capabilities = capabilityRepository.findByRolesConfiguration(rolesConfiguration);
+
+        return capabilities
+                .stream()
+                .map(cap->modelMapper.map(cap, CapabilityDto.class))
+                .collect(Collectors.toList());
+
+    }
 
 
+    public CapabilityDto getCapability(String companyName, String configurationName, String capabiltyName){
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName)
+                .orElseThrow();
+
+        Capability capability = capabilityRepository
+                .findByNameAndRolesConfiguration(capabiltyName,rolesConfiguration);
+
+        return modelMapper.map(capability, CapabilityDto.class);
 
     }
 
