@@ -6,6 +6,8 @@ import com.nautik.api.dto.roles.RolesConfigurationDto;
 import com.nautik.api.dto.roles.RoleCreateDto;
 import com.nautik.api.service.roles.RolesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,30 +25,33 @@ public class RolesController {
 
     //RolesConfigurationRepository
     @PostMapping("/{companyName}/")
-    public ResponseEntity<Void> createConfiguration(
+    public ResponseEntity<RolesConfigurationDto> createRolesConfiguration(
             @PathVariable String companyName,
             @RequestBody RolesConfigurationDto rolesConfigurationDto
 
     ) {
-        return ResponseEntity.ok().build();
+
+        RolesConfigurationDto createdRoleConfiguration = roleService.createRolesConfiguration(companyName,rolesConfigurationDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRoleConfiguration);
     }
 
-    @DeleteMapping("/{companyName}/{portName}/{configurationId}")
+    @DeleteMapping("/{companyName}/{configurationName}")
     public ResponseEntity<Void> deleteConfiguration(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId
+            @PathVariable String configurationName
     ) {
-        return ResponseEntity.ok().build();
+
+        roleService.deleteRolesConfiguration(companyName,configurationName);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{companyName}/{portName}/")
+    @GetMapping("/{companyName}/")
     public ResponseEntity<List<RolesConfigurationDto>> getAllRolesConfiguration(
-            @PathVariable String companyName,
-            @PathVariable String portName
-
+            @PathVariable String companyName
     ) {
-        return ResponseEntity.ok().build();
+        List<RolesConfigurationDto> rolesConfigurations = roleService.getAllCompanyConfigurations(companyName);
+        return ResponseEntity.ok(rolesConfigurations);
     }
 
     //Roles

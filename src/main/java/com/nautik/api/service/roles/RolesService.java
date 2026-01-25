@@ -13,6 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class RolesService {
@@ -25,7 +28,7 @@ public class RolesService {
 
     private final ModelMapper modelMapper;
 
-    public RolesConfigurationDto createConfiguration(
+    public RolesConfigurationDto createRolesConfiguration(
             String companyName,
             RolesConfigurationDto rolesConfigurationDto) {
 
@@ -38,8 +41,28 @@ public class RolesService {
 
         return modelMapper.map(rolesConfigurationRepository.save(providedRoleConfiguration), RolesConfigurationDto.class);
 
+    }
+    public void deleteRolesConfiguration(String companyName, String configurationName){
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository.
+                findByNameAndCompany_Name(configurationName,companyName)
+                .orElseThrow();
+
+        rolesConfigurationRepository.delete(rolesConfiguration);
 
     }
+
+    public List<RolesConfigurationDto> getAllCompanyConfigurations(String companyName){
+        List<RolesConfiguration> rolesConfigurations = rolesConfigurationRepository.findByCompany_Name(companyName);
+
+
+        return rolesConfigurations.
+                stream().
+                map(conf-> modelMapper.map
+                (conf, RolesConfigurationDto.class))
+                .collect(Collectors.toList());
+    }
+
+
 
 
 }
