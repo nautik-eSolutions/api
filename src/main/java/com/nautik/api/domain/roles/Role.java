@@ -29,7 +29,7 @@ public class Role {
     List<User>users;
 
     @ManyToOne
-    @JoinColumn(name = "roles_configuration")
+    @JoinColumn(name = "roles_configuration_od")
     private RolesConfiguration rolesConfiguration;
 
 

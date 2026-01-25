@@ -1,5 +1,6 @@
 package com.nautik.api.domain.roles;
 
+import com.nautik.api.domain.Company;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,4 +18,8 @@ public class Capability {
 
     @ManyToMany(mappedBy = "capabilities")
     private List<Role> roles =  new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "roles_configuration_id")
+    private RolesConfiguration rolesConfiguration;
 }

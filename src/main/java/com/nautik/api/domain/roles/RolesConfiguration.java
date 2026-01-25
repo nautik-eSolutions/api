@@ -30,4 +30,8 @@ public class RolesConfiguration {
     private List<Role> roles;
 
 
+    @OneToMany(mappedBy = "rolesConfiguration")
+    private List<Capability> capabilities;
+
+
 }

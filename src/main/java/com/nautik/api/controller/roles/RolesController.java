@@ -77,7 +77,7 @@ public class RolesController {
         return ResponseEntity.ok(roles);
     }
 
-    @DeleteMapping("/{companyName/{configurationName}/roles/{roleName}")
+    @DeleteMapping("/{companyName}/{configurationName}/roles/{roleName}")
     public ResponseEntity<Void> deleteRole(
             @PathVariable String configurationName,
             @PathVariable String companyName,
@@ -89,15 +89,15 @@ public class RolesController {
     }
 
     @PutMapping("/{companyName}/{configurationName}/roles/")
-    public String updateRole(
+    public ResponseEntity<RoleResponseDto> updateRole(
             @PathVariable String companyName,
             @PathVariable String configurationName,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
 
+        RoleResponseDto role =  roleService.updateRole(companyName,configurationName,roleCreateDto);
 
-
-        return "Ok";
+        return ResponseEntity.ok(role);
     }
 
 
@@ -105,15 +105,13 @@ public class RolesController {
 
     @PostMapping("/{companyName}/{portName}/capabilities/")
     public ResponseEntity<Void> createCapability(
-            @PathVariable String companyName,
-            @PathVariable String portName,
             @RequestBody CapabilityDto capabilityDto
     ) {
 
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{companyName}/{portName}/capabilities/")
+    @PutMapping("/capabilities/")
     public ResponseEntity<Void> updateCapability(
             @PathVariable String companyName,
             @PathVariable String portName,

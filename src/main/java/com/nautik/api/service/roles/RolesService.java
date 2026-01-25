@@ -4,6 +4,7 @@ import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
+import com.nautik.api.dto.roles.CapabilityDto;
 import com.nautik.api.dto.roles.RoleCreateDto;
 import com.nautik.api.dto.roles.RoleResponseDto;
 import com.nautik.api.dto.roles.RolesConfigurationDto;
@@ -109,6 +110,13 @@ public class RolesService {
 
 
 
+
+
+
+
+
+
+
     public List<RoleResponseDto> getAllRolesByConfigurationName(String companyName, String roleConfigurationName){
         List<Role>roles =  roleRepository.findRolesByRolesConfiguration_NameAndRolesConfiguration_Company_Name(
                 roleConfigurationName,companyName
@@ -122,6 +130,13 @@ public class RolesService {
 
 
 
+
+
+
+
+
+
+
     public void deleteRole(String configurationName, String company, String roleName){
         Role roleToDelete = roleRepository
                 .findByNameAndRolesConfiguration_NameAndRolesConfiguration_Company_Name(roleName,configurationName,company)
@@ -129,6 +144,13 @@ public class RolesService {
 
         roleRepository.delete(roleToDelete);
     }
+
+
+
+
+
+
+
 
 
     public RoleResponseDto updateRole(
@@ -157,6 +179,14 @@ public class RolesService {
         return modelMapper.map(roleRepository.save(roleToUpdate),RoleResponseDto.class);
 
     }
+
+
+
+
+
+
+
+
 
 
 
