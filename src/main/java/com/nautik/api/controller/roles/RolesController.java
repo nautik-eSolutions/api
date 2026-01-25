@@ -132,7 +132,7 @@ public class RolesController {
     }
 
 
-    @GetMapping("/{companyName}/{configurationName}/capabilities/{capabilityId}")
+    @GetMapping("/{companyName}/{configurationName}/capabilities/{capabilityName}")
     public ResponseEntity<CapabilityDto> getCapability(
             @PathVariable String companyName,
             @PathVariable String configurationName,
@@ -142,14 +142,12 @@ public class RolesController {
     }
 
 
-    @PostMapping("/{companyName}/{portName}/{configurationId}/roles/{roleName}/capability/{capabilityName}")
+    @PostMapping("/{companyName}/{configurationName}/roles/{roleName}/capability/{capabilityName}")
     public ResponseEntity<Void> assignCapabilityRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @PathVariable String roleName,
-            @PathVariable String capabilityName,
-            @RequestBody CapabilityDto capabilityDto
+            @PathVariable String capabilityName
     ) {
 
         return ResponseEntity.ok().build();

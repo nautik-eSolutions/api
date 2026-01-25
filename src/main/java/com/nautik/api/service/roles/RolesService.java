@@ -194,4 +194,44 @@ public class RolesService {
     }
 
 
+    public List<CapabilityDto> assignCapabilityToRole(
+            String companyName,
+            String configurationName,
+            String roleName,
+            String capabilityName){
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName)
+                .orElseThrow();
+
+        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
+
+        Capability capability = capabilityRepository.findByNameAndRolesConfiguration(capabilityName,rolesConfiguration);
+        role.getCapabilities().add(capability);
+
+        Role savedRole = roleRepository.save(role);
+        return savedRole.getCapabilities().stream().map(cap->modelMapper.map(cap, CapabilityDto.class)).toList();
+    }
+
+
+    public List<CapabilityDto> removeCapabilityToRole(
+            String companyName,
+            String configurationName,
+            String roleName,
+            String capabilityName){
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName)
+                .orElseThrow();
+
+        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
+
+        Capability capability = capabilityRepository.findByNameAndRolesConfiguration(capabilityName,rolesConfiguration);
+        role.getCapabilities().remove(capability);
+
+        Role savedRole = roleRepository.save(role);
+        return savedRole.getCapabilities().stream().map(cap->modelMapper.map(cap, CapabilityDto.class)).toList();
+    }
+
+
+
+
 }
