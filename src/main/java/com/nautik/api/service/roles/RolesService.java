@@ -2,6 +2,7 @@ package com.nautik.api.service.roles;
 
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.roles.Capability;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
 import com.nautik.api.dto.roles.CapabilityDto;
@@ -10,8 +11,10 @@ import com.nautik.api.dto.roles.RoleResponseDto;
 import com.nautik.api.dto.roles.RolesConfigurationDto;
 import com.nautik.api.repository.port.CompanyRepository;
 import com.nautik.api.repository.port.PortRepository;
+import com.nautik.api.repository.roles.CapabilityRepository;
 import com.nautik.api.repository.roles.RoleRepository;
 import com.nautik.api.repository.roles.RolesConfigurationRepository;
+import com.sun.jdi.connect.spi.TransportService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ public class RolesService {
     private final RoleRepository roleRepository;
     private final RolesConfigurationRepository rolesConfigurationRepository;
     private final CompanyRepository companyRepository;
+    private final CapabilityRepository capabilityRepository;
     private final PortRepository portRepository;
 
     private final ModelMapper modelMapper;
@@ -38,7 +42,7 @@ public class RolesService {
 
         RolesConfiguration providedRoleConfiguration = modelMapper.map(rolesConfigurationDto, RolesConfiguration.class);
 
-        Company company =  companyRepository.findByName(companyName).orElseThrow();
+        Company company = companyRepository.findByName(companyName).orElseThrow();
 
 
         providedRoleConfiguration.setCompany(company);
@@ -48,15 +52,9 @@ public class RolesService {
     }
 
 
-
-
-
-
-
-
-    public void deleteRolesConfiguration(String companyName, String configurationName){
+    public void deleteRolesConfiguration(String companyName, String configurationName) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository.
-                findByNameAndCompany_Name(configurationName,companyName)
+                findByNameAndCompany_Name(configurationName, companyName)
                 .orElseThrow();
 
         rolesConfigurationRepository.delete(rolesConfiguration);
@@ -64,105 +62,66 @@ public class RolesService {
     }
 
 
-
-
-
-
-
-
-
-    public List<RolesConfigurationDto> getAllCompanyConfigurations(String companyName){
+    public List<RolesConfigurationDto> getAllCompanyConfigurations(String companyName) {
         List<RolesConfiguration> rolesConfigurations = rolesConfigurationRepository.findByCompany_Name(companyName);
 
 
         return rolesConfigurations.
                 stream().
-                map(conf-> modelMapper.map
-                (conf, RolesConfigurationDto.class))
+                map(conf -> modelMapper.map
+                        (conf, RolesConfigurationDto.class))
                 .collect(Collectors.toList());
     }
-
-
-
-
-
 
 
     public RoleResponseDto createRole(
             String companyName,
             String configurationName,
             RoleCreateDto roleCreateDto
-    ){
+    ) {
 
-        Role roleToCreate =modelMapper.map(roleCreateDto, Role.class);
+        Role roleToCreate = modelMapper.map(roleCreateDto, Role.class);
 
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByNameAndCompany_Name(configurationName,companyName)
+                .findByNameAndCompany_Name(configurationName, companyName)
                 .orElseThrow();
 
         roleToCreate.setRolesConfiguration(rolesConfiguration);
 
-        return modelMapper.map(roleRepository.save(roleToCreate),RoleResponseDto.class);
+        return modelMapper.map(roleRepository.save(roleToCreate), RoleResponseDto.class);
 
     }
 
 
+    public List<RoleResponseDto> getAllRolesByConfigurationName(String companyName, String roleConfigurationName) {
+        List<Role> roles = roleRepository
+                .findRolesByRolesConfiguration_NameAndRolesConfiguration_Company_Name(roleConfigurationName, companyName
+                );
 
-
-
-
-
-
-
-
-
-
-    public List<RoleResponseDto> getAllRolesByConfigurationName(String companyName, String roleConfigurationName){
-        List<Role>roles =  roleRepository.findRolesByRolesConfiguration_NameAndRolesConfiguration_Company_Name(
-                roleConfigurationName,companyName
-        );
-
-        return roles.stream().map(role->modelMapper.map(role, RoleResponseDto.class)).collect(Collectors.toList());
+        return roles.stream().map(role -> modelMapper.map(role, RoleResponseDto.class)).collect(Collectors.toList());
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    public void deleteRole(String configurationName, String company, String roleName){
+    public void deleteRole(String configurationName, String company, String roleName) {
         Role roleToDelete = roleRepository
-                .findByNameAndRolesConfiguration_NameAndRolesConfiguration_Company_Name(roleName,configurationName,company)
+                .findByNameAndRolesConfiguration_NameAndRolesConfiguration_Company_Name(roleName, configurationName, company)
                 .orElseThrow();
 
         roleRepository.delete(roleToDelete);
     }
 
 
-
-
-
-
-
-
-
     public RoleResponseDto updateRole(
             String companyName,
             String configurationName,
             RoleCreateDto roleCreateDto
-    ){
+    ) {
 
-        Role roleToUpdate =modelMapper.map(roleCreateDto, Role.class);
+        Role roleToUpdate = modelMapper.map(roleCreateDto, Role.class);
 
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByNameAndCompany_Name(configurationName,companyName)
+                .findByNameAndCompany_Name(configurationName, companyName)
                 .orElseThrow();
 
         Role roleToExtractIdFrom = roleRepository
@@ -173,10 +132,9 @@ public class RolesService {
         roleToUpdate.setId(roleToExtractIdFrom.getId());
 
 
-
         roleToUpdate.setRolesConfiguration(rolesConfiguration);
 
-        return modelMapper.map(roleRepository.save(roleToUpdate),RoleResponseDto.class);
+        return modelMapper.map(roleRepository.save(roleToUpdate), RoleResponseDto.class);
 
     }
 
@@ -188,8 +146,58 @@ public class RolesService {
 
 
 
+    public CapabilityDto createCapability(String companyName, String configurationName, CapabilityDto capabilityDto) {
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+
+        Capability capability = modelMapper.map(capabilityDto, Capability.class);
+
+        capability.setRolesConfiguration(rolesConfiguration);
+
+        return modelMapper
+                .map(capabilityRepository.save(capability), CapabilityDto.class);
+    }
 
 
+
+
+
+
+
+
+
+
+    public CapabilityDto updateCapability(String companyName, String configurationName, CapabilityDto capabilityDto) {
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+
+        Capability searchedCapability = capabilityRepository.findByNameAndRolesConfiguration(configurationName, rolesConfiguration);
+
+        Capability providedCapability = modelMapper.map(capabilityDto, Capability.class);
+
+        providedCapability.setId(searchedCapability.getId());
+
+        return modelMapper
+                .map(capabilityRepository.save(providedCapability), CapabilityDto.class);
+    }
+
+
+
+
+
+
+
+
+
+    public List<CapabilityDto> getAllCapabilities(String companyName, String configurationName) {
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+
+        List<Capability> capabilities =capabilityRepository.findByRolesConfiguration(rolesConfiguration);
+
+
+
+    }
 
 
 }

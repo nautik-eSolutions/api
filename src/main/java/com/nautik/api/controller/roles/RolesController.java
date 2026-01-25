@@ -103,18 +103,20 @@ public class RolesController {
 
     // Capabilities
 
-    @PostMapping("/{companyName}/{portName}/capabilities/")
+    @PostMapping("/{companyName}/{configurationName}/capabilities/")
     public ResponseEntity<Void> createCapability(
+            @PathVariable String companyName,
+            @PathVariable String configurationName,
             @RequestBody CapabilityDto capabilityDto
     ) {
 
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/capabilities/")
+    @PutMapping("/{companyName}/{configurationName}/capabilities/")
     public ResponseEntity<Void> updateCapability(
             @PathVariable String companyName,
-            @PathVariable String portName,
+            @PathVariable String configurationName,
             @RequestBody CapabilityDto capabilityDto
     ) {
 
