@@ -20,6 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,10 +103,15 @@ public class RolesService {
     }
 
 
-    public void deleteRole(String configurationName, String company, String roleName) {
-        Role roleToDelete = roleRepository
-                .findByNameAndRolesConfiguration_NameAndRolesConfiguration_Company_Name(roleName, configurationName, company)
-                .orElseThrow();
+    public void deleteRole(String configurationName, String companyName, String roleName) {
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+
+
+        System.out.println(companyName);
+        System.out.println(configurationName);
+        System.out.println(roleName);
+        Role roleToDelete = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
 
         roleRepository.delete(roleToDelete);
     }
@@ -204,7 +210,9 @@ public class RolesService {
 
         Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
 
-        Capability capability = capabilityRepository.findByNameAndRolesConfiguration(capabilityName,rolesConfiguration);
+        Capability capability = capabilityRepository
+                .findByNameAndRolesConfiguration(capabilityName,rolesConfiguration);
+
         role.getCapabilities().add(capability);
 
         Role savedRole = roleRepository.save(role);

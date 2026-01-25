@@ -24,7 +24,7 @@ public class RolesController {
     private final RolesService roleService;
 
     //RolesConfigurationRepository
-    @PostMapping("/{companyName}/")
+    @PostMapping("/{companyName}")
     public ResponseEntity<RolesConfigurationDto> createRolesConfiguration(
             @PathVariable String companyName,
             @RequestBody RolesConfigurationDto rolesConfigurationDto
@@ -55,7 +55,7 @@ public class RolesController {
     }
 
     //Roles
-    @PostMapping("/{companyName}/{configurationName}/roles/")
+    @PostMapping("/{companyName}/{configurationName}/roles")
     public ResponseEntity<RoleResponseDto> createRole(
             @PathVariable String companyName,
             @PathVariable String configurationName,
@@ -67,7 +67,7 @@ public class RolesController {
 
     }
 
-    @GetMapping("/{companyName}/{configurationName}/roles/")
+    @GetMapping("/{companyName}/{configurationName}/roles")
     public ResponseEntity<List<RoleResponseDto>> getAllRoles(
             @PathVariable String companyName,
             @PathVariable String configurationName
@@ -88,7 +88,7 @@ public class RolesController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{companyName}/{configurationName}/roles/")
+    @PutMapping("/{companyName}/{configurationName}/roles")
     public ResponseEntity<RoleResponseDto> updateRole(
             @PathVariable String companyName,
             @PathVariable String configurationName,
@@ -103,7 +103,7 @@ public class RolesController {
 
     // Capabilities
 
-    @PostMapping("/{companyName}/{configurationName}/capabilities/")
+    @PostMapping("/{companyName}/{configurationName}/capabilities")
     public ResponseEntity<CapabilityDto> createCapability(
             @PathVariable String companyName,
             @PathVariable String configurationName,
@@ -116,7 +116,7 @@ public class RolesController {
 
     }
 
-    @PutMapping("/{companyName}/{configurationName}/capabilities/")
+    @PutMapping("/{companyName}/{configurationName}/capabilities")
     public ResponseEntity<CapabilityDto> updateCapability(
             @PathVariable String companyName,
             @PathVariable String configurationName,
