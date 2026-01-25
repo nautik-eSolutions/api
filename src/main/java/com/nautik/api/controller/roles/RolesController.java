@@ -4,10 +4,8 @@ import com.nautik.api.dto.roles.CapabilityDto;
 import com.nautik.api.dto.roles.RoleResponseDto;
 import com.nautik.api.dto.roles.RolesConfigurationDto;
 import com.nautik.api.dto.roles.RoleCreateDto;
-import com.nautik.api.service.roles.RoleService;
-import com.nautik.api.service.users.UserService;
+import com.nautik.api.service.roles.RolesService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,14 +19,12 @@ import java.util.List;
 public class RolesController {
 
 
-    private final RoleService roleService;
+    private final RolesService roleService;
 
-
-    //RolesConfiguration
-    @PostMapping("/{companyName}/{portName}/")
+    //RolesConfigurationRepository
+    @PostMapping("/{companyName}/")
     public ResponseEntity<Void> createConfiguration(
             @PathVariable String companyName,
-            @PathVariable String portName,
             @RequestBody RolesConfigurationDto rolesConfigurationDto
 
     ) {

@@ -1,5 +1,6 @@
 package com.nautik.api.domain;
 
+import com.nautik.api.domain.roles.RolesConfiguration;
 import com.nautik.api.domain.users.Admin;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,5 +33,9 @@ public class Company {
     @OneToOne
     @JoinColumn(name = "admin")
     private Admin admin;
+
+    @OneToMany(mappedBy = "company")
+    private List<RolesConfiguration>rolesConfigurations;
+
 
 }
