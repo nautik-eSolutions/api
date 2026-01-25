@@ -32,7 +32,6 @@ public class RolesService {
     private final RolesConfigurationRepository rolesConfigurationRepository;
     private final CompanyRepository companyRepository;
     private final CapabilityRepository capabilityRepository;
-    private final PortRepository portRepository;
 
     private final ModelMapper modelMapper;
 
