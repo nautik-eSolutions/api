@@ -56,41 +56,42 @@ public class RolesController {
 
     //Roles
     @PostMapping("/{companyName}/{configurationName}/roles/")
-    public String createRole(
+    public ResponseEntity<RoleResponseDto> createRole(
             @PathVariable String companyName,
             @PathVariable String configurationName,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
+    RoleResponseDto roleResponseDto = roleService.createRole(companyName, configurationName, roleCreateDto);
 
+    return ResponseEntity.status(HttpStatus.CREATED).body(roleResponseDto);
 
-        return "Ok";
     }
 
-    @GetMapping("/{companyName}/{portName}/{configurationId}/roles/")
+    @GetMapping("/{companyName}/{configurationName}/roles/")
     public ResponseEntity<List<RoleResponseDto>> getAllRoles(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId
+            @PathVariable String configurationName
     ) {
 
-
-        return ResponseEntity.ok().build();
+        List<RoleResponseDto>roles = roleService.getAllRolesByConfigurationName(companyName, configurationName);
+        return ResponseEntity.ok(roles);
     }
 
-    @DeleteMapping("/{companyName}/{portName}/{configurationId}/roles/{roleName}")
-    public ResponseEntity<RoleResponseDto> deleteRole(
-            @PathVariable int configurationId,
-            @PathVariable String portName,
+    @DeleteMapping("/{companyName/{configurationName}/roles/{roleName}")
+    public ResponseEntity<Void> deleteRole(
+            @PathVariable String configurationName,
             @PathVariable String companyName,
             @PathVariable String roleName) {
-        return ResponseEntity.ok().build();
+
+        roleService.deleteRole(configurationName,companyName,roleName);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{companyName}/{portName}/{configurationId}/roles/")
+    @PutMapping("/{companyName}/{configurationName}/roles/")
     public String updateRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
 

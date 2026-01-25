@@ -109,5 +109,57 @@ public class RolesService {
 
 
 
+    public List<RoleResponseDto> getAllRolesByConfigurationName(String companyName, String roleConfigurationName){
+        List<Role>roles =  roleRepository.findRolesByRolesConfiguration_NameAndRolesConfiguration_Company_Name(
+                roleConfigurationName,companyName
+        );
+
+        return roles.stream().map(role->modelMapper.map(role, RoleResponseDto.class)).collect(Collectors.toList());
+
+    }
+
+
+
+
+
+    public void deleteRole(String configurationName, String company, String roleName){
+        Role roleToDelete = roleRepository
+                .findByNameAndRolesConfiguration_NameAndRolesConfiguration_Company_Name(roleName,configurationName,company)
+                .orElseThrow();
+
+        roleRepository.delete(roleToDelete);
+    }
+
+
+    public RoleResponseDto updateRole(
+            String companyName,
+            String configurationName,
+            RoleCreateDto roleCreateDto
+    ){
+
+        Role roleToUpdate =modelMapper.map(roleCreateDto, Role.class);
+
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName,companyName)
+                .orElseThrow();
+
+        Role roleToExtractIdFrom = roleRepository
+                .findByNameAndRolesConfiguration(roleCreateDto.getName(), rolesConfiguration)
+                .orElseThrow();
+
+
+        roleToUpdate.setId(roleToExtractIdFrom.getId());
+
+
+
+        roleToUpdate.setRolesConfiguration(rolesConfiguration);
+
+        return modelMapper.map(roleRepository.save(roleToUpdate),RoleResponseDto.class);
+
+    }
+
+
+
+
 
 }
