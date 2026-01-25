@@ -2,7 +2,10 @@ package com.nautik.api.service.roles;
 
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
+import com.nautik.api.dto.roles.RoleCreateDto;
+import com.nautik.api.dto.roles.RoleResponseDto;
 import com.nautik.api.dto.roles.RolesConfigurationDto;
 import com.nautik.api.repository.port.CompanyRepository;
 import com.nautik.api.repository.port.PortRepository;
@@ -42,6 +45,14 @@ public class RolesService {
         return modelMapper.map(rolesConfigurationRepository.save(providedRoleConfiguration), RolesConfigurationDto.class);
 
     }
+
+
+
+
+
+
+
+
     public void deleteRolesConfiguration(String companyName, String configurationName){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository.
                 findByNameAndCompany_Name(configurationName,companyName)
@@ -50,6 +61,14 @@ public class RolesService {
         rolesConfigurationRepository.delete(rolesConfiguration);
 
     }
+
+
+
+
+
+
+
+
 
     public List<RolesConfigurationDto> getAllCompanyConfigurations(String companyName){
         List<RolesConfiguration> rolesConfigurations = rolesConfigurationRepository.findByCompany_Name(companyName);
@@ -61,6 +80,32 @@ public class RolesService {
                 (conf, RolesConfigurationDto.class))
                 .collect(Collectors.toList());
     }
+
+
+
+
+
+
+
+    public RoleResponseDto createRole(
+            String companyName,
+            String configurationName,
+            RoleCreateDto roleCreateDto
+    ){
+
+        Role roleToCreate =modelMapper.map(roleCreateDto, Role.class);
+
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository
+                .findByNameAndCompany_Name(configurationName,companyName)
+                .orElseThrow();
+
+        roleToCreate.setRolesConfiguration(rolesConfiguration);
+
+        return modelMapper.map(roleRepository.save(roleToCreate),RoleResponseDto.class);
+
+    }
+
+
 
 
 

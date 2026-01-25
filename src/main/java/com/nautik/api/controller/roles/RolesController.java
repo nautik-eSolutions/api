@@ -46,7 +46,7 @@ public class RolesController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{companyName}/")
+    @GetMapping("/{companyName}")
     public ResponseEntity<List<RolesConfigurationDto>> getAllRolesConfiguration(
             @PathVariable String companyName
     ) {
@@ -55,14 +55,12 @@ public class RolesController {
     }
 
     //Roles
-    @PostMapping("/{companyName}/{portName}/{configurationId}/roles/")
+    @PostMapping("/{companyName}/{configurationName}/roles/")
     public String createRole(
             @PathVariable String companyName,
-            @PathVariable String portName,
-            @PathVariable int configurationId,
+            @PathVariable String configurationName,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
-        System.out.println(roleCreateDto.getCapabilities());
 
 
         return "Ok";
@@ -95,7 +93,7 @@ public class RolesController {
             @PathVariable int configurationId,
             @RequestBody RoleCreateDto roleCreateDto
     ) {
-        System.out.println(roleCreateDto.getCapabilities());
+
 
 
         return "Ok";
