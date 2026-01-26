@@ -2,6 +2,7 @@ package com.nautik.api.controller.locations;
 
 
 import com.nautik.api.dto.location.ZoneDto;
+import com.nautik.api.dto.location.create.CreateZoneDto;
 import com.nautik.api.service.location.ZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class ZoneController {
     @PostMapping
     public ResponseEntity<ZoneDto> createZone(
             @PathVariable String portName,
-            @RequestBody ZoneDto dto
+            @RequestBody CreateZoneDto dto
     ) {
         ZoneDto zone = zoneService.create(portName, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(zone);
@@ -46,10 +47,10 @@ public class ZoneController {
     @PutMapping("/{zoneId}")
     public ResponseEntity<ZoneDto> updateZone(
             @PathVariable Long zoneId,
-            @RequestBody ZoneDto dto,
+            @RequestBody CreateZoneDto dto,
             @PathVariable String portName
     ) {
-        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto);
+        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto, portName);
         return ResponseEntity.ok(zone);
     }
 

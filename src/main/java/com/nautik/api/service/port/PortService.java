@@ -56,9 +56,15 @@ public class PortService {
         return modelMapper.map(portRepository.save(addPort), PortDto.class);
     }
 
-    public PortDto update(Long portId, PortDto port ){
+    public PortDto update(Long portId, CreatePortDto port ){
+        Company company = companyRepository.findCompanyByName(port.getCompanyName()).orElseThrow();
+        City city = cityRepository.findCityByName(port.getCityName()).orElseThrow();
         Port updatePort = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
-        Port providePort = modelMapper.map(port, Port.class);
+        Port providePort = new Port();
+        providePort.setCompany(company);
+        providePort.setCity(city);
+        providePort.setName(port.getName());
+
         providePort.setId(updatePort.getId());
         return modelMapper.map(portRepository.save(providePort), PortDto.class);
     }

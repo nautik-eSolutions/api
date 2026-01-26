@@ -40,7 +40,7 @@ public class PortController {
     @PutMapping("/{id}")
     public ResponseEntity<PortDto> updatePort(
             @PathVariable Long id,
-            @RequestBody PortDto dto
+            @RequestBody CreatePortDto dto
     ) {
         PortDto updatePort = portService.update(id, dto);
         return ResponseEntity.ok(updatePort);
