@@ -86,9 +86,10 @@ public class MooringController {
     }
 
     @GetMapping("/zone/{zoneId}/available")
-    public ResponseEntity<MooringDto> getAvailableMooringsByZoneId(
-            @PathVariable String zoneId){
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<MooringDto>> getAvailableMooringsByZoneId(
+            @PathVariable Long zoneId){
+        List<MooringDto> moorings = mooringService.findAllByZoneAvailable(zoneId);
+        return ResponseEntity.ok(moorings);
     }
 
 

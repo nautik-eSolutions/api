@@ -11,6 +11,8 @@ public interface PortRepository extends JpaRepository<Port, Integer> {
     List<Port> findAllByCity_Name(String cityName);
 
     Optional<Port> findByName(String name);
+    
+    Optional<Port> findByNameIgnoreCase(String name);
 
 
 

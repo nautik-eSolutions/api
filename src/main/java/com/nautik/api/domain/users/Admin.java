@@ -21,7 +21,8 @@ public class Admin {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "admin")
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
     private Company company;
     public Admin (User user){
         this.user = user;

@@ -3,16 +3,21 @@ package com.nautik.api.service.moorings;
 
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
+import com.nautik.api.domain.moorings.MooringMooringStatus;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
+import com.nautik.api.repository.moorings.MooringMooringStatusRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ public class MooringService {
     public final MooringRepository mooringRepository;
     public final MooringCategoryRepository mooringCategoryRepository;
     public final ModelMapper modelMapper;
+    public final MooringMooringStatusRepository statusRepository;
 
     public List<MooringDto> findAll(){
         return mooringRepository.findAll().stream().map(mooring -> modelMapper.map(mooring, MooringDto.class)).toList();
@@ -64,7 +70,18 @@ public class MooringService {
                 .toList();
     }
 
-//    public List<MooringDto> findAllByZoneAvailable(long zoneId){
-//
-//    }
+    public List<MooringDto> findAllByZoneAvailable(long zoneId){
+        List<MooringDto> mooringsZone = this.findAllByZoneId(zoneId);
+        List<MooringDto> available = new ArrayList<>();
+
+        mooringsZone.forEach(mooringDto -> {
+            MooringMooringStatus status = statusRepository.findFirstByMooring_Id(mooringDto.getId());
+
+            if(status.getMooringStatus().getId() == 1){
+                available.add(mooringDto);
+            }
+
+        });
+        return  available;
+    }
 }
