@@ -22,7 +22,7 @@ public class Captain {
     private Person person;
 
     @Column(name = "navigation_license", nullable = false)
-    private Long navigationLicense;
+    private String navigationLicense;
 
 
 }

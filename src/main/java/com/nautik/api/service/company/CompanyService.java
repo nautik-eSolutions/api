@@ -58,7 +58,7 @@ public class CompanyService {
 
     public void deleteCompany(String name) {
         Company searchedCompany = companyRepository.findByNameContainingIgnoreCase(name).stream().findFirst().orElseThrow();
-        companyRepository.deleteById(searchedCompany.getId());
+        companyRepository.delete(searchedCompany);
     }
 
     public List<CompanyDtoResponse> getAllCompanies(){

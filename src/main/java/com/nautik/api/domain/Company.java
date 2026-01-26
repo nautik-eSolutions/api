@@ -1,5 +1,6 @@
 package com.nautik.api.domain;
 
+import com.nautik.api.domain.roles.RolesConfiguration;
 import com.nautik.api.domain.users.Admin;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -32,5 +33,9 @@ public class Company {
     @OneToOne
     @JoinColumn(name = "admin")
     private Admin admin;
+
+    @OneToMany(mappedBy = "company")
+    private List<RolesConfiguration>rolesConfigurations;
+
 
 }

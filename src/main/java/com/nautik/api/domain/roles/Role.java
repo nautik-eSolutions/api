@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@Table(name = "role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,7 @@ public class Role {
     List<User>users;
 
     @ManyToOne
-    @JoinColumn(name = "roles_configuration")
+    @JoinColumn(name = "roles_configuration_id")
     private RolesConfiguration rolesConfiguration;
 
 

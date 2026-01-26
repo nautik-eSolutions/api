@@ -10,5 +10,5 @@ import java.io.Serializable;
 @Value
 public class BoatTypeDto implements Serializable {
     Integer id;
-    Integer name;
+    String name;
 }
