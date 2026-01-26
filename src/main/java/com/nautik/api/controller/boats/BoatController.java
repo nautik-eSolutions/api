@@ -27,13 +27,16 @@ public class BoatController {
 
     @GetMapping("/{userName}/{boatName}")
     public ResponseEntity<BoatDto> getBoat(@PathVariable String userName, @PathVariable String boatName) {
-        BoatDto boat = boatService.findByName(userName, boatName);
-        return ResponseEntity.ok().build();
+        BoatDto boat = boatService.findByName(boatName, userName);
+        System.out.println("-------------------------------------------------");
+        System.out.println(boat);
+        return ResponseEntity.ok(boat);
     }
 
-    @GetMapping("/{userName}/")
-    public ResponseEntity<List<BoatDto>> getAllBoats(@PathVariable String userName) {
-        return ResponseEntity.ok().build();
+    @GetMapping("/{idUser}/")
+    public ResponseEntity<List<BoatDto>> getAllBoats(@PathVariable Long idUser) {
+        List<BoatDto> boats = boatService.findByUser(idUser);
+        return ResponseEntity.ok(boats);
     }
 
     @PostMapping("/{userName}/")
@@ -42,16 +45,19 @@ public class BoatController {
         return ResponseEntity.ok(boat);
     }
 
-    @PatchMapping("/{userName}/{boatName}")
+    @PatchMapping("/{userName}/{idBoat}")
     public ResponseEntity<BoatDto> updateBoat(
             @PathVariable String userName,
-            @RequestBody BoatDto boatDto,
-            @PathVariable String boatName){
-        return ResponseEntity.ok().build();
+            @RequestBody CreateBoatDto boatDto,
+            @PathVariable Long idBoat){
+
+        BoatDto dto = boatService.updateBoat(userName,boatDto, idBoat);
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{userName}/{boatName}")
-    public ResponseEntity<BoatDto> updateBoat(@PathVariable String userName, @PathVariable String boatName){
+    public ResponseEntity<BoatDto> deleteBoat(@PathVariable String userName, @PathVariable String boatName){
+        boatService.deletBoat(userName, boatName);
         return ResponseEntity.ok().build();
     }
 

@@ -25,7 +25,14 @@ public class BoatService {
 
 
     public BoatDto findByName (String name, String userName){
-        return modelMapper.map(boatRepository.findAllByNameAndUser_UserName(name, userName), BoatDto.class);
+        return modelMapper.map(boatRepository.findAllByNameAndUser_UserName(name, userName).orElseThrow(), BoatDto.class);
+    }
+
+    public List<BoatDto> findByUser(Long idUser){
+        return boatRepository.findAllByUser_Id(Math.toIntExact(idUser))
+                .stream().map((element) -> modelMapper.map(element, BoatDto.class))
+                .toList();
+
     }
 
     public List<BoatDto> findAll(){
@@ -49,11 +56,29 @@ public class BoatService {
 
     }
 
-//    public BoatDto updateBoat(){}
-//
-//    public void deletBoat(){
-//
-//    }
+    public BoatDto updateBoat(String username, CreateBoatDto boatDto, Long id){
+        User user = userRepository.getByUserName(username).orElseThrow();
+        BoatType boatType = boatTypeRepository.findByName(boatDto.getBoatType());
+        Boat boat = new Boat();
+        boat.setId(Math.toIntExact(id));
+        boat.setBeam(boatDto.getBeam());
+        boat.setDraft(boatDto.getDraft());
+        boat.setLength(boatDto.getLength());
+        boat.setName(boatDto.getName());
+        boat.setRegistryNumber(boatDto.getRegistryNumber());
+        boat.setUser(user);
+        boat.setBoatType(boatType);
+
+        return modelMapper.map(boatRepository.save(boat), BoatDto.class);
+
+
+    }
+
+    public void deletBoat(String username, String boatName){
+        Boat searchBoat = boatRepository.findAllByNameAndUser_UserName(boatName, username).orElseThrow();
+        boatRepository.delete(searchBoat);
+
+    }
 
 
 }

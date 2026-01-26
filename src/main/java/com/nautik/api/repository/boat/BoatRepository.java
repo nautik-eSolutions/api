@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoatRepository extends JpaRepository<Boat, Integer>, JpaSpecificationExecutor<Boat> {
-    Boat findAllByNameAndUser_UserName(String name, String userUserName);
+    Optional<Boat> findAllByNameAndUser_UserName(String name, String userUserName);
+
+    List<Boat> findAllByUser_Id(Integer userId);
 }
