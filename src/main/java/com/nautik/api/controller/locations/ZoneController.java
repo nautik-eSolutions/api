@@ -30,7 +30,7 @@ public class ZoneController {
             @PathVariable Long zoneId,
             @PathVariable String portName
     ) {
-        ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId));
+        ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId), portName);
         return ResponseEntity.ok(zone);
     }
 

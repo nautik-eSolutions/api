@@ -1,6 +1,7 @@
 package com.nautik.api.controller.ports;
 
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.service.port.PortService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class PortController {
     }
 
     @PostMapping
-    public ResponseEntity<PortDto> createPort(@RequestBody PortDto dto) {
+    public ResponseEntity<PortDto> createPort(@RequestBody CreatePortDto dto) {
         PortDto portCreated  = portService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(portCreated);
     }

@@ -36,7 +36,7 @@ public class CompanyService {
     public CompanyDtoResponse createCompany(CompanyDto companyDto, String userName) {
         Company providedCompany = modelMapper.map(companyDto, Company.class);
 
-        providedCompany.setAdmin(adminRepository.findByUser_UserName(userName).orElseThrow());
+        providedCompany.getAdmins().add(adminRepository.findByUser_UserName(userName).orElseThrow());
 
         return modelMapper.map(
                 companyRepository.save(providedCompany),

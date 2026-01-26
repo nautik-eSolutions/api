@@ -30,9 +30,8 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @OneToOne
-    @JoinColumn(name = "admin")
-    private Admin admin;
+    @OneToMany(mappedBy = "company")
+    private List<Admin> admins;
 
     @OneToMany(mappedBy = "company")
     private List<RolesConfiguration>rolesConfigurations;

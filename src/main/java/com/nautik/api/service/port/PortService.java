@@ -1,7 +1,12 @@
 package com.nautik.api.service.port;
 
+import com.nautik.api.domain.City;
+import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.dto.port.create.CreatePortDto;
+import com.nautik.api.repository.location.CityRepository;
+import com.nautik.api.repository.port.CompanyRepository;
 import com.nautik.api.repository.port.PortRepository;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +23,8 @@ public class PortService {
 
     private final PortRepository portRepository;
     private final ModelMapper modelMapper;
+    private final CompanyRepository companyRepository;
+    private final CityRepository cityRepository;
 
 
     public List<PortDto> findAll(){
@@ -35,8 +42,17 @@ public class PortService {
         return modelMapper.map(portRepository.findByName(name), PortDto.class);
     }
 
-    public PortDto create(PortDto port){
-        Port addPort = modelMapper.map(port, Port.class);
+    public PortDto create(CreatePortDto port){
+        System.out.println("---------"+port.getCompanyName());
+        Company company = companyRepository.findCompanyByName(port.getCompanyName()).orElseThrow();
+        City city = cityRepository.findCityByName(port.getCityName()).orElseThrow();
+
+
+        Port addPort = new Port();
+        addPort.setName(port.getName());
+        addPort.setCompany(company);
+        addPort.setCity(city);
+
         return modelMapper.map(portRepository.save(addPort), PortDto.class);
     }
 

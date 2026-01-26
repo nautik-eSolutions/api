@@ -19,6 +19,6 @@ public class ZoneDto implements Serializable {
     Integer id;
     String name;
     String description;
-    PortDto port;
-    List<MooringCategoryDto> mooringCategories;
+    String portName;
+   List<String> mooringCategoriesMooringNumber;
 }
