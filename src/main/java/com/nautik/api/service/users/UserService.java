@@ -36,9 +36,9 @@ public class UserService {
                 UserDtoResponse.class);
     }
 
-    public UserDtoResponse updateUser(UserDto userDto, String firstName) {
+    public UserDtoResponse updateUser(UserDto userDto, Long userId) {
 
-        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow();
+        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow();
         User providedUser = modelMapper.map(userDto, User.class);
 
         providedUser.setId(searchedUser.getId());
@@ -48,8 +48,8 @@ public class UserService {
                 UserDtoResponse.class);
     }
 
-    public void deleteUser(String firstName) {
-        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow();
+    public void deleteUser(Long userid) {
+        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow();
         userRepository.deleteById(searchedUser.getId());
     }
 
