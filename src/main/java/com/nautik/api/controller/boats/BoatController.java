@@ -27,8 +27,6 @@ public class BoatController {
     @GetMapping("/{userName}/{boatName}")
     public ResponseEntity<BoatDto> getBoat(@PathVariable String userName, @PathVariable String boatName) {
         BoatDto boat = boatService.findByName(boatName, userName);
-        System.out.println("-------------------------------------------------");
-        System.out.println(boat);
         return ResponseEntity.ok(boat);
     }
 
