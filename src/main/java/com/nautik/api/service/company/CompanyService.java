@@ -1,16 +1,13 @@
 package com.nautik.api.service.company;
 
 import com.nautik.api.domain.Company;
-import com.nautik.api.domain.users.Admin;
 import com.nautik.api.dto.port.company.CompanyDto;
 import com.nautik.api.dto.port.company.CompanyDtoResponse;
 import com.nautik.api.repository.port.CompanyRepository;
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
-import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

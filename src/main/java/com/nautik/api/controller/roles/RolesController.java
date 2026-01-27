@@ -7,7 +7,6 @@ import com.nautik.api.dto.roles.RoleCreateDto;
 import com.nautik.api.service.roles.RolesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;

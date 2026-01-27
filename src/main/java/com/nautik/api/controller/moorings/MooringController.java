@@ -1,9 +1,6 @@
 package com.nautik.api.controller.moorings;
 
 
-import com.nautik.api.domain.moorings.Mooring;
-import com.nautik.api.domain.moorings.MooringCategory;
-import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;

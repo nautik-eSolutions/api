@@ -1,7 +1,6 @@
 package com.nautik.api.service.roles;
 
 import com.nautik.api.domain.Company;
-import com.nautik.api.domain.Port;
 import com.nautik.api.domain.roles.Capability;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
@@ -10,14 +9,11 @@ import com.nautik.api.dto.roles.RoleCreateDto;
 import com.nautik.api.dto.roles.RoleResponseDto;
 import com.nautik.api.dto.roles.RolesConfigurationDto;
 import com.nautik.api.repository.port.CompanyRepository;
-import com.nautik.api.repository.port.PortRepository;
 import com.nautik.api.repository.roles.CapabilityRepository;
 import com.nautik.api.repository.roles.RoleRepository;
 import com.nautik.api.repository.roles.RolesConfigurationRepository;
-import com.sun.jdi.connect.spi.TransportService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;

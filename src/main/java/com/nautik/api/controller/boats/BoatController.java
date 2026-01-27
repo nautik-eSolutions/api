@@ -5,7 +5,6 @@ import com.nautik.api.dto.boat.BoatDto;
 import com.nautik.api.dto.boat.create.CreateBoatDto;
 import com.nautik.api.service.boat.BoatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
