@@ -12,4 +12,8 @@ public interface BoatRepository extends JpaRepository<Boat, Integer>, JpaSpecifi
     Optional<Boat> findAllByNameAndUser_UserName(String name, String userUserName);
 
     List<Boat> findAllByUser_Id(Integer userId);
+
+    Object findByIdAndUser_Id(Integer id, Integer userId);
+
+    Optional<Boat> findAllByIdAndUser_Id(Integer id, Integer userId);
 }

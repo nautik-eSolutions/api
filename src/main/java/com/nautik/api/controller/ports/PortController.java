@@ -23,11 +23,10 @@ public class PortController {
         return ResponseEntity.ok(allPorts);
     }
 
-    @GetMapping("/{portName}")
+    @GetMapping("/{portId}")
     public ResponseEntity<PortDto> getPortById(
-            @PathVariable String portName) {
-        String name = portName.replace("_", " ");
-        PortDto port = portService.findByName(name);
+            @PathVariable Long portId) {
+        PortDto port = portService.findById(portId);
         return ResponseEntity.ok(port);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ports/{portName}/zones")
+@RequestMapping("/ports/{portId}/zones")
 @RequiredArgsConstructor
 public class ZoneController {
 
@@ -20,27 +20,27 @@ public class ZoneController {
 
     @GetMapping
     public ResponseEntity<List<ZoneDto>> getZonesByPort(
-            @PathVariable String portName
+            @PathVariable Long portId
     ) {
-        List<ZoneDto> zoneList = zoneService.findByPort(portName);
+        List<ZoneDto> zoneList = zoneService.findByPort(portId);
         return ResponseEntity.ok(zoneList);
     }
 
     @GetMapping("/{zoneId}")
     public ResponseEntity<ZoneDto> getZoneById(
             @PathVariable Long zoneId,
-            @PathVariable String portName
+            @PathVariable Long portId
     ) {
-        ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId), portName);
+        ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId), portId);
         return ResponseEntity.ok(zone);
     }
 
     @PostMapping
     public ResponseEntity<ZoneDto> createZone(
-            @PathVariable String portName,
+            @PathVariable Long portId,
             @RequestBody CreateZoneDto dto
     ) {
-        ZoneDto zone = zoneService.create(portName, dto);
+        ZoneDto zone = zoneService.create(portId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(zone);
     }
 
@@ -48,15 +48,15 @@ public class ZoneController {
     public ResponseEntity<ZoneDto> updateZone(
             @PathVariable Long zoneId,
             @RequestBody CreateZoneDto dto,
-            @PathVariable String portName
+            @PathVariable Long portId
     ) {
-        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto, portName);
+        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto, portId);
         return ResponseEntity.ok(zone);
     }
 
     @DeleteMapping("/{zoneId}")
     public ResponseEntity<Void> deleteZone(
-            @PathVariable String portName,
+            @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
         zoneService.delete(Math.toIntExact(zoneId));

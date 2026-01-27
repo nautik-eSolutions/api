@@ -40,7 +40,7 @@ public class MooringService {
                 .map(mooring -> modelMapper.map(mooring, MooringDto.class))
                 .toList();
     }
-    public MooringDto createMooring(String portName, CreateMooringDto dto){
+    public MooringDto createMooring(Long portId, CreateMooringDto dto){
         MooringCategory mooringCategory = mooringCategoryRepository.findById(dto.getCategoryId()).orElseThrow();
 
         Mooring mooring = new Mooring();

@@ -37,13 +37,12 @@ public class MooringController {
         return ResponseEntity.ok(mooring);
     }
 
-    @PostMapping("/{portName}")
+    @PostMapping("/{portId}")
     public ResponseEntity<MooringDto> createMooring(
-            @PathVariable String portName,
+            @PathVariable Long portId,
             @RequestBody CreateMooringDto mooring
     ){
-        String name = portName.replace("_", " ");
-        MooringDto dto = mooringService.createMooring(name, mooring);
+        MooringDto dto = mooringService.createMooring(portId, mooring);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
 

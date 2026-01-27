@@ -27,6 +27,9 @@ public class BoatService {
     public BoatDto findByName (String name, String userName){
         return modelMapper.map(boatRepository.findAllByNameAndUser_UserName(name, userName).orElseThrow(), BoatDto.class);
     }
+    public BoatDto findById(Long userId, Long boatId){
+        return modelMapper.map(boatRepository.findByIdAndUser_Id(Math.toIntExact(boatId), Math.toIntExact(userId)), BoatDto.class);
+    }
 
     public List<BoatDto> findByUser(Long idUser){
         return boatRepository.findAllByUser_Id(Math.toIntExact(idUser))
@@ -39,8 +42,8 @@ public class BoatService {
         return boatRepository.findAll().stream().map(boat -> modelMapper.map(boat, BoatDto.class)).toList();
 
     }
-    public BoatDto createBoat(String username, CreateBoatDto boatDto){
-        User user = userRepository.getByUserName(username).orElseThrow();
+    public BoatDto createBoat(Long idUser, CreateBoatDto boatDto){
+        User user = userRepository.findUserById(Math.toIntExact(idUser)).orElseThrow();
         BoatType boatType = boatTypeRepository.findByName(boatDto.getBoatType());
         Boat boat = new Boat();
         boat.setBeam(boatDto.getBeam());
@@ -56,8 +59,8 @@ public class BoatService {
 
     }
 
-    public BoatDto updateBoat(String username, CreateBoatDto boatDto, Long id){
-        User user = userRepository.getByUserName(username).orElseThrow();
+    public BoatDto updateBoat(Long idUser, CreateBoatDto boatDto, Long id){
+        User user = userRepository.findUserById(Math.toIntExact(idUser)).orElseThrow();
         BoatType boatType = boatTypeRepository.findByName(boatDto.getBoatType());
         Boat boat = new Boat();
         boat.setId(Math.toIntExact(id));
@@ -74,8 +77,8 @@ public class BoatService {
 
     }
 
-    public void deletBoat(String username, String boatName){
-        Boat searchBoat = boatRepository.findAllByNameAndUser_UserName(boatName, username).orElseThrow();
+    public void deletBoat(Long idUser, Long idBoat){
+        Boat searchBoat = boatRepository.findAllByIdAndUser_Id(Math.toIntExact(idBoat), Math.toIntExact(idUser)).orElseThrow();
         boatRepository.delete(searchBoat);
 
     }

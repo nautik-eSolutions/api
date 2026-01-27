@@ -23,14 +23,14 @@ public class RolesController {
     private final RolesService roleService;
 
     //RolesConfigurationRepository
-    @PostMapping("/{companyName}")
+    @PostMapping("/{companyId}")
     public ResponseEntity<RolesConfigurationDto> createRolesConfiguration(
-            @PathVariable String companyName,
+            @PathVariable Long companyId,
             @RequestBody RolesConfigurationDto rolesConfigurationDto
 
     ) {
 
-        RolesConfigurationDto createdRoleConfiguration = roleService.createRolesConfiguration(companyName,rolesConfigurationDto);
+        RolesConfigurationDto createdRoleConfiguration = roleService.createRolesConfiguration(companyId,rolesConfigurationDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoleConfiguration);
     }

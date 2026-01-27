@@ -18,10 +18,10 @@ public class CompanyController {
     private CompanyService companyService;
 
 
-    @GetMapping("/{name}")
-    public ResponseEntity<CompanyDtoResponse> getCompanyByName(@PathVariable String name){
+    @GetMapping("/{idCompany}")
+    public ResponseEntity<CompanyDtoResponse> getCompanyByName(@PathVariable Long idCompany){
 
-        return ResponseEntity.ok(companyService.findCompanyByName(name));
+        return ResponseEntity.ok(companyService.findCompanyById(idCompany));
 
     }
     @GetMapping
@@ -30,26 +30,26 @@ public class CompanyController {
     }
 
 
-    @PostMapping("/administrators/{userName}")
+    @PostMapping("/administrators/{idUser}")
     public ResponseEntity<CompanyDtoResponse> createCompany(
             @RequestBody CompanyDto companyDto,
-            @PathVariable String userName){
-        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,userName));
+            @PathVariable Long idUser){
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,idUser));
     }
 
-    @PatchMapping("/{name}")
+    @PatchMapping("/{companyId}")
     public ResponseEntity<CompanyDtoResponse>updateCompany(
             @RequestBody CompanyDto companyDto,
-            @PathVariable String name){
+            @PathVariable Long companyId){
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(companyService.updateCompany(companyDto,name));
+                .body(companyService.updateCompany(companyDto,companyId));
     }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteCompanyByName(@PathVariable String name){
-        companyService.deleteCompany(name);
+    @DeleteMapping("/{companyId}")
+    public ResponseEntity<Void> deleteCompanyByName(@PathVariable Long companyId){
+        companyService.deleteCompany(companyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

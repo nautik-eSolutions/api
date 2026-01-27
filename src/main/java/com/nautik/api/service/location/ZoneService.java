@@ -23,31 +23,26 @@ public class ZoneService {
     private final PortRepository portRepository;
     private final MooringCategoryRepository mooringCategoryRepository;
 
-    public List<ZoneDto> findByPort(String portName){
-        String name = portName.replace("_", " ");
+    public List<ZoneDto> findByPort(Long portId){
 
-        return zoneRepository.findAllByPort_Name(name)
+        return zoneRepository.findAllByPort_Id(Math.toIntExact(portId))
                 .stream()
                 .map(zone -> modelMapper.map(zone, ZoneDto.class))
                 .toList();
     }
 
-    public ZoneDto findById(Integer zoneId, String portName){
-        String name = portName.replace("_", " ");
-        System.out.println(name);
-        Port port = portRepository.findByNameIgnoreCase(name).orElseThrow();
-        System.out.println(port.getName());
+    public ZoneDto findById(Integer zoneId, Long portId){
+        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
         return modelMapper.map(zoneRepository.findZoneByIdAndPort(zoneId, port).orElseThrow(), ZoneDto.class);
     }
 
-    public ZoneDto create(String portName, CreateZoneDto zone){
-        String name = portName.replace("_", " ");
+    public ZoneDto create(Long portId, CreateZoneDto zone){
 
         List<MooringCategory> categories = new ArrayList<>();
         zone.getMooringCategoriesMooringNumber().forEach(cat -> {
             categories.add(mooringCategoryRepository.findById(cat).orElseThrow());
         });
-        Port port = portRepository.findByNameIgnoreCase(name).orElseThrow();
+        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
         Zone addZone = new Zone();
         addZone.setPort(port);
         addZone.setName(zone.getName());
@@ -56,14 +51,14 @@ public class ZoneService {
         return modelMapper.map(zoneRepository.save(addZone), ZoneDto.class);
     }
 
-    public ZoneDto update( Integer zoneId, CreateZoneDto zone, String portName ){
-        String name = portName.replace("_", " ");
+    public ZoneDto update( Integer zoneId, CreateZoneDto zone, Long portId ){
+
 
         List<MooringCategory> categories = new ArrayList<>();
         zone.getMooringCategoriesMooringNumber().forEach(cat -> {
             categories.add(mooringCategoryRepository.findById(cat).orElseThrow());
         });
-        Port port = portRepository.findByNameIgnoreCase(name).orElseThrow();
+        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
         Zone zoneProvided = new Zone();
         zoneProvided.setId(zoneId);
         zoneProvided.setPort(port);

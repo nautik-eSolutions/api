@@ -24,9 +24,9 @@ public class BoatController {
         return ResponseEntity.ok(boats);
     }
 
-    @GetMapping("/{userName}/{boatName}")
-    public ResponseEntity<BoatDto> getBoat(@PathVariable String userName, @PathVariable String boatName) {
-        BoatDto boat = boatService.findByName(boatName, userName);
+    @GetMapping("/{idUser}/{boatId}")
+    public ResponseEntity<BoatDto> getBoat(@PathVariable Long idUser, @PathVariable Long boatId) {
+        BoatDto boat = boatService.findById(idUser, boatId);
         return ResponseEntity.ok(boat);
     }
 
@@ -36,25 +36,25 @@ public class BoatController {
         return ResponseEntity.ok(boats);
     }
 
-    @PostMapping("/{userName}/")
-    public ResponseEntity<BoatDto> createBoat(@PathVariable String userName, @RequestBody CreateBoatDto boatDto){
-        BoatDto boat = boatService.createBoat(userName, boatDto );
+    @PostMapping("/{idUser}/")
+    public ResponseEntity<BoatDto> createBoat(@PathVariable Long idUser, @RequestBody CreateBoatDto boatDto){
+        BoatDto boat = boatService.createBoat(idUser, boatDto );
         return ResponseEntity.ok(boat);
     }
 
-    @PatchMapping("/{userName}/{idBoat}")
+    @PatchMapping("/{idUser}/{idBoat}")
     public ResponseEntity<BoatDto> updateBoat(
-            @PathVariable String userName,
+            @PathVariable Long idUser,
             @RequestBody CreateBoatDto boatDto,
             @PathVariable Long idBoat){
 
-        BoatDto dto = boatService.updateBoat(userName,boatDto, idBoat);
+        BoatDto dto = boatService.updateBoat(idUser,boatDto, idBoat);
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/{userName}/{boatName}")
-    public ResponseEntity<BoatDto> deleteBoat(@PathVariable String userName, @PathVariable String boatName){
-        boatService.deletBoat(userName, boatName);
+    @DeleteMapping("/{idUser}/{idBoat}")
+    public ResponseEntity<BoatDto> deleteBoat(@PathVariable Long idUser, @PathVariable Long idBoat){
+        boatService.deletBoat(idUser, idBoat);
         return ResponseEntity.ok().build();
     }
 
