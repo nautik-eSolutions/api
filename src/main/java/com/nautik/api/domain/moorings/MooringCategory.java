@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "mooring_category")
+@Table(name = "mooring_categories")
 public class MooringCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +21,9 @@ public class MooringCategory {
     @JoinColumn(name = "zone_id", nullable = false)
     private Zone zone;
 
-    @Column(name = "max_length", nullable = false)
-    private Long maxLength;
-
-    @Column(name = "max_beam", nullable = false)
-    private Long maxBeam;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "mooring_dimensions_id", nullable = false)
+    private MooringDimension dimensions;
 
 
 }

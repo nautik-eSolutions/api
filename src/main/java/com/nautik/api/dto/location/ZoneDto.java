@@ -20,5 +20,5 @@ public class ZoneDto implements Serializable {
     String name;
     String description;
     String portName;
-   List<String> mooringCategoriesMooringNumber;
+//   List<String> mooringCategoriesMooringNumber;
 }
