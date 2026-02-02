@@ -2,6 +2,7 @@ package com.nautik.api.service.roles;
 
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.roles.Capability;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
@@ -42,7 +43,7 @@ public class RolesService {
 
         RolesConfiguration providedRoleConfiguration = modelMapper.map(rolesConfigurationDto, RolesConfiguration.class);
 
-        Company company = companyRepository.findByName(companyName).orElseThrow();
+        Company company = companyRepository.findByName(companyName).orElseThrow(()->new ResourceNotFoundException("Company not found"));
 
 
         providedRoleConfiguration.setCompany(company);
@@ -55,7 +56,7 @@ public class RolesService {
     public void deleteRolesConfiguration(String companyName, String configurationName) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository.
                 findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         rolesConfigurationRepository.delete(rolesConfiguration);
 
@@ -84,7 +85,7 @@ public class RolesService {
 
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         roleToCreate.setRolesConfiguration(rolesConfiguration);
 
@@ -105,13 +106,13 @@ public class RolesService {
 
     public void deleteRole(String configurationName, String companyName, String roleName) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
 
         System.out.println(companyName);
         System.out.println(configurationName);
         System.out.println(roleName);
-        Role roleToDelete = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
+        Role roleToDelete = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Roles not found"));
 
         roleRepository.delete(roleToDelete);
     }
@@ -127,11 +128,11 @@ public class RolesService {
 
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Role roleToExtractIdFrom = roleRepository
                 .findByNameAndRolesConfiguration(roleCreateDto.getName(), rolesConfiguration)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
 
         roleToUpdate.setId(roleToExtractIdFrom.getId());
@@ -146,7 +147,7 @@ public class RolesService {
 
     public CapabilityDto createCapability(String companyName, String configurationName, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability capability = modelMapper.map(capabilityDto, Capability.class);
 
@@ -159,7 +160,7 @@ public class RolesService {
 
     public CapabilityDto updateCapability(String companyName, String configurationName, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability searchedCapability = capabilityRepository.findByNameAndRolesConfiguration(configurationName, rolesConfiguration);
 
@@ -174,7 +175,7 @@ public class RolesService {
 
     public List<CapabilityDto> getAllCapabilities(String companyName, String configurationName) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow();
+                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         List<Capability> capabilities = capabilityRepository.findByRolesConfiguration(rolesConfiguration);
 
@@ -189,7 +190,7 @@ public class RolesService {
     public CapabilityDto getCapability(String companyName, String configurationName, String capabiltyName){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability capability = capabilityRepository
                 .findByNameAndRolesConfiguration(capabiltyName,rolesConfiguration);
@@ -206,9 +207,9 @@ public class RolesService {
             String capabilityName){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
-        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
+        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability capability = capabilityRepository
                 .findByNameAndRolesConfiguration(capabilityName,rolesConfiguration);
@@ -227,9 +228,9 @@ public class RolesService {
             String capabilityName){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow();
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
-        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow();
+        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability capability = capabilityRepository.findByNameAndRolesConfiguration(capabilityName,rolesConfiguration);
         role.getCapabilities().remove(capability);

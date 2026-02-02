@@ -39,7 +39,7 @@ public class UserService {
 
     public UserDtoResponse updateUser(UserDto userDto, String firstName) {
 
-        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow();
+        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
         User providedUser = modelMapper.map(userDto, User.class);
 
         providedUser.setId(searchedUser.getId());
@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public void deleteUser(String firstName) {
-        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow();
+        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
         userRepository.deleteById(searchedUser.getId());
     }
 
