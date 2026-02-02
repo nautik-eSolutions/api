@@ -39,11 +39,7 @@ public class UserService {
 
     public UserDtoResponse updateUser(UserDto userDto, Long userId) {
 
-<<<<<<< HEAD
-        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
-=======
-        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow();
->>>>>>> main
+        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow(()->new ResourceNotFoundException("User not found"));
         User providedUser = modelMapper.map(userDto, User.class);
 
         providedUser.setId(searchedUser.getId());
@@ -53,13 +49,11 @@ public class UserService {
                 UserDtoResponse.class);
     }
 
-<<<<<<< HEAD
-    public void deleteUser(String firstName) {
-        User searchedUser = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
-=======
+
+
     public void deleteUser(Long userid) {
-        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow();
->>>>>>> main
+        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         userRepository.deleteById(searchedUser.getId());
     }
 

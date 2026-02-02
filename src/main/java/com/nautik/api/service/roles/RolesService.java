@@ -1,11 +1,10 @@
 package com.nautik.api.service.roles;
 
 import com.nautik.api.domain.Company;
-<<<<<<< HEAD
+
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
-=======
->>>>>>> main
+
 import com.nautik.api.domain.roles.Capability;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
@@ -43,11 +42,9 @@ public class RolesService {
 
         RolesConfiguration providedRoleConfiguration = modelMapper.map(rolesConfigurationDto, RolesConfiguration.class);
 
-<<<<<<< HEAD
-        Company company = companyRepository.findByName(companyName).orElseThrow(()->new ResourceNotFoundException("Company not found"));
-=======
-        Company company = companyRepository.findById(companyId).orElseThrow();
->>>>>>> main
+
+        Company company = companyRepository.findById(companyId).orElseThrow(()->new ResourceNotFoundException("Company not found"));
+
 
 
         providedRoleConfiguration.setCompany(company);
@@ -57,15 +54,9 @@ public class RolesService {
     }
 
 
-<<<<<<< HEAD
-    public void deleteRolesConfiguration(String companyName, String configurationName) {
-        RolesConfiguration rolesConfiguration = rolesConfigurationRepository.
-                findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
+
     public void deleteRolesConfiguration(Long companyId, Long configurationId) {
-        RolesConfiguration rolesConfiguration = rolesConfigurationRepository.findByIdAndCompany_Id(configurationId, companyId).orElseThrow();
->>>>>>> main
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository.findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         rolesConfigurationRepository.delete(rolesConfiguration);
 
@@ -91,13 +82,9 @@ public class RolesService {
         Role roleToCreate = modelMapper.map(roleCreateDto, Role.class);
 
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
+
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow();
->>>>>>> main
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         roleToCreate.setRolesConfiguration(rolesConfiguration);
 
@@ -126,23 +113,14 @@ public class RolesService {
 
     public void deleteRole(Long configurationId, Long companyId, Long roleId) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-
-
-        System.out.println(companyName);
-        System.out.println(configurationName);
-        System.out.println(roleName);
-        Role roleToDelete = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Roles not found"));
-=======
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow();
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
 
         System.out.println(companyId);
         System.out.println(configurationId);
         System.out.println(roleId);
-        Role roleToDelete = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow();
->>>>>>> main
+        Role roleToDelete = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Role not found"));
+
 
         roleRepository.delete(roleToDelete);
     }
@@ -157,17 +135,13 @@ public class RolesService {
         Role roleToUpdate = modelMapper.map(roleCreateDto, Role.class);
 
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
+
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow();
->>>>>>> main
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Role roleToExtractIdFrom = roleRepository
                 .findByNameAndRolesConfiguration(roleCreateDto.getName(), rolesConfiguration)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .orElseThrow(()->new ResourceNotFoundException("Role not found"));
 
 
         roleToUpdate.setId(roleToExtractIdFrom.getId());
@@ -182,11 +156,7 @@ public class RolesService {
 
     public CapabilityDto createCapability(Long  companyId, Long configurationId, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow();
->>>>>>> main
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability capability = modelMapper.map(capabilityDto, Capability.class);
 
@@ -199,11 +169,8 @@ public class RolesService {
 
     public CapabilityDto updateCapability(Long companyId, Long configurationId, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow();
->>>>>>> main
+
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         Capability searchedCapability = capabilityRepository.findByIdAndRolesConfiguration(configurationId, rolesConfiguration);
 
@@ -218,11 +185,7 @@ public class RolesService {
 
     public List<CapabilityDto> getAllCapabilities(Long companyId, Long configurationId) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow();
->>>>>>> main
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
         List<Capability> capabilities = capabilityRepository.findByRolesConfiguration(rolesConfiguration);
 
@@ -236,13 +199,10 @@ public class RolesService {
 
     public CapabilityDto getCapability(Long companyId, Long configurationId, Long capabiltyId){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
+
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow();
->>>>>>> main
+                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+
 
         Capability capability = capabilityRepository
                 .findByIdAndRolesConfiguration(capabiltyId,rolesConfiguration);
@@ -258,17 +218,11 @@ public class RolesService {
             Long roleId,
             Long capabilityId){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName)
+
+                .findByIdAndCompany_Id(configurationId, companyId)
                 .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
-        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
-                .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow();
-
-        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow();
->>>>>>> main
+        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Role not found"));
 
         Capability capability = capabilityRepository
                 .findByIdAndRolesConfiguration(capabilityId,rolesConfiguration);
@@ -286,17 +240,11 @@ public class RolesService {
             Long roleId,
             Long capabilityId){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-<<<<<<< HEAD
-                .findByNameAndCompany_Name(configurationName, companyName)
+                .findByIdAndCompany_Id(configurationId, companyId)
                 .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
 
-        Role role = roleRepository.findByNameAndRolesConfiguration(roleName,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
-=======
-                .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow();
+        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Role not found"));
 
-        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow();
->>>>>>> main
 
         Capability capability = capabilityRepository.findByIdAndRolesConfiguration(capabilityId,rolesConfiguration);
         role.getCapabilities().remove(capability);
