@@ -4,7 +4,6 @@ import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
 import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    @Autowired
     private final UserService userService;
 
 
-    @GetMapping("/{firstName}")
-    public ResponseEntity<UserDtoResponse> getUserByFirstName(@PathVariable String firstName) {
-        return ResponseEntity.ok(userService.findUserByFirstName(firstName));
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDtoResponse> getUserByFirstName(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.findUserById(Math.toIntExact(userId)));
     }
 
 
@@ -37,18 +35,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createUser(user));
     }
 
-    @PatchMapping("/{firstName}")
+    @PatchMapping("/{userId}")
     public ResponseEntity<UserDtoResponse> updateUser(
             @RequestBody UserDto user,
-            @PathVariable String firstName) {
+            @PathVariable Long userId) {
         return ResponseEntity
                 .status(HttpStatusCode.valueOf(201))
-                .body(userService.updateUser(user,firstName));
+                .body(userService.updateUser(user,userId));
     }
 
-    @DeleteMapping("/{firstName}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String firstName) {
-        userService.deleteUser(firstName);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
         return ResponseEntity.ok().build();
     }
 

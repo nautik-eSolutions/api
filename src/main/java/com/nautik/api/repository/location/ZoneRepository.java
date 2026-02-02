@@ -4,6 +4,7 @@ import com.nautik.api.domain.Port;
 import com.nautik.api.domain.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +19,6 @@ public interface ZoneRepository extends JpaRepository<Zone, Integer> {
     Optional<Zone> findZoneByIdAndPort_Name(Integer id, String portName);
 
     Optional<Zone> findZoneByIdAndPort(Integer id, Port port);
+
+    List<Zone> findAllByPort_Id(Integer portId);
 }

@@ -11,4 +11,7 @@ public interface RolesConfigurationRepository extends JpaRepository<RolesConfigu
     Optional<RolesConfiguration> findByNameAndCompany_Name(String name, String companyName);
     List<RolesConfiguration> findByCompany_Name(String companyName);
 
+    Optional<RolesConfiguration> findByIdAndCompany_Id(Long id, Long companyId);
+
+    List<RolesConfiguration> findByCompany_Id(Long companyId);
 }

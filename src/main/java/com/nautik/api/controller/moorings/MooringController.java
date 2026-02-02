@@ -1,9 +1,6 @@
 package com.nautik.api.controller.moorings;
 
 
-import com.nautik.api.domain.moorings.Mooring;
-import com.nautik.api.domain.moorings.MooringCategory;
-import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
@@ -40,13 +37,12 @@ public class MooringController {
         return ResponseEntity.ok(mooring);
     }
 
-    @PostMapping("/{portName}")
+    @PostMapping("/{portId}")
     public ResponseEntity<MooringDto> createMooring(
-            @PathVariable String portName,
+            @PathVariable Long portId,
             @RequestBody CreateMooringDto mooring
     ){
-        String name = portName.replace("_", " ");
-        MooringDto dto = mooringService.createMooring(name, mooring);
+        MooringDto dto = mooringService.createMooring(portId, mooring);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
 

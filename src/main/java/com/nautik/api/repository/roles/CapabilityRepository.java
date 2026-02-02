@@ -13,4 +13,8 @@ public interface CapabilityRepository extends JpaRepository<Capability,Long> {
     List<Capability> findByNameAndRolesConfiguration_Name(String name, String rolesConfigurationName);
 
     List<Capability> findByRolesConfiguration(RolesConfiguration rolesConfiguration);
+
+    Capability findByIdAndRolesConfiguration(Long id, RolesConfiguration rolesConfiguration);
+
+    Capability findByIdAndRolesConfigurationAndRolesConfiguration(Long id, RolesConfiguration rolesConfiguration, RolesConfiguration rolesConfiguration1);
 }
