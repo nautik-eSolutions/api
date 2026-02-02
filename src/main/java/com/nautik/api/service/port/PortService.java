@@ -58,7 +58,7 @@ public class PortService {
     }
 
 
-    public PortDto update(Long portId, PortDto port ){
+    public PortDto update(Long portId, CreatePortDto port ){
         Port updatePort = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Port providePort = modelMapper.map(port, Port.class);
 
