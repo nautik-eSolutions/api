@@ -40,11 +40,11 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-
+    /*
     @OneToOne(mappedBy = "user")
     private Admin admin;
 
-
+*/
 
     public User(String firstName, String lastName, String email, String password){
         this.firstName=firstName;

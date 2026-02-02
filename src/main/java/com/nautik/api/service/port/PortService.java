@@ -3,6 +3,7 @@ package com.nautik.api.service.port;
 import com.nautik.api.domain.City;
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.repository.location.CityRepository;
@@ -43,9 +44,9 @@ public class PortService {
     }
 
     public PortDto create(CreatePortDto port){
-        System.out.println("---------"+port.getCompanyName());
-        Company company = companyRepository.findCompanyByName(port.getCompanyName()).orElseThrow();
-        City city = cityRepository.findCityByName(port.getCityName()).orElseThrow();
+
+        Company company = companyRepository.findCompanyByName(port.getCompanyName()).orElseThrow(()->new ResourceNotFoundException("Company not found"));
+        City city = cityRepository.findCityByName(port.getCityName()).orElseThrow(()->new ResourceNotFoundException("City not found"));
 
 
         Port addPort = new Port();
@@ -56,14 +57,10 @@ public class PortService {
         return modelMapper.map(portRepository.save(addPort), PortDto.class);
     }
 
+
     public PortDto update(Long portId, CreatePortDto port ){
-        Company company = companyRepository.findCompanyByName(port.getCompanyName()).orElseThrow();
-        City city = cityRepository.findCityByName(port.getCityName()).orElseThrow();
-        Port updatePort = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
-        Port providePort = new Port();
-        providePort.setCompany(company);
-        providePort.setCity(city);
-        providePort.setName(port.getName());
+        Port updatePort = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
+        Port providePort = modelMapper.map(port, Port.class);
 
         providePort.setId(updatePort.getId());
         return modelMapper.map(portRepository.save(providePort), PortDto.class);

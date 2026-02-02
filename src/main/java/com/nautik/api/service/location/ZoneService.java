@@ -2,6 +2,7 @@ package com.nautik.api.service.location;
 
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.Zone;
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.location.create.CreateZoneDto;
@@ -33,16 +34,16 @@ public class ZoneService {
 
     public ZoneDto findById(Integer zoneId, Long portId){
         Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
-        return modelMapper.map(zoneRepository.findZoneByIdAndPort(zoneId, port).orElseThrow(), ZoneDto.class);
+        return modelMapper.map(zoneRepository.findZoneByIdAndPort(zoneId, port).orElseThrow(()->new ResourceNotFoundException("Zone not found")), ZoneDto.class);
     }
 
     public ZoneDto create(Long portId, CreateZoneDto zone){
 
         List<MooringCategory> categories = new ArrayList<>();
         zone.getMooringCategoriesMooringNumber().forEach(cat -> {
-            categories.add(mooringCategoryRepository.findById(cat).orElseThrow());
+            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
         });
-        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
+        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Zone addZone = new Zone();
         addZone.setPort(port);
         addZone.setName(zone.getName());
@@ -56,9 +57,9 @@ public class ZoneService {
 
         List<MooringCategory> categories = new ArrayList<>();
         zone.getMooringCategoriesMooringNumber().forEach(cat -> {
-            categories.add(mooringCategoryRepository.findById(cat).orElseThrow());
+            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
         });
-        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
+        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Zone zoneProvided = new Zone();
         zoneProvided.setId(zoneId);
         zoneProvided.setPort(port);
@@ -69,7 +70,7 @@ public class ZoneService {
     }
 
     public void delete(Integer zoneId){
-        Zone zoneDelete = zoneRepository.findZoneById(zoneId).orElseThrow();
+        Zone zoneDelete = zoneRepository.findZoneById(zoneId).orElseThrow(()->new ResourceNotFoundException("Zone not found"));
         zoneRepository.delete(zoneDelete);
 
     }

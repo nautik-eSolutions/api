@@ -1,5 +1,6 @@
 package com.nautik.api.service.users;
 
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
@@ -19,12 +20,12 @@ public class UserService {
 
 
     public UserDtoResponse findUserById(Integer id) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
     public UserDtoResponse findUserByFirstName(String firstName) {
-        User user = userRepository.findByFirstName(firstName).orElseThrow();
+        User user = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
@@ -38,7 +39,7 @@ public class UserService {
 
     public UserDtoResponse updateUser(UserDto userDto, Long userId) {
 
-        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow();
+        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow(()->new ResourceNotFoundException("User not found"));
         User providedUser = modelMapper.map(userDto, User.class);
 
         providedUser.setId(searchedUser.getId());
@@ -48,8 +49,11 @@ public class UserService {
                 UserDtoResponse.class);
     }
 
+
+
     public void deleteUser(Long userid) {
-        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow();
+        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         userRepository.deleteById(searchedUser.getId());
     }
 
