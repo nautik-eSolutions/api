@@ -1,5 +1,6 @@
 package com.nautik.api.service.users;
 
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
@@ -8,7 +9,6 @@ import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,12 +20,12 @@ public class UserService {
 
 
     public UserDtoResponse findUserById(Integer id) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
     public UserDtoResponse findUserByFirstName(String firstName) {
-        User user = userRepository.findByFirstName(firstName).orElseThrow();
+        User user = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
