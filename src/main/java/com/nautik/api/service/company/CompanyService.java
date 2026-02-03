@@ -4,9 +4,10 @@ import com.nautik.api.domain.Company;
 import com.nautik.api.dto.port.company.CompanyDto;
 import com.nautik.api.dto.port.company.CompanyDtoResponse;
 import com.nautik.api.repository.port.CompanyRepository;
+import com.nautik.api.repository.user.AdminRepository;
+import com.nautik.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,49 +17,45 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
+    private final ModelMapper modelMapper;
 
 
     public CompanyDtoResponse findCompanyByName(String name){
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+        Company searchedCompany = companyRepository.findByName(name).orElseThrow();
 
         return modelMapper.map(searchedCompany, CompanyDtoResponse.class);
     }
 
 
-    public CompanyDtoResponse createCompany(CompanyDto companyDto) {
-
+    public CompanyDtoResponse createCompany(CompanyDto companyDto, Long userId) {
         Company providedCompany = modelMapper.map(companyDto, Company.class);
 
-        CompanyDtoResponse createdCompany = modelMapper.map(
+        providedCompany.getAdmins().add(adminRepository.findByUser_Id(Math.toIntExact(userId)).orElseThrow());
+
+        return modelMapper.map(
                 companyRepository.save(providedCompany),
                 CompanyDtoResponse.class);
-
-        return createdCompany;
     }
 
 
-    public CompanyDtoResponse updateCompany(CompanyDto companyDto,String name) {
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
+    public CompanyDtoResponse updateCompany(CompanyDto companyDto,Long companyId) {
+        Company searchedCompany = companyRepository.findById(companyId).orElseThrow();
 
         companyDto.setId(searchedCompany.getId());
 
         Company mappedCompany =  modelMapper.map(companyDto, Company.class);
 
-        CompanyDtoResponse updatedCompany = modelMapper.map(
+        return modelMapper.map(
                 companyRepository.save(mappedCompany),
                 CompanyDtoResponse.class);
-
-        return updatedCompany;
     }
 
-    public void deleteCompany(String name) {
-        Company searchedCompany = companyRepository.getCompanyByNameContainingIgnoreCase(name).orElseThrow();
-        companyRepository.deleteById(searchedCompany.getId());
+    public void deleteCompany(Long companyId) {
+        Company searchedCompany = companyRepository.findById(companyId).orElseThrow();
+        companyRepository.delete(searchedCompany);
     }
 
     public List<CompanyDtoResponse> getAllCompanies(){
@@ -70,4 +67,8 @@ public class CompanyService {
     }
 
 
+    public CompanyDtoResponse findCompanyById(Long id) {
+        return modelMapper.map(companyRepository.findById(id), CompanyDtoResponse.class);
+
+    }
 }

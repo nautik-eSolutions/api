@@ -1,19 +1,25 @@
 package com.nautik.api.domain.moorings;
 
-
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name="mooring")
+@Table(name = "mooring")
 public class Mooring {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    private Integer number;
+    @Column(name = "number", nullable = false)
+    private Long number;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "mooring_category_id", nullable = false, referencedColumnName = "id")
+    private MooringCategory mooringCategory;
 
 
 }

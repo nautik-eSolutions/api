@@ -1,9 +1,11 @@
 package com.nautik.api.controller.ports;
 
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.service.port.PortService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,33 +18,38 @@ public class PortController {
     private final PortService portService;
 
     @GetMapping
-    public List<PortDto> getAllPorts() {
-        return portService.findAll();
+    public ResponseEntity<List<PortDto>> getAllPorts() {
+        List<PortDto> allPorts = portService.findAll();
+        return ResponseEntity.ok(allPorts);
     }
 
-    @GetMapping("/{id}")
-    public PortDto getPortById(@PathVariable Long id) {
-        return portService.findById(id);
+    @GetMapping("/{portId}")
+    public ResponseEntity<PortDto> getPortById(
+            @PathVariable Long portId) {
+        PortDto port = portService.findById(portId);
+        return ResponseEntity.ok(port);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PortDto createPort(@RequestBody PortDto dto) {
-        return portService.create(dto);
+    public ResponseEntity<PortDto> createPort(@RequestBody CreatePortDto dto) {
+        PortDto portCreated  = portService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(portCreated);
     }
 
     @PutMapping("/{id}")
-    public PortDto updatePort(
+    public ResponseEntity<PortDto> updatePort(
             @PathVariable Long id,
-            @RequestBody PortDto dto
+            @RequestBody CreatePortDto dto
     ) {
-        return portService.update(id, dto);
+        PortDto updatePort = portService.update(id, dto);
+        return ResponseEntity.ok(updatePort);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePort(@PathVariable Long id) {
+       public ResponseEntity<Void> deletePort(@PathVariable Long id) {
+
         portService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }
 

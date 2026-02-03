@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "zone")
 public class Zone {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -30,7 +31,7 @@ public class Zone {
     @JoinColumn(name = "port_id", nullable = false)
     private Port port;
 
-    @OneToMany
+    @OneToMany(mappedBy = "zone")
     private List<MooringCategory> mooringCategories;
 
 

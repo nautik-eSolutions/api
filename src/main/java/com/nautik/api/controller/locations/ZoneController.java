@@ -2,9 +2,11 @@ package com.nautik.api.controller.locations;
 
 
 import com.nautik.api.dto.location.ZoneDto;
+import com.nautik.api.dto.location.create.CreateZoneDto;
 import com.nautik.api.service.location.ZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,45 +19,48 @@ public class ZoneController {
     private final ZoneService zoneService;
 
     @GetMapping
-    public List<ZoneDto> getZonesByPort(
+    public ResponseEntity<List<ZoneDto>> getZonesByPort(
             @PathVariable Long portId
     ) {
-        return zoneService.findByPort(portId);
+        List<ZoneDto> zoneList = zoneService.findByPort(portId);
+        return ResponseEntity.ok(zoneList);
     }
 
     @GetMapping("/{zoneId}")
-    public ZoneDto getZoneById(
-            @PathVariable Long portId,
-            @PathVariable Long zoneId
+    public ResponseEntity<ZoneDto> getZoneById(
+            @PathVariable Long zoneId,
+            @PathVariable Long portId
     ) {
-        return zoneService.findById(portId, zoneId);
+        ZoneDto zone = zoneService.findById(Math.toIntExact(zoneId), portId);
+        return ResponseEntity.ok(zone);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ZoneDto createZone(
+    public ResponseEntity<ZoneDto> createZone(
             @PathVariable Long portId,
-            @RequestBody ZoneDto dto
+            @RequestBody CreateZoneDto dto
     ) {
-        return zoneService.create(portId, dto);
+        ZoneDto zone = zoneService.create(portId, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(zone);
     }
 
     @PutMapping("/{zoneId}")
-    public ZoneDto updateZone(
-            @PathVariable Long portId,
+    public ResponseEntity<ZoneDto> updateZone(
             @PathVariable Long zoneId,
-            @RequestBody ZoneDto dto
+            @RequestBody CreateZoneDto dto,
+            @PathVariable Long portId
     ) {
-        return zoneService.update(portId, zoneId, dto);
+        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto, portId);
+        return ResponseEntity.ok(zone);
     }
 
     @DeleteMapping("/{zoneId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteZone(
+    public ResponseEntity<Void> deleteZone(
             @PathVariable Long portId,
             @PathVariable Long zoneId
     ) {
-        zoneService.delete(portId, zoneId);
+        zoneService.delete(Math.toIntExact(zoneId));
+        return ResponseEntity.ok().build();
     }
 }
 
