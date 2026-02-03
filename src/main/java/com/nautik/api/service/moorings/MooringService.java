@@ -1,6 +1,7 @@
 package com.nautik.api.service.moorings;
 
 
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.MooringMooringStatus;
@@ -41,7 +42,7 @@ public class MooringService {
                 .toList();
     }
     public MooringDto createMooring(Long portId, CreateMooringDto dto){
-        MooringCategory mooringCategory = mooringCategoryRepository.findById(dto.getCategoryId()).orElseThrow();
+        MooringCategory mooringCategory = mooringCategoryRepository.findById(dto.getCategoryId()).orElseThrow(()->new ResourceNotFoundException("Mooring category not found"));
 
         Mooring mooring = new Mooring();
         mooring.setMooringCategory(mooringCategory);
@@ -50,12 +51,12 @@ public class MooringService {
 
     }
     public void delete(long id){
-        Mooring mooring = mooringRepository.findById(id).orElseThrow();
+        Mooring mooring = mooringRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Mooring not found"));
         mooringRepository.delete(mooring);
     }
 
     public MooringDto update(long id, MooringDto dto){
-        Mooring mooring = mooringRepository.findById(id).orElseThrow();
+        Mooring mooring = mooringRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Mooring not found"));
         Mooring providedMooring = modelMapper.map(dto, Mooring.class);
         providedMooring.setId(mooring.getId());
         return modelMapper.map(mooringRepository.save(providedMooring), MooringDto.class);
