@@ -1,5 +1,6 @@
 package com.nautik.api.service.users;
 
+import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
@@ -7,8 +8,10 @@ import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
+import com.nautik.api.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,17 @@ public class UserService {
     private final AdminRepository adminRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+
+
+    public Token login(String userName, String password){
+        User user = userRepository.findByUserName(userName).orElseThrow(() -> new RuntimeException("Usuario no existe"));
+        if (!passwordEncoder.matches(password, user.getPassword())){
+            throw new RuntimeException("contraseña incorrecta");
+        }
+
+        return jwtService.generateToken(user);
+    }
 
 
     public UserDtoResponse findUserById(Integer id) {

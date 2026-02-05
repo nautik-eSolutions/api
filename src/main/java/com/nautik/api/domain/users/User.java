@@ -20,6 +20,7 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "user_name")
     private String userName;
 
     @Column(name = "first_name", nullable = false, length = 45)
