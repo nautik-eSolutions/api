@@ -9,6 +9,7 @@ import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserDtoResponse findUserById(Integer id) {
@@ -31,7 +33,10 @@ public class UserService {
 
 
     public UserDtoResponse createUser(UserDto userDto) {
+
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User providedUser = modelMapper.map(userDto, User.class);
+
         return modelMapper.map(
                 userRepository.save(providedUser),
                 UserDtoResponse.class);
