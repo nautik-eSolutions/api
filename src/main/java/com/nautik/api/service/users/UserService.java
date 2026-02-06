@@ -3,6 +3,7 @@ package com.nautik.api.service.users;
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.users.Admin;
+import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
@@ -25,7 +26,9 @@ public class UserService {
     private final JwtService jwtService;
 
 
-    public Token login(String userName, String password){
+    public Token login(LoginRequest login){
+        String userName = login.getUserName();
+        String password = login.getPassword();
         User user = userRepository.findByUserName(userName).orElseThrow(() -> new RuntimeException("Usuario no existe"));
         if (!passwordEncoder.matches(password, user.getPassword())){
             throw new RuntimeException("contraseña incorrecta");
