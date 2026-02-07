@@ -13,6 +13,10 @@ import com.nautik.api.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,21 +28,31 @@ public class UserService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
 
-    public Token login(LoginRequest login){
-        String userName = login.getUserName();
-        String password = login.getPassword();
-        User user = userRepository.findByUserName(userName).orElseThrow(() -> new RuntimeException("Usuario no existe"));
-        if (!passwordEncoder.matches(password, user.getPassword())){
-            throw new RuntimeException("contraseña incorrecta");
+    public Token login(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUserName(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        if (authentication.isAuthenticated()) {
+            User user = userRepository.findByUserName(loginRequest.getUserName())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+            return jwtService.generateToken(user);
         }
 
-        return jwtService.generateToken(user);
+        throw new RuntimeException("Credenciales inválidas");
     }
 
 
-    public UserDtoResponse findUserById(Integer id) {
+
+
+        public UserDtoResponse findUserById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
