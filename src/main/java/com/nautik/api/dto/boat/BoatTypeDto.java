@@ -1,13 +1,12 @@
 package com.nautik.api.dto.boat;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoatTypeDto implements Serializable {
     Integer id;
     String name;

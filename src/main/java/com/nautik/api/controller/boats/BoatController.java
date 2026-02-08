@@ -2,6 +2,7 @@ package com.nautik.api.controller.boats;
 
 
 import com.nautik.api.dto.boat.BoatDto;
+import com.nautik.api.dto.boat.BoatTypeDto;
 import com.nautik.api.dto.boat.create.CreateBoatDto;
 import com.nautik.api.service.boat.BoatService;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +53,17 @@ public class BoatController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/{idUser}/{idBoat}")
-    public ResponseEntity<BoatDto> deleteBoat(@PathVariable Long idUser, @PathVariable Long idBoat){
-        boatService.deletBoat(idUser, idBoat);
+    @DeleteMapping("/{idBoat}")
+    public ResponseEntity<BoatDto> deleteBoat( @PathVariable Long idBoat){
+        boatService.deletBoat(idBoat);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<BoatTypeDto>> getBoatTypes(){
+        return ResponseEntity.ok(boatService.getBoatTypes());
+
+
     }
 
 

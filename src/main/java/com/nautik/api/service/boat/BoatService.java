@@ -5,6 +5,7 @@ import com.nautik.api.domain.BoatType;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.boat.BoatDto;
+import com.nautik.api.dto.boat.BoatTypeDto;
 import com.nautik.api.dto.boat.create.CreateBoatDto;
 import com.nautik.api.repository.boat.BoatRepository;
 import com.nautik.api.repository.boat.BoatTypeRepository;
@@ -78,11 +79,14 @@ public class BoatService {
 
     }
 
-    public void deletBoat(Long idUser, Long idBoat){
-        Boat searchBoat = boatRepository.findAllByIdAndUser_Id(Math.toIntExact(idBoat), Math.toIntExact(idUser)).orElseThrow();
+    public void deletBoat(Long idBoat){
+        Boat searchBoat = boatRepository.findById(Math.toIntExact(idBoat)).orElseThrow();
         boatRepository.delete(searchBoat);
 
     }
 
 
+    public List<BoatTypeDto> getBoatTypes() {
+       return boatTypeRepository.findAll().stream().map((element) -> modelMapper.map(element, BoatTypeDto.class)).toList();
+    }
 }
