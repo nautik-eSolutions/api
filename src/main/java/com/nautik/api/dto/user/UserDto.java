@@ -19,4 +19,9 @@ public class UserDto {
     private String password;
     private String userName;
 
+
+    @Override
+    public String toString() {
+        return userName;
+    }
 }

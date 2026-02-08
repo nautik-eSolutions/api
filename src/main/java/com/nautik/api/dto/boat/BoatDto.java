@@ -14,4 +14,6 @@ public class BoatDto {
     Double length;
     Double beam;
     Double draft;
+    String boatType;
+    String user;
 }
