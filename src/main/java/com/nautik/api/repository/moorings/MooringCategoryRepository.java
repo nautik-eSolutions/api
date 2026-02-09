@@ -13,4 +13,8 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
 
     List<MooringCategory> findByZonePortIdAndDimensionsMaxBeamGreaterThanAndDimensionsMaxLengthGreaterThan(Integer zonePortId, Long maxBeam,Long maxLength);
     List<MooringCategory>findByZonePortIdAndDimensionsMaxBeamLessThanAndDimensionsMaxLengthLessThan(Integer zonPortId, Long beam, Long lenght);
+
+    List<MooringCategory> findAllByZonePortId(Integer zonePortId);
+
+    List<MooringCategory> findByZone_Port_Id(Integer portId);
 }
