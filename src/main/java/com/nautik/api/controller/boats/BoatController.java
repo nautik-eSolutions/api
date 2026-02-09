@@ -31,13 +31,13 @@ public class BoatController {
         return ResponseEntity.ok(boat);
     }
 
-    @GetMapping("/{idUser}/")
+    @GetMapping("/{idUser}")
     public ResponseEntity<List<BoatDto>> getAllBoats(@PathVariable Long idUser) {
         List<BoatDto> boats = boatService.findByUser(idUser);
         return ResponseEntity.ok(boats);
     }
 
-    @PostMapping("/{idUser}/")
+    @PostMapping("/{idUser}")
     public ResponseEntity<BoatDto> createBoat(@PathVariable Long idUser, @RequestBody CreateBoatDto boatDto){
         BoatDto boat = boatService.createBoat(idUser, boatDto );
         return ResponseEntity.ok(boat);
