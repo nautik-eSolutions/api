@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -25,5 +28,8 @@ public class MooringCategory {
     @JoinColumn(name = "mooring_dimensions_id", nullable = false)
     private MooringDimension dimensions;
 
+
+    @ManyToMany(mappedBy = "mooringCategories")
+    private List<PriceConfiguration> priceConfigurations = new ArrayList<>();
 
 }
