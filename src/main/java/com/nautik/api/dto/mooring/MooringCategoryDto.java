@@ -21,13 +21,6 @@ public class MooringCategoryDto {
 
      private String ZoneName;
      private long minPrice;
-     private List<PriceConfiguration> priceConfigurations;
-
-     public MooringCategoryDto(MooringCategory mooringCategory){
-          this.ZoneName = mooringCategory.getZone().getName();
-          this.priceConfigurations = mooringCategory.getPriceConfigurations();
-
-     }
 
 
 
