@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -18,22 +19,16 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private Date startDate;
 
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private Date endDate;
 
     @Column(name = "total_cost", nullable = false)
     private Double totalCost;
 
-    @Column(name = "payment_method", nullable = false)
-    private Long paymentMethod;
-
     @Column(name = "boat_id", nullable = false)
     private Long boatId;
-
-    @Column(name = "booking_status_id", nullable = false)
-    private Long bookingStatusId;
 
     @ManyToOne
     @JoinColumn(name = "mooring_id")
