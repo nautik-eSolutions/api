@@ -40,9 +40,9 @@ public class ZoneService {
     public ZoneDto create(Long portId, CreateZoneDto zone){
 
         List<MooringCategory> categories = new ArrayList<>();
-        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
-            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
-        });
+//        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
+//            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
+//        });
         Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Zone addZone = new Zone();
         addZone.setPort(port);
@@ -56,9 +56,9 @@ public class ZoneService {
 
 
         List<MooringCategory> categories = new ArrayList<>();
-        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
-            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
-        });
+//        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
+//            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
+//        });
         Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Zone zoneProvided = new Zone();
         zoneProvided.setId(zoneId);
