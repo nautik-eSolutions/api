@@ -55,7 +55,7 @@ public class BookingService {
     }
 
 
-    public List<Booking> getBookingsByMooringCategoryAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
+    public List<Booking> getBookingsByMooringCategoriesAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
@@ -74,10 +74,9 @@ public class BookingService {
     }
 
 
-    public List<Booking> getBookingsByMooringCategoryAndAvailability(List<MooringCategory> mooringCategories, Date startDate, Date endDate){
+    public List<Booking> getBookingsByMooringCategoriesAndAvailability(List<MooringCategory> mooringCategories, Date startDate, Date endDate){
 
         return bookingRepository.findByMooringCategoriesAndAvailability(mooringCategories,startDate,endDate);
-
 
     }
 

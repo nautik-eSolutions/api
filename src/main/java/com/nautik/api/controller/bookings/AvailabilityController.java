@@ -18,24 +18,9 @@ public class AvailabilityController {
 
     private final MooringCategoryService mooringCategoryService;
 
-    @GetMapping("/categories/{portId}")
-    public List<MooringCategoryDto> getMooringCategoriesByPortId(@PathVariable Integer portId){
-        return mooringCategoryService.getAllMooringCategoriesDtoByPort(portId);
-    }
 
 
 
-    @GetMapping("/port/{portId}/mooring-categories/{startDate}/{endDate}")
-    public List<MooringCategoryDto> getAllMooringCategoriesWithPriceByPort(
-            @PathVariable Integer portId,
-            @PathVariable String startDate,
-            @PathVariable String endDate
-    ) throws ParseException {
-
-
-        return mooringCategoryService.getAllMooringCategoriesByPortAndPriceAndStartDateAndEndDate(portId,startDate,endDate);
-
-    }
 
 
 

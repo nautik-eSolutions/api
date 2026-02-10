@@ -28,4 +28,6 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
     List<MooringCategory> findAllByDimensionsMaxBeamGreaterThanEqualAndDimensionsMaxLengthGreaterThanEqual(Integer dimensionsMaxBeamIsGreaterThan, Integer dimensionsMaxLengthIsGreaterThan);
 
     List<MooringCategory> findAllByDimensionsMaxBeamGreaterThanEqualAndDimensionsMaxLengthGreaterThanEqualAndZonePortId(Integer dimensionsMaxBeamIsGreaterThan, Integer dimensionsMaxLengthIsGreaterThan, Integer zonePortId);
+
+    List<MooringCategory> findAllByZonePortIdAndDimensionsMaxLengthGreaterThanEqualAndDimensionsMaxBeamGreaterThanEqual(Integer zonePortId, Integer dimensionsMaxLengthIsGreaterThan, Integer dimensionsMaxBeamIsGreaterThan);
 }

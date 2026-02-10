@@ -21,4 +21,7 @@ public interface MooringRepository extends JpaRepository<Mooring, Long> {
 
     @Query("select m from Mooring m inner join Booking b on b.mooring = m where b in ?1")
     List<Mooring> findAllByBookingsIn(List<Booking> bookings);
+
+
+
 }
