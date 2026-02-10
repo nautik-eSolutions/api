@@ -5,6 +5,7 @@ import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.PriceConfigurationDto;
 import com.nautik.api.service.bookings.MooringCategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +27,19 @@ public class AvailabilityController {
     }
 
 
-    @GetMapping("/price-configurations/{portId}")
-    public PriceConfigurationDto getPriceConfigurationsByPortId(@PathVariable Integer portId) throws ParseException {
-        return mooringCategoryService.getPriceConfigurationsDtoByPort(portId);
+
+    @GetMapping("/port/{portId}/mooring-categories/{startDate}/{endDate}")
+    public List<MooringCategoryDto> getAllMooringCategoriesWithPriceByPort(
+            @PathVariable Integer portId,
+            @PathVariable String startDate,
+            @PathVariable String endDate
+    ) throws ParseException {
+
+
+        return mooringCategoryService.getAllMooringCategoriesByPortAndPrice(portId,startDate,endDate);
+
     }
+
+
+
 }

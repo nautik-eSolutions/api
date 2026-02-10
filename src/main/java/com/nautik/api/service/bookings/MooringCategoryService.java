@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 
+import javax.security.auth.callback.ConfirmationCallback;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -47,24 +49,6 @@ public class MooringCategoryService {
     }
 
 
-    public PriceConfigurationDto getPriceConfigurationsDtoByPort(Integer portId) throws ParseException {
-        List<MooringCategoryDto> mooringCategories = mooringCategoryRepository
-                .findByZone_Port_Id(portId).stream().map(mc -> modelMapper.map(mc, MooringCategoryDto.class)).toList();
-
-        List<PriceConfiguration> priceConfigurations = new ArrayList<>();
-
-        mooringCategories.forEach(mc -> priceConfigurations.addAll(priceConfigurationRepository.findByMooringCategoriesId(mc.getId())));
-
-        // priceConfigurations.stream().map(pc -> modelMapper.map(pc, PriceConfigurationDto.class)).toList();
-
-        Date startDate = dateFormater("2026-05-24");
-        Date endDate = dateFormater("2026-06-10");
-
-        getAllMooringCategoriesByPortAndPrice(1,startDate,endDate);
-
-        return modelMapper.map(priceConfigurationRepository.findByMooringCategoryAndDates(1), PriceConfigurationDto.class);
-    }
-
 
     public List<MooringCategory> getAllMooringCategoriesByPort(Integer portId) {
         List<MooringCategory> mooringCategories = mooringCategoryRepository.findAllByZonePortId(portId);
@@ -77,30 +61,52 @@ public class MooringCategoryService {
     }
 
 
-    public List<MooringCategory> getAllMooringCategoriesByPortAndPrice(Integer portId, Date startDate, Date endDate) {
 
-        List<MooringCategory> mooringCategories = mooringCategoryRepository.findAllByZonePortId(portId);
+    public List<MooringCategoryDto> getAllMooringCategoriesByPortAndPrice(Integer portId, String stringStartDate, String endStartDate) throws ParseException {
+        Date startDate = dateFormater(stringStartDate);
+        Date endDate =  dateFormater(endStartDate);
 
-        if (mooringCategories.isEmpty()) {
-            throw new ResourceNotFoundException("No mooring categories found");
-        }
+        List<MooringCategory>mooringCategories  = mooringCategoryRepository.findAllByZonePortId(portId);
 
-        Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(startDate);
-        Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(endDate);
-        Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
+        List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc->getMooringCategoryWithMinPrice(mc,startDate,endDate)).toList();
 
-        List <MooringCategory> filterMooringCategories =  mooringCategories.stream().filter(mc-> mc.getPriceConfigurations().stream().filter(priceConfigurationDateFilter).isParallel()).toList();
-
-        filterMooringCategories.forEach(System.out::println);
-
-        return mooringCategories;
+        return mooringCategoriesWithMinPrice.stream().map(mc->modelMapper.map(mc, MooringCategoryDto.class)).toList();
     }
 
 
 
 
+
+
+
+    private MooringCategory getMooringCategoryWithMinPrice(MooringCategory mooringCategory, Date startDate, Date endDate){
+        Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
+        Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
+        Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
+
+
+        List<PriceConfiguration> filteredPriceConfigurations = mooringCategory.getPriceConfigurations()
+                .stream().filter(priceConfigurationDateFilter).toList();
+
+
+        PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);
+
+        mooringCategory.setMinPrice(priceConfiguration.getMinPrice());
+
+        return mooringCategory;
+    }
+
+
+
+
+
+
+
+
+
+
     private Date dateFormater(String dateString) throws ParseException {
-        SimpleDateFormat formatter =  new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter =  new SimpleDateFormat("dd-MM-yyyy");
 
         return formatter.parse(dateString);
     }

@@ -22,7 +22,7 @@ public class MooringCategoryDto {
      private String ZoneName;
      private int dimensionsMaxBeam;
      private int dimensionsMaxLength;
-
+     private int minPrice;
 
 
 
