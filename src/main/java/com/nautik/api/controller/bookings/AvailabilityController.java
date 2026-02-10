@@ -1,11 +1,8 @@
 package com.nautik.api.controller.bookings;
 
-import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
-import com.nautik.api.dto.mooring.PriceConfigurationDto;
 import com.nautik.api.service.bookings.MooringCategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +33,7 @@ public class AvailabilityController {
     ) throws ParseException {
 
 
-        return mooringCategoryService.getAllMooringCategoriesByPortAndPrice(portId,startDate,endDate);
+        return mooringCategoryService.getAllMooringCategoriesByPortAndPriceAndStartDateAndEndDate(portId,startDate,endDate);
 
     }
 

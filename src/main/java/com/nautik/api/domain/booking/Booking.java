@@ -1,5 +1,6 @@
 package com.nautik.api.domain.booking;
 
+import com.nautik.api.domain.moorings.Mooring;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,10 @@ public class Booking {
 
     @Column(name = "booking_status_id", nullable = false)
     private Long bookingStatusId;
+
+    @ManyToOne
+    @JoinColumn(name = "mooring_id")
+    private Mooring mooring;
 
 
 }

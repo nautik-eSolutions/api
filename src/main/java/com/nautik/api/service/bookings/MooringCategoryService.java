@@ -4,7 +4,6 @@ import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
-import com.nautik.api.dto.mooring.PriceConfigurationDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.moorings.PriceConfigurationRepository;
@@ -13,16 +12,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 
-import javax.security.auth.callback.ConfirmationCallback;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -62,10 +57,12 @@ public class MooringCategoryService {
 
 
 
-    public List<MooringCategoryDto> getAllMooringCategoriesByPortAndPrice(Integer portId, String stringStartDate, String endStartDate) throws ParseException {
+    public List<MooringCategoryDto> getAllMooringCategoriesByPortAndPriceAndStartDateAndEndDate(Integer portId, String stringStartDate, String endStartDate) throws ParseException {
         Date startDate = dateFormater(stringStartDate);
         Date endDate =  dateFormater(endStartDate);
-
+        if (startDate.after(endDate)){
+            //throw exception
+        }
         List<MooringCategory>mooringCategories  = mooringCategoryRepository.findAllByZonePortId(portId);
 
         List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc->getMooringCategoryWithMinPrice(mc,startDate,endDate)).toList();
@@ -79,7 +76,10 @@ public class MooringCategoryService {
 
 
 
+
+
     private MooringCategory getMooringCategoryWithMinPrice(MooringCategory mooringCategory, Date startDate, Date endDate){
+
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
