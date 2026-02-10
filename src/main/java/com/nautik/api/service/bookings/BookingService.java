@@ -2,6 +2,8 @@ package com.nautik.api.service.bookings;
 
 
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.moorings.Mooring;
+import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.repository.bookings.BookingRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +34,20 @@ public class BookingService {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
+        List<Booking> bookingsWithinSelectedDates = new ArrayList<Booking>();
 
-        List<Booking> bookings = bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
+        bookingsWithinSelectedDates = bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
+
+        List<Mooring> moorings = mooringRepository.findAllByMooringCategoryId(mooringCategoryId);
 
 
-        return bookings.stream().map(booking->modelMapper.map(booking, BookingDto.class)).toList();
+        List<Mooring> mooringsOcuppied = mooringRepository.findAllByBookingsIn(bookingsWithinSelectedDates);
+
+        mooringsOcuppied.forEach(m-> System.out.println(m.getNumber()));
+
+
+
+        return bookingsWithinSelectedDates.stream().map(booking->modelMapper.map(booking, BookingDto.class)).toList();
     }
 
 
