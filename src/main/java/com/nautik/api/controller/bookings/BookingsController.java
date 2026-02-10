@@ -1,6 +1,7 @@
 package com.nautik.api.controller.bookings;
 
 
+import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.service.bookings.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,18 @@ public class BookingsController {
     ){
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
     }
+
+    @GetMapping("/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
+    public List<BookingDto> getBookingsByDimensionsAndAvailability(
+            @PathVariable Integer length,
+            @PathVariable Integer beam,
+            @PathVariable String startDate,
+            @PathVariable String endDate
+    ){
+        return bookingService.getBookingsByMooringDimensionsAndAvailability(beam,length,startDate,endDate);
+    }
+
+
 
 
 }

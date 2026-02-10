@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,40 +27,61 @@ public class BookingService {
     private final ModelMapper modelMapper;
 
 
-
     public List<BookingDto> getAvailableMooringCategoriesByPortAndStartDateAndEndDate(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
-        List<Booking> bookingsWithinSelectedDates = new ArrayList<Booking>();
-
-        bookingsWithinSelectedDates = bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
-
-        List<Mooring> moorings = mooringRepository.findAllByMooringCategoryId(mooringCategoryId);
+        List<Booking> bookingsWithinSelectedDates = bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
 
 
         List<Mooring> mooringsOcuppied = mooringRepository.findAllByBookingsIn(bookingsWithinSelectedDates);
 
-        mooringsOcuppied.forEach(m-> System.out.println(m.getNumber()));
 
-
-
-        return bookingsWithinSelectedDates.stream().map(booking->modelMapper.map(booking, BookingDto.class)).toList();
+        return bookingsWithinSelectedDates.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }
 
 
-    private Date dateFormater(String dateString)  {
+    private Date dateFormater(String dateString) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 
         try {
             return formatter.parse(dateString);
-        }catch (ParseException ignored){
+        } catch (ParseException ignored) {
 
         }
 
 
         return new Date();
     }
+
+
+    public List<Booking> getBookingsByMooringCategoryAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
+        Date startDate = dateFormater(stringStartDate);
+        Date endDate = dateFormater(stringEndDate);
+
+        return bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
+    }
+
+
+    public List<BookingDto> getBookingsByMooringDimensionsAndAvailability(Integer beam , Integer length, String stringStartDate, String stringEndDate){
+
+        Date startDate =  dateFormater(stringStartDate);
+        Date endDate = dateFormater(stringEndDate);
+
+        List<Booking> bookings = bookingRepository.findAllByMooringMooringCategoryDimensionsMaxLengthGreaterThanEqualAndMooringMooringCategoryDimensionsMaxBeamGreaterThanEqualAndStartDateBeforeAndEndDateAfter(length,beam,endDate,startDate);
+
+        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
+    }
+
+
+    public List<Booking> getBookingsByMooringCategoryAndAvailability(List<MooringCategory> mooringCategories, Date startDate, Date endDate){
+
+        return bookingRepository.findByMooringCategoriesAndAvailability(mooringCategories,startDate,endDate);
+
+
+    }
+
+
 
 
 }
