@@ -32,4 +32,9 @@ public class MooringCategory {
     @ManyToMany(mappedBy = "mooringCategories")
     private List<PriceConfiguration> priceConfigurations = new ArrayList<>();
 
+    @Transient
+    private Integer minPrice;
+
+
+
 }

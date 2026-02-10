@@ -27,7 +27,7 @@ public class PriceConfiguration {
 
     @ManyToMany
     @JoinTable(
-    name = "mooring_zone_price_configuration",
+    name = "mooring_category_price_configuration",
     joinColumns = @JoinColumn(name = "price_configuration_id"),
     inverseJoinColumns = @JoinColumn(name = "mooring_category_id")
     )
