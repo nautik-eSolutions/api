@@ -1,6 +1,7 @@
 package com.nautik.api.service.bookings;
 
 
+import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
@@ -20,7 +21,7 @@ public class MooringBookingService {
 
     private final MooringRepository mooringRepository;
     private final MooringCategoryRepository mooringCategoryRepository;
-
+    private final
 
     public List<MooringCategory> getAvailableMooringCategoriesByPortAndStartDateAndEndDate(Integer portId, String stringStartDate, String stringEndDate){
      Date startDate;
@@ -33,12 +34,14 @@ public class MooringBookingService {
 
      }
 
-     List<Mooring> moorings = mooringRepository.findAllByMooringCategoryZonePortId(portId);
-
 
 
         return new ArrayList<MooringCategory>();
     }
+
+
+
+
 
 
 
