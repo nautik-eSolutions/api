@@ -2,6 +2,7 @@ package com.nautik.api.repository.moorings;
 
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.moorings.Mooring;
+import com.nautik.api.domain.moorings.MooringCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,6 +22,10 @@ public interface MooringRepository extends JpaRepository<Mooring, Long> {
 
     @Query("select m from Mooring m inner join Booking b on b.mooring = m where b in ?1")
     List<Mooring> findAllByBookingsIn(List<Booking> bookings);
+
+    @Query("select m from Mooring m where m not in (select m1 from Mooring m1 inner join Booking b on b.mooring = m1 where b in ?1)")
+    List<Mooring> findMooringNotInBookings( List<Booking> bookings);
+
 
 
 

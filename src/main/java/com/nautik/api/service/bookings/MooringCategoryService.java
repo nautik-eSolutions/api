@@ -1,9 +1,11 @@
 package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
+import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.moorings.PriceConfigurationRepository;
@@ -37,7 +39,7 @@ public class MooringCategoryService {
     private final ModelMapper modelMapper;
 
 
-    public List<MooringCategory> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate) {
+    public List<Mooring> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
@@ -46,7 +48,31 @@ public class MooringCategoryService {
 
 
 
+        return new ArrayList<>();
     }
+
+
+
+    public List<MooringCategoryDto> getMooringCategoriesbyPortDimensionsAndAvailability(
+            Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate
+    ){
+
+        Date startDate = dateFormater(stringStartDate);
+        Date endDate = dateFormater(stringEndDate);
+
+
+        List<MooringCategory> mooringCategories = mooringCategoryRepository.
+                getAllByDimensionsAndAvailability(portId,length,beam,startDate,endDate);
+
+        List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc -> setPriceInMooringCategory(mc, startDate, endDate)).toList();
+
+
+        return mooringCategoriesWithMinPrice
+                .stream().map(mc ->modelMapper.map(mc, MooringCategoryDto.class)).toList();
+
+    }
+
+
 
 
     private List<MooringCategory> getMooringCategoriesByPortAndDimensions(Integer portId, Integer length, Integer beam) {

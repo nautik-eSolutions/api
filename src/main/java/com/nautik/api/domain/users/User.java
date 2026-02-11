@@ -1,12 +1,14 @@
 package com.nautik.api.domain.users;
 
 
+import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -41,6 +43,11 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Boat> boats;
+
+
     /*
     @OneToOne(mappedBy = "user")
     private Admin admin;

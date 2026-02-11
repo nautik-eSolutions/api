@@ -37,10 +37,12 @@ public class Boat {
     @JoinColumn(name = "boat_type_id", nullable = false)
     private BoatType boatType;
 
+
+
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
 
 }
