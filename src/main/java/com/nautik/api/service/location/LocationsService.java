@@ -112,4 +112,8 @@ public class LocationsService {
         City city = cityRepository.findByIdAndCommunity_Id(Math.toIntExact(cityId), Math.toIntExact(communityId)).orElseThrow();
         return modelMapper.map(city, CityDto.class);
     }
+
+    public List<CityDto> getAllCities() {
+        return cityRepository.findAll().stream().map((element) -> modelMapper.map(element, CityDto.class)).toList();
+    }
 }
