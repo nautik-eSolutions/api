@@ -3,12 +3,15 @@ package com.nautik.api.controller.bookings;
 
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.dto.bookings.BookingDto;
+import com.nautik.api.dto.bookings.BookingRequestDto;
+import com.nautik.api.dto.mooring.MooringDto;
+import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.bookings.BookingService;
+import com.nautik.api.service.jwt.JwtService;
+import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ import java.util.List;
 public class BookingsController {
 
     private final BookingService bookingService;
+    private final JwtService jwtService;
 
     @GetMapping("/{mooringCategoryId}/{startDate}/{endDate}")
     public List<BookingDto> getBookings(
@@ -37,6 +41,26 @@ public class BookingsController {
     ){
         return bookingService.getBookingsByMooringDimensionsAndAvailability(beam,length,startDate,endDate);
     }
+
+
+    @GetMapping("/moorings/{mooringCategoryId}/dates/{startDate}/{endDate}")
+    public List<MooringDto> getFreeMooringsByAvailabilityAndCategory(
+            @PathVariable Integer mooringCategoryId,
+            @PathVariable String startDate,
+            @PathVariable String endDate
+    ){
+     return   bookingService.getAllFreeMooringsByDateAndCategory(mooringCategoryId,startDate,endDate);
+    }
+
+
+    @PostMapping
+    public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token ){
+        String userName = jwtService.extractUsername(token);
+
+        return bookingService.createBooking(bookingRequestDto, userName);
+    }
+
+
 
 
 

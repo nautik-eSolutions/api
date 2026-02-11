@@ -1,5 +1,6 @@
 package com.nautik.api.domain.booking;
 
+import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.moorings.Mooring;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,12 +28,26 @@ public class Booking {
     @Column(name = "total_cost", nullable = false)
     private Double totalCost;
 
-    @Column(name = "boat_id", nullable = false)
-    private Long boatId;
+    @ManyToOne
+    @JoinColumn(name = "boat_id")
+    private Boat boat;
 
     @ManyToOne
     @JoinColumn(name = "mooring_id")
     private Mooring mooring;
+
+
+
+    public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring){
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalCost = totalCost;
+        this.boat = boat;
+        this.mooring = mooring;
+
+    }
+
+
 
 
 }
