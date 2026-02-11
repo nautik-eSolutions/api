@@ -23,5 +23,11 @@ public class MooringDimension {
     @Column(name = "max_beam", nullable = false)
     private Long maxBeam;
 
+    @NotNull
+    @Column(name = "max_draft", nullable = false)
+    private Long maxDraft;
+
+
+
 
 }
