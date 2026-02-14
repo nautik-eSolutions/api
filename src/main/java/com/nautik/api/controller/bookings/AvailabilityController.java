@@ -2,6 +2,7 @@ package com.nautik.api.controller.bookings;
 
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
+import com.nautik.api.dto.mooring.MooringCategoryAvailabilityDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.service.bookings.MooringCategoryService;
@@ -33,7 +34,7 @@ public class AvailabilityController {
 
 
     @GetMapping("/mooring-categories/{mooringCategoryId}/dates/{startDate}/{endDate}")
-    public MooringCategoryDto getMooringCategoryByIdAndAvailability (
+    public MooringCategoryAvailabilityDto getMooringCategoryByIdAndAvailability (
             @PathVariable Integer mooringCategoryId,
             @PathVariable String startDate,
             @PathVariable String endDate

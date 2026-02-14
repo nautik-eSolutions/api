@@ -5,6 +5,7 @@ import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
+import com.nautik.api.dto.mooring.MooringCategoryAvailabilityDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
@@ -73,7 +74,7 @@ public class MooringCategoryService {
 
     }
 
-    public MooringCategoryDto getMooringCategoryByIdAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate){
+    public MooringCategoryAvailabilityDto getMooringCategoryByIdAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate){
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
@@ -81,9 +82,10 @@ public class MooringCategoryService {
                 .orElseThrow(NoAvailabilityException::new);
 
 
+
         MooringCategory pricedMooringCategory = setPriceInMooringCategory(mooringCategory,startDate,endDate);
 
-        return modelMapper.map(pricedMooringCategory, MooringCategoryDto.class);
+        return getPricedMooringCategoryDto(pricedMooringCategory);
     }
 
 
@@ -103,37 +105,6 @@ public class MooringCategoryService {
 
         return mooringCategories;
     }
-
-
-    public List<MooringCategoryDto> getMooringCategoriesPriceWithDatesAndPort(Integer portId, String stringStartDate, String endStartDate) {
-
-
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate = dateFormater(endStartDate);
-        if (startDate.after(endDate)) {
-            //throw exception
-        }
-        List<MooringCategory> mooringCategories = mooringCategoryRepository.findAllByZonePortId(portId);
-
-        List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc -> setPriceInMooringCategory(mc, startDate, endDate)).toList();
-
-        return mooringCategoriesWithMinPrice.stream().map(mc -> modelMapper.map(mc, MooringCategoryDto.class)).toList();
-    }
-
-
-    public List<MooringCategoryDto> getAllMooringCategoriesByPortDimensionsAndAvailability(Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate) {
-
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-        List<MooringCategory> mooringCategories = mooringCategoryRepository.findAllByDimensionsMaxBeamGreaterThanEqualAndDimensionsMaxLengthGreaterThanEqualAndZonePortId(beam, length, portId);
-        List<Booking> bookings = bookingService.getBookingsByMooringCategoriesAndAvailability(mooringCategories, startDate, endDate);
-
-
-        return new ArrayList<MooringCategoryDto>();
-    }
-
-
 
 
     private MooringCategory setPriceInMooringCategory(MooringCategory mooringCategory, Date startDate, Date endDate) {
@@ -163,6 +134,13 @@ public class MooringCategoryService {
 
         return mooringCategory;
     }
+
+    private MooringCategoryAvailabilityDto getPricedMooringCategoryDto(MooringCategory pricedMooringCategory) {
+        MooringCategoryAvailabilityDto mooringCategoryAvailabilityDto =  modelMapper.map(pricedMooringCategory, MooringCategoryAvailabilityDto.class);
+        mooringCategoryAvailabilityDto.setBasePrice(pricedMooringCategory.getMinPrice());
+        return mooringCategoryAvailabilityDto;
+    }
+
 
 
     private Date dateFormater(String dateString) {
