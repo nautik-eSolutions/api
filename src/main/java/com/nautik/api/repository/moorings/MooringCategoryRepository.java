@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface MooringCategoryRepository extends JpaRepository<MooringCategory, Integer> {
     List<MooringCategory> findAllByZone_Port_Id(Integer zonePortId);
@@ -61,5 +62,5 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
             "inner join Booking b on b.mooring = m1 " +
             "inner join MooringCategory mc1 on m1.mooringCategory = mc1 " +
             "where mc1.id = ?1 and b.startDate <= ?3 and b.endDate >= ?2 )")
-    MooringCategory getMooringCategoryByAvailability(Integer mooringId, Date startDate, Date endDate);
+    Optional<MooringCategory> getMooringCategoryByAvailability(Integer mooringId, Date startDate, Date endDate);
 }

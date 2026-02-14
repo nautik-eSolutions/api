@@ -1,7 +1,9 @@
 package com.nautik.api.configuration;
 
+import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -29,8 +31,18 @@ public class GlobalExceptionsHandler {
         ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         error.setProperty("timestamp", Instant.now());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+
+    @ExceptionHandler(NoAvailabilityException.class)
+    public ResponseEntity<ProblemDetail> handleNoAvailabilityException(NoAvailabilityException ex){
+        ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.NO_CONTENT, ex.getMessage());
+        error.setProperty("timestamp", Instant.now());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(error);
+    }
+
 
 
 }

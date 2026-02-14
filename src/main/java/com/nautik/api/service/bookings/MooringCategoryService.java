@@ -1,6 +1,7 @@
 package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
@@ -76,11 +77,8 @@ public class MooringCategoryService {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
-        MooringCategory mooringCategory = mooringCategoryRepository.getMooringCategoryByAvailability(mooringCategoryId,startDate,endDate);
-
-        if (mooringCategory == null){
-            return new MooringCategoryDto();
-        }
+        MooringCategory mooringCategory = mooringCategoryRepository.getMooringCategoryByAvailability(mooringCategoryId,startDate,endDate)
+                .orElseThrow(NoAvailabilityException::new);
 
 
         MooringCategory pricedMooringCategory = setPriceInMooringCategory(mooringCategory,startDate,endDate);
