@@ -52,4 +52,14 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
                                                            Date startDate,
                                                            Date endDate);
 
+
+    @Query("select mc from MooringCategory mc " +
+            "inner join MooringDimension md on mc.dimensions = md " +
+            "inner join Mooring m on m.mooringCategory = mc "+
+            "where mc.id = ?1" +
+            "and m not in (select m1 from Mooring m1 " +
+            "inner join Booking b on b.mooring = m1 " +
+            "inner join MooringCategory mc1 on m1.mooringCategory = mc1 " +
+            "where mc1.id = ?1 and b.startDate <= ?3 and b.endDate >= ?2 )")
+    MooringCategory getMooringCategoryByAvailability(Integer mooringId, Date startDate, Date endDate);
 }

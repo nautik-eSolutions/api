@@ -32,5 +32,19 @@ public class AvailabilityController {
     }
 
 
+    @GetMapping("/mooring-categories/{mooringCategoryId}/dates/{startDate}/{endDate}")
+    public MooringCategoryDto getMooringCategoryByIdAndAvailability (
+            @PathVariable Integer mooringCategoryId,
+            @PathVariable String startDate,
+            @PathVariable String endDate
+    ){
+        return mooringCategoryService.getMooringCategoryByIdAndAvailability(
+                mooringCategoryId, startDate, endDate);
+    }
+
+
+
+
+
 
 }

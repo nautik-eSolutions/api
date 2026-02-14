@@ -3,6 +3,7 @@ package com.nautik.api.service.users;
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.users.Admin;
+import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
@@ -48,6 +49,25 @@ public class UserService {
 
         throw new RuntimeException("Credenciales inválidas");
     }
+
+    public Token loginEmail(LoginEmailRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        if (authentication.isAuthenticated()) {
+            User user = userRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+            return jwtService.generateToken(user);
+        }
+
+        throw new RuntimeException("Credenciales inválidas");
+    }
+
 
 
 

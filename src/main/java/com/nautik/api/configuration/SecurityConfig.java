@@ -39,8 +39,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login/email").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/availability/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -78,7 +80,8 @@ public class SecurityConfig {
                 "http://127.0.0.1:9000",
                 "http://172.29.0.*:9000",
                 "http://172.30.0.*:9000",
-                "http://quasar-dev:9000"
+                "http://quasar-dev:9000",
+                "http://localhost:8082"
         ));
 
         configuration.setAllowedMethods(List.of(

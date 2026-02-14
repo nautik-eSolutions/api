@@ -72,6 +72,23 @@ public class MooringCategoryService {
 
     }
 
+    public MooringCategoryDto getMooringCategoryByIdAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate){
+        Date startDate = dateFormater(stringStartDate);
+        Date endDate = dateFormater(stringEndDate);
+
+        MooringCategory mooringCategory = mooringCategoryRepository.getMooringCategoryByAvailability(mooringCategoryId,startDate,endDate);
+
+        if (mooringCategory == null){
+            return new MooringCategoryDto();
+        }
+
+
+        MooringCategory pricedMooringCategory = setPriceInMooringCategory(mooringCategory,startDate,endDate);
+
+        return modelMapper.map(pricedMooringCategory, MooringCategoryDto.class);
+    }
+
+
 
 
 
@@ -119,6 +136,8 @@ public class MooringCategoryService {
     }
 
 
+
+
     private MooringCategory setPriceInMooringCategory(MooringCategory mooringCategory, Date startDate, Date endDate) {
 
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
@@ -126,10 +145,18 @@ public class MooringCategoryService {
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
 
         if (mooringCategory.getPriceConfigurations().isEmpty()) {
-            //Throw new Exception
+            mooringCategory.setMinPrice(200);
+            return mooringCategory;
+
         }
 
         List<PriceConfiguration> filteredPriceConfigurations = mooringCategory.getPriceConfigurations().stream().filter(priceConfigurationDateFilter).toList();
+
+
+        if (filteredPriceConfigurations.isEmpty()){
+            mooringCategory.setMinPrice(200);
+            return mooringCategory;
+        }
 
 
         PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);

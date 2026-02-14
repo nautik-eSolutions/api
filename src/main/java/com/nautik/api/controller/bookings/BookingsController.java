@@ -54,7 +54,9 @@ public class BookingsController {
 
 
     @PostMapping
-    public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String token ){
+    public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader ){
+
+        String token = authHeader.substring(7);
         String userName = jwtService.extractUsername(token);
 
         return bookingService.createBooking(bookingRequestDto, userName);
