@@ -1,8 +1,11 @@
 package com.nautik.api.domain.moorings;
 
+import com.nautik.api.domain.booking.Booking;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,5 +24,6 @@ public class Mooring {
     @JoinColumn(name = "mooring_category_id", nullable = false, referencedColumnName = "id")
     private MooringCategory mooringCategory;
 
-
+    @OneToMany(mappedBy = "mooring")
+    private List<Booking> bookings;
 }

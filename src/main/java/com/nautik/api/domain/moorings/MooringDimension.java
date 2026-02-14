@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -17,11 +19,11 @@ public class MooringDimension {
 
     @NotNull
     @Column(name = "max_length", nullable = false)
-    private Long maxLength;
+    private Integer maxLength;
 
     @NotNull
     @Column(name = "max_beam", nullable = false)
-    private Long maxBeam;
+    private Integer maxBeam;
 
 
 }

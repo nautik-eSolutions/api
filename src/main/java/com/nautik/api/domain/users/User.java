@@ -1,12 +1,14 @@
 package com.nautik.api.domain.users;
 
 
+import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +22,7 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "user_name")
     private String userName;
 
     @Column(name = "first_name", nullable = false, length = 45)
@@ -40,23 +43,15 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Boat> boats;
+
+
     /*
     @OneToOne(mappedBy = "user")
     private Admin admin;
 
 */
-
-    public User(String firstName, String lastName, String email, String password){
-        this.firstName=firstName;
-        this.lastName=lastName;
-        this.email=email;
-        this.password=password;
-    }
-    public User(UserDto userDto){
-        this.firstName=userDto.getFirstName();
-        this.lastName= userDto.getLastName();
-        this.email= userDto.getEmail();
-        this.password= userDto.getPassword();
-    }
 
 }

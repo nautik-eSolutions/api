@@ -1,10 +1,13 @@
 package com.nautik.api.domain.booking;
 
+import com.nautik.api.domain.Boat;
+import com.nautik.api.domain.moorings.Mooring;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -17,22 +20,34 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private Date startDate;
 
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private Date endDate;
 
     @Column(name = "total_cost", nullable = false)
     private Double totalCost;
 
-    @Column(name = "payment_method", nullable = false)
-    private Long paymentMethod;
+    @ManyToOne
+    @JoinColumn(name = "boat_id")
+    private Boat boat;
 
-    @Column(name = "boat_id", nullable = false)
-    private Long boatId;
+    @ManyToOne
+    @JoinColumn(name = "mooring_id")
+    private Mooring mooring;
 
-    @Column(name = "booking_status_id", nullable = false)
-    private Long bookingStatusId;
+
+
+    public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring){
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.totalCost = totalCost;
+        this.boat = boat;
+        this.mooring = mooring;
+
+    }
+
+
 
 
 }

@@ -11,4 +11,10 @@ import java.io.Serializable;
 public class BoatTypeDto implements Serializable {
     Integer id;
     String name;
+
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
