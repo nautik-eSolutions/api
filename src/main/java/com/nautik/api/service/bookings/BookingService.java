@@ -64,9 +64,7 @@ public class BookingService {
     public Boolean createBooking(BookingRequestDto bookingRequestDto, String userName){
         Date startDate = dateFormater(bookingRequestDto.getStartDate());
         Date endDate =  dateFormater(bookingRequestDto.getEndDate());
-
         User user = userRepository.findByUserName(userName).orElseThrow();
-
         Boat boat = user
                     .getBoats()
                     .stream()

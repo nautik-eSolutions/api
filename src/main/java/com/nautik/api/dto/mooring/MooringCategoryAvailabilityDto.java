@@ -1,10 +1,12 @@
 package com.nautik.api.dto.mooring;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 public class MooringCategoryAvailabilityDto {
 
     private Integer id;
@@ -14,10 +16,10 @@ public class MooringCategoryAvailabilityDto {
     private String zoneName;
     private int dimensionsMaxBeam;
     private int dimensionsMaxLength;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private double basePrice;
-    private double tax = basePrice * 0.21;
-    private double totalPrice = basePrice * 1.21;
+    private double tax ;
+    private double totalPrice;
 
 }

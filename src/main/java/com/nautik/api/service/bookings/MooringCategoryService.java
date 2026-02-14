@@ -85,7 +85,8 @@ public class MooringCategoryService {
 
         MooringCategory pricedMooringCategory = setPriceInMooringCategory(mooringCategory,startDate,endDate);
 
-        return getPricedMooringCategoryDto(pricedMooringCategory);
+        return getPricedMooringCategoryDto(pricedMooringCategory, stringStartDate, stringEndDate
+        );
     }
 
 
@@ -135,9 +136,13 @@ public class MooringCategoryService {
         return mooringCategory;
     }
 
-    private MooringCategoryAvailabilityDto getPricedMooringCategoryDto(MooringCategory pricedMooringCategory) {
+    private MooringCategoryAvailabilityDto getPricedMooringCategoryDto(MooringCategory pricedMooringCategory, String startDate, String endDate) {
         MooringCategoryAvailabilityDto mooringCategoryAvailabilityDto =  modelMapper.map(pricedMooringCategory, MooringCategoryAvailabilityDto.class);
+        mooringCategoryAvailabilityDto.setStartDate(startDate);
+        mooringCategoryAvailabilityDto.setEndDate(endDate);
         mooringCategoryAvailabilityDto.setBasePrice(pricedMooringCategory.getMinPrice());
+        mooringCategoryAvailabilityDto.setTax(pricedMooringCategory.getMinPrice()*0.21);
+        mooringCategoryAvailabilityDto.setTotalPrice(pricedMooringCategory.getMinPrice()*1.21);
         return mooringCategoryAvailabilityDto;
     }
 
