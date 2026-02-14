@@ -2,9 +2,11 @@ package com.nautik.api.controller.moorings;
 
 
 import com.nautik.api.dto.mooring.MooringCategoryDto;
+import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
+import com.nautik.api.repository.moorings.MooringDimensionRepository;
 import com.nautik.api.service.moorings.MooringService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,13 +23,18 @@ import java.util.List;
 public class MooringController {
 
     public final MooringService mooringService;
-    private final MooringCategoryRepository mooringCategoryRepository;
-    private final ModelMapper modelMapper;
 
     @GetMapping
     public ResponseEntity<List<MooringDto>> getAllMoorings(){
         List<MooringDto> moorings  = mooringService.findAll();
         return ResponseEntity.ok(moorings);
+    }
+
+
+    @GetMapping("/dimensions")
+    public ResponseEntity<List<MooringDimensionDto>> getAllDimensions(){
+        List<MooringDimensionDto> dimensions = mooringService.getAllMooringsDimensions();
+        return ResponseEntity.ok(dimensions);
     }
 
     @GetMapping("/{mooringId}")
@@ -61,8 +68,7 @@ public class MooringController {
             @RequestBody CreateMooringDto mooring,
             @PathVariable Long mooringId
     ){
-        MooringCategoryDto mooringCategory = modelMapper.map(
-                mooringCategoryRepository.findById(mooring.getCategoryId()).orElseThrow(), MooringCategoryDto.class);
+        MooringCategoryDto mooringCategory = mooringService.findCategoryById(mooring.getDimensionsId(),mooring.getZoneId());
 
         MooringDto createMooring = new MooringDto(
                 mooringId, mooring.getNumber(), mooringCategory
