@@ -12,6 +12,4 @@ import java.util.List;
 public class CreateZoneDto {
     String name;
     String description;
-    String portName;
-    List<Integer> mooringCategoriesMooringNumber;
 }

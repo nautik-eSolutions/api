@@ -10,5 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateMooringDto {
     private Long number;
-    private Integer categoryId;
+    private Integer zoneId;
+    private Integer dimensionsId;
 }

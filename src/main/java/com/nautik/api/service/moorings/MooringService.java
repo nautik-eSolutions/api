@@ -5,9 +5,13 @@ import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.MooringMooringStatus;
+import com.nautik.api.dto.mooring.MooringCategoryDto;
+import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
+import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
+import com.nautik.api.repository.moorings.MooringDimensionRepository;
 import com.nautik.api.repository.moorings.MooringMooringStatusRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,8 @@ public class MooringService {
     public final MooringCategoryRepository mooringCategoryRepository;
     public final ModelMapper modelMapper;
     public final MooringMooringStatusRepository statusRepository;
+    public final MooringDimensionRepository dimensionRepository;
+    public final ZoneRepository zoneRepository;
 
     public List<MooringDto> findAll(){
         return mooringRepository.findAll().stream().map(mooring -> modelMapper.map(mooring, MooringDto.class)).toList();
@@ -42,13 +48,23 @@ public class MooringService {
                 .toList();
     }
     public MooringDto createMooring(Long portId, CreateMooringDto dto){
-        MooringCategory mooringCategory = mooringCategoryRepository.findById(dto.getCategoryId()).orElseThrow(()->new ResourceNotFoundException("Mooring category not found"));
-
+        MooringCategory mooringCategory = findOrCreateCategory(dto);
         Mooring mooring = new Mooring();
         mooring.setMooringCategory(mooringCategory);
         mooring.setNumber(dto.getNumber());
         return modelMapper.map(mooringRepository.save(mooring), MooringDto.class);
 
+    }
+
+    public MooringCategory findOrCreateCategory(CreateMooringDto dto){
+        return (MooringCategory) mooringCategoryRepository
+                .findByDimensions_IdAndZone_Id(Long.valueOf(dto.getDimensionsId()), dto.getZoneId())
+                .orElseGet(() ->{
+                    MooringCategory mooringCategory1 = new MooringCategory();
+                    mooringCategory1.setZone(zoneRepository.findZoneById(Math.toIntExact(dto.getZoneId())).orElseThrow());
+                    mooringCategory1.setDimensions(dimensionRepository.findById(Long.valueOf(dto.getDimensionsId())).orElseThrow());
+                    return mooringCategoryRepository.save(mooringCategory1);
+                });
     }
     public void delete(long id){
         Mooring mooring = mooringRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Mooring not found"));
@@ -81,6 +97,20 @@ public class MooringService {
 
         });
         return  available;
+    }
+
+    public List<MooringDimensionDto> getAllMooringsDimensions(){
+        return dimensionRepository.findAll()
+                .stream()
+                .map((element) -> modelMapper
+                        .map(element, MooringDimensionDto.class))
+                .toList();
+    }
+
+    public MooringCategoryDto findCategoryById(int zoneId, int dimensionsId){
+        return modelMapper.map(
+                mooringCategoryRepository
+                        .findByDimensions_IdAndZone_Id((long) dimensionsId, zoneId), MooringCategoryDto.class);
     }
 
 

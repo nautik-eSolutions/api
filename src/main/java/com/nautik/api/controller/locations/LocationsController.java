@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/locations/")
+@RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
 public class LocationsController {
 
@@ -30,6 +30,15 @@ public class LocationsController {
         CommunityDto savedCommunity = locationsService.createCommunity(communityDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCommunity);
+    }
+
+    @GetMapping("/cities")
+    public ResponseEntity<List<CityDto>> getAllCities() {
+
+        List<CityDto> searchedCities =  locationsService.getAllCities();
+
+
+        return ResponseEntity.ok(searchedCities);
     }
 
     @GetMapping("/{communityId}/")
@@ -60,20 +69,13 @@ public class LocationsController {
 
     }
 
-    @GetMapping("/{communityId}/cities")
-    public ResponseEntity<List<CityDto>> getAllCities(@PathVariable Long communityId) {
-
-        List<CityDto> searchedCities =  locationsService.getAllCitiesByCommunityId(communityId);
 
 
-        return ResponseEntity.ok(searchedCities);
-    }
-
-    @GetMapping("/{communityId}/{cityId}")
-    public ResponseEntity<CityDto> getCity(@PathVariable Long communityId, @PathVariable Long cityId) {
-        CityDto searchedCity = locationsService.getCityById(cityId,communityId);
-        return ResponseEntity.ok(searchedCity);
-    }
+//    @GetMapping("/{communityId}/{cityId}")
+//    public ResponseEntity<CityDto> getCity(@PathVariable Long communityId, @PathVariable Long cityId) {
+//        CityDto searchedCity = locationsService.getCityById(cityId,communityId);
+//        return ResponseEntity.ok(searchedCity);
+//    }
 
     @PutMapping("/{communityId}/{cityId}")
     public ResponseEntity<CityDto> updateCity(@PathVariable Long communityId, @PathVariable Long cityId, @RequestBody CityDto cityDto) {

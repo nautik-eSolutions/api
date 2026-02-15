@@ -27,7 +27,6 @@ public class CompanyController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<CompanyDtoResponse>> getAllCompanies(){
         return ResponseEntity.ok(companyService.getAllCompanies());
     }

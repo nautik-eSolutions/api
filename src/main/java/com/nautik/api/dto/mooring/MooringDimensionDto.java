@@ -19,4 +19,6 @@ public class MooringDimensionDto implements Serializable {
     private Long maxLength;
     @NotNull
     private Long maxBeam;
+    @NotNull
+    private Long maxDraft;
 }
