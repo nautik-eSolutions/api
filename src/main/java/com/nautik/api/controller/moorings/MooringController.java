@@ -31,6 +31,15 @@ public class MooringController {
     }
 
 
+    @GetMapping("/ports/{portId}")
+    public ResponseEntity<List<MooringDto>>getAllMooringsByPort(@PathVariable Integer portId){
+
+        List<MooringDto> moorings = mooringService.findAllByPortId(portId);
+
+        return ResponseEntity.ok(moorings);
+    }
+
+
     @GetMapping("/dimensions")
     public ResponseEntity<List<MooringDimensionDto>> getAllDimensions(){
         List<MooringDimensionDto> dimensions = mooringService.getAllMooringsDimensions();
@@ -93,6 +102,9 @@ public class MooringController {
         List<MooringDto> moorings = mooringService.findAllByZoneAvailable(zoneId);
         return ResponseEntity.ok(moorings);
     }
+
+
+
 
 
 }

@@ -52,6 +52,21 @@ public class UserService {
         throw new RuntimeException("Credenciales inválidas");
     }
 
+    public Token OAuthLogin(GoogleIdTokenInfo googleIdTokenInfo){
+
+        String email = googleIdTokenInfo.getEmail();
+        String name  = googleIdTokenInfo.getName();
+
+        if (userRepository.findByEmail(email).isEmpty()){
+           return jwtService.generateToken(userRepository.save(new User(email, email,name)));
+        }
+
+        return jwtService.generateToken(userRepository.findUserByEmail(email).orElseThrow());
+    }
+
+
+
+
     public Token loginEmail(LoginEmailRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

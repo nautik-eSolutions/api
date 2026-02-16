@@ -25,17 +25,17 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "first_name", nullable = false, length = 45)
+    @Column(name = "first_name", length = 45)
     private String firstName;
 
 
-    @Column(name = "last_name", nullable = false, length = 45)
+    @Column(name = "last_name" , length = 45)
     private String lastName;
 
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     private Timestamp created_at;
@@ -53,5 +53,14 @@ public class User {
     private Admin admin;
 
 */
+
+    public User(String email, String username, String name){
+        this.email =email;
+        this.userName = username;
+        this.firstName = name;
+        this.lastName = name;
+    }
+
+
 
 }

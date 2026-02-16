@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login/email").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login/oauth").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/availability/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -87,7 +88,8 @@ public class SecurityConfig {
                 "http://172.29.0.*:9000",
                 "http://172.30.0.*:9000",
                 "http://quasar-dev:9000",
-                "http://localhost:8082"
+                "http://localhost:8082",
+                "http://localhost:8084"
         ));
 
         configuration.setAllowedMethods(List.of(
