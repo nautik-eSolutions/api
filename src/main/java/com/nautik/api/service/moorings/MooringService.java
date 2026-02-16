@@ -40,9 +40,17 @@ public class MooringService {
         return modelMapper.map(mooringRepository.findById(mooringId), MooringDto.class);
     }
 
-    public List<MooringDto> findAllByPort(String portName){
+    public List<MooringDto> findAllByPortName(String portName){
         String port = portName.replace("_"," ");
         return mooringRepository.findAllByMooringCategory_Zone_Port_NameIgnoreCase(port)
+                .stream()
+                .map(mooring -> modelMapper.map(mooring, MooringDto.class))
+                .toList();
+    }
+
+
+    public List<MooringDto> findAllByPortId(Integer portId){
+        return mooringRepository.findAllByMooringCategoryZonePortId(portId)
                 .stream()
                 .map(mooring -> modelMapper.map(mooring, MooringDto.class))
                 .toList();

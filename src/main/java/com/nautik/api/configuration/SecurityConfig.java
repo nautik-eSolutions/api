@@ -88,7 +88,8 @@ public class SecurityConfig {
                 "http://172.29.0.*:9000",
                 "http://172.30.0.*:9000",
                 "http://quasar-dev:9000",
-                "http://localhost:8082"
+                "http://localhost:8082",
+                "http://localhost:8084"
         ));
 
         configuration.setAllowedMethods(List.of(
