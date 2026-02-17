@@ -3,6 +3,7 @@ package com.nautik.api.controller.bookings;
 
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.dto.bookings.BookingDto;
+import com.nautik.api.dto.bookings.BookingOccupancyDto;
 import com.nautik.api.dto.bookings.BookingRequestDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.user.UserRepository;
@@ -11,6 +12,7 @@ import com.nautik.api.service.jwt.JwtService;
 import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +32,11 @@ public class BookingsController {
             @PathVariable String endDate
     ){
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
+    }
+
+    @GetMapping("ports/{portId}")
+    public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
+        return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
     }
 
     @GetMapping("/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
