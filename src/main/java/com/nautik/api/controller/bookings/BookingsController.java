@@ -13,6 +13,7 @@ import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class BookingsController {
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
     }
 
+    @PreAuthorize("hasRole('STAFF_PORT')")
     @GetMapping("ports/{portId}")
     public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
         return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));

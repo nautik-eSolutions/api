@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CapabilityRepository extends JpaRepository<Capability,Long> {
+public interface CapabilityRepository  {
 
     Capability findByNameAndRolesConfiguration(String name, RolesConfiguration rolesConfiguration);
 

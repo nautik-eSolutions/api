@@ -32,6 +32,20 @@ public class JwtService {
 
     }
 
+
+    public Token generateWorkerToken(User user){
+        return new Token(
+                Jwts.builder()
+                        .setSubject(user.getId().toString())
+                        .claim("userName", user.getUserName())
+                        .setIssuedAt(new Date(System.currentTimeMillis()))
+                        .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                        .signWith(getSecretKey())
+                        .compact()
+        );
+    }
+
+
     public SecretKey getSecretKey(){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

@@ -32,9 +32,9 @@ public class Company {
 
     @OneToMany(mappedBy = "company")
     private List<Admin> admins;
-
+/*
     @OneToMany(mappedBy = "company")
     private List<RolesConfiguration>rolesConfigurations;
 
-
+*/
 }

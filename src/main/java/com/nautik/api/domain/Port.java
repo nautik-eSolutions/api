@@ -31,8 +31,9 @@ public class Port {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
+    /*
     @ManyToOne
     @JoinColumn(name = "roles_configuration_id")
     private RolesConfiguration rolesConfiguration;
-
+    */
 }

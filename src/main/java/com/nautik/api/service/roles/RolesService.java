@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RolesService {
 
-
+   /*
     private final RoleRepository roleRepository;
     private final RolesConfigurationRepository rolesConfigurationRepository;
     private final CompanyRepository companyRepository;
@@ -71,6 +71,7 @@ public class RolesService {
                         (conf, RolesConfigurationDto.class))
                 .collect(Collectors.toList());
     }
+
 
 
     public RoleResponseDto createRole(
@@ -253,7 +254,7 @@ public class RolesService {
         return savedRole.getCapabilities().stream().map(cap->modelMapper.map(cap, CapabilityDto.class)).toList();
     }
 
-
+    */
 
 
 }

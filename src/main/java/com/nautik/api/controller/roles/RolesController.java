@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 @RequiredArgsConstructor
 
-@RestController
+
 @RequestMapping("/api/v1/users/configurations/")
 public class RolesController {
 
 
     private final RolesService roleService;
 
+    /*
     //RolesConfigurationRepository
     @PostMapping("/{companyId}")
     public ResponseEntity<RolesConfigurationDto> createRolesConfiguration(
@@ -170,6 +171,8 @@ public class RolesController {
         List<CapabilityDto> capabilites =  roleService.removeCapabilityToRole(companyId, configurationId, roleId, capabilityId);
         return ResponseEntity.ok(capabilites);
     }
+
+*/
 
 
 
