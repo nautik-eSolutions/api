@@ -35,13 +35,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createAdminUser(user));
     }
 
-
-    @PostMapping
-    public ResponseEntity<UserDtoResponse> createUser(@RequestBody UserDto user) {
-
-        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createUser(user));
-    }
-
     @PatchMapping("/{userId}")
     public ResponseEntity<UserDtoResponse> updateUser(
             @RequestBody UserDto user,

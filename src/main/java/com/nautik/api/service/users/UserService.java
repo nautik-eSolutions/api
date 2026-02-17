@@ -8,6 +8,7 @@ import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
+import com.nautik.api.dto.user.UserLoginResponse;
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.jwt.JwtService;
@@ -34,7 +35,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
 
-    public Token login(LoginRequest loginRequest) {
+    public UserLoginResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUserName(),
@@ -46,16 +47,24 @@ public class UserService {
             User user = userRepository.findByUserName(loginRequest.getUserName())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-            return jwtService.generateToken(user);
+            Token token =  jwtService.generateToken(user);
+
+
+           return new UserLoginResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getUserName(),token );
+
+
+
         }
 
         throw new RuntimeException("Credenciales inválidas");
     }
 
-    public Token loginEmail(LoginEmailRequest loginRequest) {
+    public UserLoginResponse loginEmail(LoginEmailRequest loginRequest) {
+
+        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow().getUserName();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        userName,
                         loginRequest.getPassword()
                 )
         );
@@ -64,7 +73,10 @@ public class UserService {
             User user = userRepository.findByEmail(loginRequest.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-            return jwtService.generateToken(user);
+            Token token =  jwtService.generateToken(user);
+
+
+            return new UserLoginResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getUserName(),token );
         }
 
         throw new RuntimeException("Credenciales inválidas");
@@ -85,14 +97,23 @@ public class UserService {
     }
 
 
-    public UserDtoResponse createUser(UserDto userDto) {
+    public UserLoginResponse createUser(UserDto userDto) {
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User providedUser = modelMapper.map(userDto, User.class);
 
-        return modelMapper.map(
-                userRepository.save(providedUser),
-                UserDtoResponse.class);
+        Token token =  jwtService.generateToken(providedUser);
+
+        UserLoginResponse response =  new UserLoginResponse();
+        response.setEmail(providedUser.getEmail());
+        response.setFirstName(providedUser.getFirstName());
+        response.setLastName(providedUser.getLastName());
+        response.setUserName(providedUser.getUserName());
+        response.setToken(token);
+
+        return response;
+
+
     }
 
     public UserDtoResponse updateUser(UserDto userDto, Long userId) {
