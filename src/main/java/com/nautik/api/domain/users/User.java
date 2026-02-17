@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,7 +20,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = true)
     private Integer id;
 
     @Column(name = "user_name")
@@ -38,7 +39,15 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+
+    @Column(name = "created_at")
     private Timestamp created_at;
+
+    @Column(name="identification_document")
+    private String identificationDocument;
+
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -46,6 +55,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Boat> boats;
+
 
 
     /*

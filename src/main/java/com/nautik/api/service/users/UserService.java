@@ -100,7 +100,9 @@ public class UserService {
     public UserLoginResponse createUser(UserDto userDto) {
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        User providedUser = modelMapper.map(userDto, User.class);
+        User providedUser = userRepository.save(modelMapper.map(userDto, User.class));
+
+
 
         Token token =  jwtService.generateToken(providedUser);
 
