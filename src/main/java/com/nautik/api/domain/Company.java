@@ -2,9 +2,11 @@ package com.nautik.api.domain;
 
 import com.nautik.api.domain.roles.RolesConfiguration;
 import com.nautik.api.domain.users.Admin;
+import com.nautik.api.domain.users.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 
@@ -32,6 +34,11 @@ public class Company {
 
     @OneToMany(mappedBy = "company")
     private List<Admin> admins;
+    @OneToOne()
+    @JoinColumn(name = "user_id")
+    private User administrator;
+
+
 /*
     @OneToMany(mappedBy = "company")
     private List<RolesConfiguration>rolesConfigurations;

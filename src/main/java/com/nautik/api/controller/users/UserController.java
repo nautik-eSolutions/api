@@ -1,5 +1,6 @@
 package com.nautik.api.controller.users;
 
+import com.nautik.api.dto.user.UserAdminDto;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
 import com.nautik.api.service.users.UserService;
@@ -55,6 +56,19 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
         return ResponseEntity.ok().build();
+    }
+
+
+
+    //----------------------------------------------------------------------------------
+
+
+
+    @PostMapping("/company/{companyId}/administrator")
+    public ResponseEntity<UserDtoResponse> createAdministrator(@RequestBody UserAdminDto adminDto, @PathVariable Integer companyId){
+
+
+        return ResponseEntity.ok(userService.createCompanyAdministrator(adminDto, companyId));
     }
 
 

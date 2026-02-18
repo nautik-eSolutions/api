@@ -2,12 +2,17 @@ package com.nautik.api.domain.users;
 
 
 import com.nautik.api.domain.Boat;
+import com.nautik.api.domain.Company;
+import com.nautik.api.domain.Port;
+import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -28,9 +33,14 @@ public class User {
     @Column(name = "first_name", length = 45)
     private String firstName;
 
-
     @Column(name = "last_name" , length = 45)
     private String lastName;
+
+    @Column(name = "identification_document")
+    private String identificationDocument;
+
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -47,6 +57,16 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Boat> boats;
 
+    @OneToOne(mappedBy = "administrator")
+    private Company company;
+
+    @ManyToMany
+    @JoinTable(
+            name = "port_workers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "port_id")
+    )
+    List<Port> ports = new ArrayList<>();
 
     /*
     @OneToOne(mappedBy = "user")

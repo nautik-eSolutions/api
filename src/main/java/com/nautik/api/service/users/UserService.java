@@ -1,13 +1,18 @@
 package com.nautik.api.service.users;
 
+import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
+import com.nautik.api.dto.user.UserAdminDto;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
+import com.nautik.api.repository.port.CompanyRepository;
+import com.nautik.api.repository.roles.RoleRepository;
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.jwt.JwtService;
@@ -28,6 +33,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
+    private final CompanyRepository companyRepository;
+    private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -109,6 +116,28 @@ public class UserService {
                 userRepository.save(providedUser),
                 UserDtoResponse.class);
     }
+
+    public UserDtoResponse createCompanyAdministrator(UserAdminDto userAdminDto, Integer companyId){
+
+        Company company = companyRepository.findById(companyId).orElseThrow(()->new ResourceNotFoundException("No company found "));
+        Role role = roleRepository.findByName(userAdminDto.getRoleName());
+        User providedUser = modelMapper.map(userAdminDto, User.class);
+
+        userAdminDto.setPassword(passwordEncoder.encode(userAdminDto.getPassword()));
+        providedUser.setRole(role);
+
+        User savedUser =  userRepository.save(providedUser);
+
+        company.setAdministrator(savedUser);
+        companyRepository.save(company);
+
+
+        return modelMapper.map(savedUser, UserDtoResponse.class);
+
+    }
+
+
+
 
     public UserDtoResponse updateUser(UserDto userDto, Long userId) {
 
