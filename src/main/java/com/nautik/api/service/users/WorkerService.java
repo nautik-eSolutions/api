@@ -2,6 +2,7 @@ package com.nautik.api.service.users;
 
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.exceptions.ForbiddenToResourceException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.users.User;
@@ -17,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class WorkerService {
@@ -27,6 +30,17 @@ public class WorkerService {
     private final PortRepository portRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+
+    public void authorizeAdminToPortResource(Integer userId, Integer portId){
+        User administrator =  userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("No user was found"));
+        administrator.getCompany().getPorts().stream()
+                .filter(port1 -> Objects.equals(port1.getId(), portId)).findFirst().orElseThrow(() -> new ForbiddenToResourceException("You are not the administrator to this port"));
+    }
+
+
+
+
+
 
     public List<UserDtoResponse> getWorkersByPort(Integer portId){
         Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));

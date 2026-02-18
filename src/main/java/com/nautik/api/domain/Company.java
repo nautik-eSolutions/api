@@ -38,6 +38,8 @@ public class Company {
     @JoinColumn(name = "user_id")
     private User administrator;
 
+    @OneToMany(mappedBy = "company")
+    private List<Port> ports;
 
 /*
     @OneToMany(mappedBy = "company")
