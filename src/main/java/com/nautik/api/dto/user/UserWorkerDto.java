@@ -1,12 +1,10 @@
 package com.nautik.api.dto.user;
 
-import com.nautik.api.domain.Company;
 import lombok.Data;
 
 import java.util.Date;
-
 @Data
-public class UserAdminDto {
+public class UserWorkerDto {
 
     private String email;
     private String password;
@@ -16,7 +14,5 @@ public class UserAdminDto {
     private String lastName;
     private String identificationDocument;
     private Date birthDate;
-
-
-
+    private Integer portId;
 }

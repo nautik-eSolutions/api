@@ -1,6 +1,7 @@
 package com.nautik.api.service.users;
 
 import com.nautik.api.domain.Company;
+import com.nautik.api.domain.Port;
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.roles.Role;
@@ -12,6 +13,7 @@ import com.nautik.api.dto.user.UserAdminDto;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
 import com.nautik.api.repository.port.CompanyRepository;
+import com.nautik.api.repository.port.PortRepository;
 import com.nautik.api.repository.roles.RoleRepository;
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
@@ -35,6 +37,7 @@ public class UserService {
     private final AdminRepository adminRepository;
     private final CompanyRepository companyRepository;
     private final RoleRepository roleRepository;
+    private final PortRepository portRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -115,6 +118,17 @@ public class UserService {
         return modelMapper.map(
                 userRepository.save(providedUser),
                 UserDtoResponse.class);
+    }
+
+    public List<UserDtoResponse> getWorkersByPort(Integer portId){
+        Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));
+        List<User> workers = port.getWorkers();
+
+        if (workers.isEmpty()){
+            throw new ResourceNotFoundException("This port has no workers");
+        }
+
+        return workers.stream().map(worker-> modelMapper.map(worker, UserDtoResponse.class)).toList();
     }
 
     public UserDtoResponse createCompanyAdministrator(UserAdminDto userAdminDto, Integer companyId){
