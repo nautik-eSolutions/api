@@ -35,7 +35,7 @@ public class BookingsController {
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
     }
 
-    @PreAuthorize("hasRole('STAFF_PORT')")
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN')")
     @GetMapping("ports/{portId}")
     public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
         return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
