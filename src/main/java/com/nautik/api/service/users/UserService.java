@@ -120,35 +120,8 @@ public class UserService {
                 UserDtoResponse.class);
     }
 
-    public List<UserDtoResponse> getWorkersByPort(Integer portId){
-        Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));
-        List<User> workers = port.getWorkers();
-
-        if (workers.isEmpty()){
-            throw new ResourceNotFoundException("This port has no workers");
-        }
-
-        return workers.stream().map(worker-> modelMapper.map(worker, UserDtoResponse.class)).toList();
-    }
-
-    public UserDtoResponse createCompanyAdministrator(UserAdminDto userAdminDto, Integer companyId){
-
-        Company company = companyRepository.findById(companyId).orElseThrow(()->new ResourceNotFoundException("No company found "));
-        Role role = roleRepository.findByName(userAdminDto.getRoleName());
-        User providedUser = modelMapper.map(userAdminDto, User.class);
-
-        userAdminDto.setPassword(passwordEncoder.encode(userAdminDto.getPassword()));
-        providedUser.setRole(role);
-
-        User savedUser =  userRepository.save(providedUser);
-
-        company.setAdministrator(savedUser);
-        companyRepository.save(company);
 
 
-        return modelMapper.map(savedUser, UserDtoResponse.class);
-
-    }
 
 
 

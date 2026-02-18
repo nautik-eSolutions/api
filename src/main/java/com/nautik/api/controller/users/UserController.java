@@ -64,23 +64,6 @@ public class UserController {
     //----------------------------------------------------------------------------------
 
 
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
-    @GetMapping("/ports/{portId}")
-    public ResponseEntity<List<UserDtoResponse>> getAllWorkersByPort(@PathVariable Integer portId){
-
-        return ResponseEntity.ok(userService.getWorkersByPort(portId));
-    }
-
-
-    @PostMapping("/company/{companyId}/administrator")
-    public ResponseEntity<UserDtoResponse> createAdministrator(@RequestBody UserAdminDto adminDto, @PathVariable Integer companyId){
-        return ResponseEntity.ok(userService.createCompanyAdministrator(adminDto, companyId));
-    }
-
-    @PostMapping("/ports/{portsId}")
-    public ResponseEntity<UserDtoResponse> createWorker(@RequestBody UserAdminDto adminDto, @PathVariable Integer portsId){
-        return ResponseEntity.ok(userService.createCompanyAdministrator(adminDto, portsId));
-    }
 
 
 }
