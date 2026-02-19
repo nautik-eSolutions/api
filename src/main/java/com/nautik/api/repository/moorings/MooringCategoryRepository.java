@@ -63,11 +63,7 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
             "inner join MooringCategory mc1 on m1.mooringCategory = mc1 " +
             "where mc1.id = ?1 and b.startDate <= ?3 and b.endDate >= ?2 )")
     Optional<MooringCategory> getMooringCategoryByAvailability(Integer mooringId, Date startDate, Date endDate);
-<<<<<<< HEAD
+
 
     Optional<MooringCategory> findByDimensions_IdAndZone_Id(Long aLong, Integer zoneId);
-=======
-    
-    Optional<MooringCategory> findByDimensions_IdAndZone_Id(Long dimensionsId, Integer zoneId);
->>>>>>> dev/pedro/solucioAuthLaravel
 }
