@@ -1,5 +1,6 @@
 package com.nautik.api.configuration;
 
+import com.nautik.api.domain.exceptions.ForbiddenToResourceException;
 import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -41,6 +42,14 @@ public class GlobalExceptionsHandler {
         error.setProperty("timestamp", Instant.now());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(error);
+    }
+
+    @ExceptionHandler(ForbiddenToResourceException.class)
+    public ResponseEntity<ProblemDetail> handleForbbidenToResourceException(ForbiddenToResourceException ex){
+        ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        error.setProperty("timestamp", Instant.now());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
 

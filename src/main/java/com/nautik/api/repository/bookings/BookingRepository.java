@@ -24,4 +24,6 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
             "inner join MooringCategory mc on m.mooringCategory =" +
             " mc where mc in ?1 and b.startDate < ?3 and b.endDate > ?2")
     List<Booking> findByMooringCategoriesAndAvailability(List<MooringCategory>mooringCategories, Date startDate, Date endDate);
+
+    List<Booking> findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(Integer mooringMooringCategoryZonePortId, Date startDateAfter);
 }

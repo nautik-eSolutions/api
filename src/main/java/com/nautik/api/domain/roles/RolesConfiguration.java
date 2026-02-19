@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@Entity
+
 @Table(name="role_configuration")
 public class RolesConfiguration {
     @Id

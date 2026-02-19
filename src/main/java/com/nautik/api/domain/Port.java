@@ -2,11 +2,15 @@ package com.nautik.api.domain;
 
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
+import com.nautik.api.domain.users.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,8 +35,12 @@ public class Port {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
+    @ManyToMany(mappedBy = "ports")
+    private List<User> workers = new ArrayList<>();
+
+    /*
     @ManyToOne
     @JoinColumn(name = "roles_configuration_id")
     private RolesConfiguration rolesConfiguration;
-
+    */
 }

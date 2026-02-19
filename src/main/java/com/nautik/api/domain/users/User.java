@@ -2,12 +2,20 @@ package com.nautik.api.domain.users;
 
 
 import com.nautik.api.domain.Boat;
+import com.nautik.api.domain.Company;
+import com.nautik.api.domain.Port;
+import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+<<<<<<< HEAD
+import java.util.ArrayList;
+=======
+>>>>>>> dev/pedro/solucioAuthLaravel
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,7 +27,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = true)
     private Integer id;
 
     @Column(name = "user_name")
@@ -28,9 +36,14 @@ public class User {
     @Column(name = "first_name", length = 45)
     private String firstName;
 
-
     @Column(name = "last_name" , length = 45)
     private String lastName;
+
+    @Column(name = "identification_document")
+    private String identificationDocument;
+
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -38,7 +51,15 @@ public class User {
     @Column(name = "password")
     private String password;
 
+
+    @Column(name = "created_at")
     private Timestamp created_at;
+
+    @Column(name="identification_document")
+    private String identificationDocument;
+
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -46,6 +67,17 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Boat> boats;
+
+    @OneToOne(mappedBy = "administrator")
+    private Company company;
+
+    @ManyToMany
+    @JoinTable(
+            name = "port_workers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "port_id")
+    )
+    List<Port> ports = new ArrayList<>();
 
 
     /*

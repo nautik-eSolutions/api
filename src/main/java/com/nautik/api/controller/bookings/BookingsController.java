@@ -3,6 +3,7 @@ package com.nautik.api.controller.bookings;
 
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.dto.bookings.BookingDto;
+import com.nautik.api.dto.bookings.BookingOccupancyDto;
 import com.nautik.api.dto.bookings.BookingRequestDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.user.UserRepository;
@@ -11,6 +12,8 @@ import com.nautik.api.service.jwt.JwtService;
 import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +35,13 @@ public class BookingsController {
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
     }
 
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
+    @GetMapping("ports/{portId}")
+    public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
+        return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
+    }
+
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
     @GetMapping("/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
     public List<BookingDto> getBookingsByDimensionsAndAvailability(
             @PathVariable Integer length,
@@ -42,7 +52,7 @@ public class BookingsController {
         return bookingService.getBookingsByMooringDimensionsAndAvailability(beam,length,startDate,endDate);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
     @GetMapping("/moorings/{mooringCategoryId}/dates/{startDate}/{endDate}")
     public List<MooringDto> getFreeMooringsByAvailabilityAndCategory(
             @PathVariable Integer mooringCategoryId,

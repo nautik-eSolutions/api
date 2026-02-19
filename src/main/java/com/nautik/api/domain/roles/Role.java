@@ -15,8 +15,12 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Transient
     private String description;
+    /*
     @ManyToMany
     @JoinTable(
             name = "role_capability",
@@ -28,10 +32,11 @@ public class Role {
     @OneToMany(mappedBy = "role")
     List<User>users;
 
+
     @ManyToOne
     @JoinColumn(name = "roles_configuration_id")
     private RolesConfiguration rolesConfiguration;
-
+    */
 
 
 }

@@ -23,21 +23,11 @@ public class GoogleOauthService {
     private final GoogleIdTokenVerifier verifier;
 
     public GoogleOauthService(@Value("${application.security.oauth.google.client-id}") String clientId) {
-        // El clientId és el valor que Google assigna a la nostra aplicació OAuth.
-        // Si no existeix, no podem validar que el token hagi estat emès per a aquesta app.
+
         if (clientId == null || clientId.isBlank()) {
             throw new IllegalStateException("Falta configurar application.security.oauth.google.client-id");
         }
 
-        // Construïm un verificador reutilitzable que validarem a cada login.
-        // El Builder demana dos components base:
-        // 1) NetHttpTransport: client HTTP que el verificador utilitza internament
-        //    per descarregar claus públiques de Google i comprovar la signatura JWT.
-        // 2) GsonFactory: parser JSON per interpretar metadades i contingut del token.
-        //
-        // Un cop definit el transport i el parser, fixem "l'audiència" esperada:
-        // setAudience(...) limita els tokens vàlids només als que tinguin "aud" = clientId.
-        // Això evita acceptar tokens emesos per a una altra aplicació.
         this.verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(clientId))
                 .build();

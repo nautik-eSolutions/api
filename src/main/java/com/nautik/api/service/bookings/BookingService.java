@@ -7,6 +7,7 @@ import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.bookings.BookingDto;
+import com.nautik.api.dto.bookings.BookingOccupancyDto;
 import com.nautik.api.dto.bookings.BookingRequestDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.bookings.BookingRepository;
@@ -47,6 +48,16 @@ public class BookingService {
 
         return bookingsWithinSelectedDates.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }
+
+    public List<BookingOccupancyDto> getAllBookingsByPortFromNow(Integer portId){
+        Date startDate = new Date();
+
+        List<Booking> getBookings = bookingRepository.findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(portId, startDate);
+
+        return getBookings.stream().map(b->modelMapper.map(b, BookingOccupancyDto.class)).toList();
+    }
+
+
 
     public List<MooringDto> getAllFreeMooringsByDateAndCategory(Integer mooringCategoryId, String stringStartDate, String stringEndDate){
         Date startDate = dateFormater(stringStartDate);
