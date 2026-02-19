@@ -35,12 +35,13 @@ public class BookingsController {
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
     }
 
-    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
     @GetMapping("ports/{portId}")
     public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
         return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
     }
 
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
     @GetMapping("/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
     public List<BookingDto> getBookingsByDimensionsAndAvailability(
             @PathVariable Integer length,
@@ -51,7 +52,7 @@ public class BookingsController {
         return bookingService.getBookingsByMooringDimensionsAndAvailability(beam,length,startDate,endDate);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
     @GetMapping("/moorings/{mooringCategoryId}/dates/{startDate}/{endDate}")
     public List<MooringDto> getFreeMooringsByAvailabilityAndCategory(
             @PathVariable Integer mooringCategoryId,

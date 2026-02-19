@@ -4,11 +4,11 @@ package com.nautik.api.controller.users;
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
+import com.nautik.api.dto.user.AdminLoginResponseDto;
 import com.nautik.api.service.users.GoogleIdTokenInfo;
 import com.nautik.api.service.users.GoogleOauthService;
 import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +24,11 @@ public class AuthController {
     public ResponseEntity<Token> login(@RequestBody LoginRequest login){
 
         return ResponseEntity.ok(userService.login(login));
+    }
+
+    @PostMapping("/login/administrator")
+    public ResponseEntity<AdminLoginResponseDto> loginAdmin(@RequestBody LoginRequest login){
+        return ResponseEntity.ok(userService.adminLogin(login));
     }
 
     @PostMapping("login/oauth")

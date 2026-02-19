@@ -29,12 +29,23 @@ public class WorkersController {
 
         return ResponseEntity.ok(workerService.getWorkersByPort(portId));
     }
+    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @PostMapping("/ports/{portId}")
+    public ResponseEntity<List<UserDtoResponse>> createPortWorker(@PathVariable Integer portId,  @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader ){
+
+        workerService.authorizeAdminToPortResource(userIdFromHeader(authHeader),portId);
+
+        return ResponseEntity.ok(workerService.getWorkersByPort(portId));
+    }
 
 
+    @PreAuthorize("hasAuthority('DEVELOPER')")
     @PostMapping("/company/{companyId}/administrator")
     public ResponseEntity<UserDtoResponse> createAdministrator(@RequestBody UserAdminDto adminDto, @PathVariable Integer companyId){
         return ResponseEntity.ok(workerService.createCompanyAdministrator(adminDto, companyId));
     }
+
+
 
     @PostMapping("/ports/{portsId}")
     public ResponseEntity<UserDtoResponse> createWorker(@RequestBody UserAdminDto adminDto, @PathVariable Integer portsId){

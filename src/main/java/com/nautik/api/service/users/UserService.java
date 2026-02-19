@@ -1,15 +1,12 @@
 package com.nautik.api.service.users;
 
-import com.nautik.api.domain.Company;
-import com.nautik.api.domain.Port;
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
-import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
-import com.nautik.api.dto.user.UserAdminDto;
+import com.nautik.api.dto.user.AdminLoginResponseDto;
 import com.nautik.api.dto.user.UserDto;
 import com.nautik.api.dto.user.UserDtoResponse;
 import com.nautik.api.repository.port.CompanyRepository;
@@ -20,7 +17,6 @@ import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,6 +56,29 @@ public class UserService {
         }
 
         throw new RuntimeException("Credenciales inválidas");
+    }
+
+    public AdminLoginResponseDto adminLogin(LoginRequest loginRequest) {
+        Token token;
+        User user;
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getUserName(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        if (authentication.isAuthenticated()) {
+            user = userRepository.findByUserName(loginRequest.getUserName())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+            token = jwtService.generateToken(user);
+        }else{
+            throw new RuntimeException("Credenciales inválidas");
+        }
+
+        return new AdminLoginResponseDto(token.getToken(),user.getRole().getName());
+
     }
 
     public Token OAuthLogin(GoogleIdTokenInfo googleIdTokenInfo){
