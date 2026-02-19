@@ -24,6 +24,7 @@ public class MooringCategoryDto {
      private int dimensionsMaxBeam;
      private int dimensionsMaxLength;
      private int minPrice;
+     private MooringDimensionDto dimensions;
 
 
 

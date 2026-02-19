@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login/administrator").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/availability/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
@@ -94,7 +95,12 @@ public class SecurityConfig {
                 "http://172.30.0.*:9000",
                 "http://quasar-dev:9000",
                 "http://localhost:8082",
-                "http://localhost:8084"
+
+                "http://localhost:8084",
+
+                "http://vue-dev:5173",
+                "*"
+
         ));
 
         configuration.setAllowedMethods(List.of(
