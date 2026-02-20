@@ -32,18 +32,18 @@ public class ZoneService {
                 .toList();
     }
 
-    public ZoneDto findById(Integer zoneId, Long portId){
-        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow();
-        return modelMapper.map(zoneRepository.findZoneByIdAndPort(zoneId, port).orElseThrow(()->new ResourceNotFoundException("Zone not found")), ZoneDto.class);
+    public ZoneDto findById(Integer zoneId){
+
+        return modelMapper.map(zoneRepository.findZoneById(zoneId).orElseThrow(()->new ResourceNotFoundException("Zone not found")), ZoneDto.class);
     }
 
-    public ZoneDto create(Long portId, CreateZoneDto zone){
+    public ZoneDto create(Integer portId, CreateZoneDto zone){
 
         List<MooringCategory> categories = new ArrayList<>();
 //        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
 //            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
 //        });
-        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
+        Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Zone addZone = new Zone();
         addZone.setPort(port);
         addZone.setName(zone.getName());
