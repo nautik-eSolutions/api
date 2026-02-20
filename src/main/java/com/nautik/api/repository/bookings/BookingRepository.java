@@ -26,4 +26,6 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
     List<Booking> findByMooringCategoriesAndAvailability(List<MooringCategory>mooringCategories, Date startDate, Date endDate);
 
     List<Booking> findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(Integer mooringMooringCategoryZonePortId, Date startDateAfter);
+
+    List<Booking> findAllByMooringId(Integer mooringId);
 }

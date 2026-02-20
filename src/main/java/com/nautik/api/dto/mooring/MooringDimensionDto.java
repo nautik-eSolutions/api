@@ -16,9 +16,9 @@ import java.io.Serializable;
 public class MooringDimensionDto implements Serializable {
     private Long id;
     @NotNull
-    private Long maxLength;
+    private Double maxLength;
     @NotNull
-    private Long maxBeam;
+    private Double maxBeam;
     @NotNull
-    private Long maxDraft;
+    private Double maxDraft;
 }

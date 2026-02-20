@@ -4,11 +4,14 @@ package com.nautik.api.service.moorings;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
+import com.nautik.api.domain.moorings.MooringDimension;
 import com.nautik.api.domain.moorings.MooringMooringStatus;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
+import com.nautik.api.dto.mooring.MooringCategoryPriceConfigurationDto;
 import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
+import com.nautik.api.dto.mooring.create.MooringDimensionCreateDto;
 import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringDimensionRepository;
@@ -39,6 +42,13 @@ public class MooringService {
     public MooringDto findById(long mooringId){
         return modelMapper.map(mooringRepository.findById(mooringId), MooringDto.class);
     }
+
+    public MooringDimensionDto createMooringDimension(MooringDimensionCreateDto mooringDimensionDto){
+        MooringDimension mooringDimension = dimensionRepository.save(modelMapper.map(mooringDimensionDto, MooringDimension.class));
+        return modelMapper.map(mooringDimension, MooringDimensionDto.class);
+    }
+
+
 
     public List<MooringDto> findAllByPortName(String portName){
         String port = portName.replace("_"," ");

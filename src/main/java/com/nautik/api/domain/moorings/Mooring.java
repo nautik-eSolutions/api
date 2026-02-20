@@ -15,7 +15,7 @@ public class Mooring {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "number", nullable = false)
     private Long number;

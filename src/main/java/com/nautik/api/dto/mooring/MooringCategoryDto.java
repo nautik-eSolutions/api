@@ -21,8 +21,9 @@ public class MooringCategoryDto {
 
      private String zonePortName;
      private String zoneName;
-     private int dimensionsMaxBeam;
-     private int dimensionsMaxLength;
+     private double dimensionsMaxBeam;
+     private double dimensionsMaxLength;
+     private double dimensionsMaxDraft;
      private int minPrice;
      private MooringDimensionDto dimensions;
 

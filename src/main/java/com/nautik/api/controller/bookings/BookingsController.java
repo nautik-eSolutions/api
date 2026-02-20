@@ -62,6 +62,15 @@ public class BookingsController {
      return   bookingService.getAllFreeMooringsByDateAndCategory(mooringCategoryId,startDate,endDate);
     }
 
+    @GetMapping("/moorings/{mooringId}")
+    public List<BookingDto> getBookingsByMooringId(
+            @PathVariable Integer mooringId
+    ){
+        return bookingService.getAllBookingsByMooringId(mooringId);
+    }
+
+
+
 
     @PostMapping
     public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader ){

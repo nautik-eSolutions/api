@@ -27,7 +27,7 @@ public class MooringDimension {
 
     @NotNull
     @Column(name = "max_draft", nullable = false)
-    private Long maxDraft;
+    private Integer maxDraft;
 
 
 
