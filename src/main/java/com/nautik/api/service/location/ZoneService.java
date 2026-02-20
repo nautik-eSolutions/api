@@ -38,34 +38,20 @@ public class ZoneService {
     }
 
     public ZoneDto create(Integer portId, CreateZoneDto zone){
-
-        List<MooringCategory> categories = new ArrayList<>();
-//        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
-//            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
-//        });
         Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));
         Zone addZone = new Zone();
         addZone.setPort(port);
         addZone.setName(zone.getName());
         addZone.setDescription(zone.getDescription());
-        addZone.setMooringCategories(categories);
         return modelMapper.map(zoneRepository.save(addZone), ZoneDto.class);
     }
 
-    public ZoneDto update( Integer zoneId, CreateZoneDto zone, Long portId ){
+    public ZoneDto update( Integer zoneId, CreateZoneDto zone ){
+        Zone searchedZone = zoneRepository.findZoneById(zoneId).orElseThrow(()->new ResourceNotFoundException("Zone not found"));
 
-
-        List<MooringCategory> categories = new ArrayList<>();
-//        zone.getMooringCategoriesMooringNumber().forEach(cat -> {
-//            categories.add(mooringCategoryRepository.findById(cat).orElseThrow(()->new ResourceNotFoundException("Mooring category not found")));
-//        });
-        Port port = portRepository.findById(Math.toIntExact(portId)).orElseThrow(()->new ResourceNotFoundException("Port not found"));
-        Zone zoneProvided = new Zone();
-        zoneProvided.setId(zoneId);
-        zoneProvided.setPort(port);
-        zoneProvided.setName(zone.getName());
-        zoneProvided.setDescription(zone.getDescription());
-        zoneProvided.setMooringCategories(categories);
+        Zone zoneProvided = modelMapper.map(zone, Zone.class);
+        zoneProvided.setId(searchedZone.getId());
+        zoneProvided.setPort(searchedZone.getPort());
         return modelMapper.map(zoneRepository.save(zoneProvided), ZoneDto.class);
     }
 

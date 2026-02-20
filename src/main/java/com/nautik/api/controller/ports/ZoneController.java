@@ -43,13 +43,12 @@ public class ZoneController {
         return ResponseEntity.status(HttpStatus.CREATED).body(zone);
     }
 
-    @PutMapping("/{zoneId}/port/{portId}")
+    @PutMapping("/{zoneId}")
     public ResponseEntity<ZoneDto> updateZone(
-            @PathVariable Long zoneId,
-            @RequestBody CreateZoneDto dto,
-            @PathVariable Long portId
+            @PathVariable Integer zoneId,
+            @RequestBody CreateZoneDto dto
     ) {
-        ZoneDto zone = zoneService.update(Math.toIntExact(zoneId),dto, portId);
+        ZoneDto zone = zoneService.update(zoneId,dto);
         return ResponseEntity.ok(zone);
     }
 
