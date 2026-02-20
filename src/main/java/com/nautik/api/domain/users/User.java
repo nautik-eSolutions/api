@@ -11,10 +11,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
->>>>>>> dev/pedro/solucioAuthLaravel
+
 import java.util.Date;
 import java.util.List;
 
@@ -54,12 +52,6 @@ public class User {
 
     @Column(name = "created_at")
     private Timestamp created_at;
-
-    @Column(name="identification_document")
-    private String identificationDocument;
-
-    @Column(name = "birth_date")
-    private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
