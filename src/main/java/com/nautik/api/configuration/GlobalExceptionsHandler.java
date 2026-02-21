@@ -3,20 +3,21 @@ package com.nautik.api.configuration;
 import com.nautik.api.domain.exceptions.ForbiddenToResourceException;
 import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.ZoneConstraintViolationException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
 
 @Configuration
 @ControllerAdvice
-public class GlobalExceptionsHandler {
+public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -45,12 +46,23 @@ public class GlobalExceptionsHandler {
     }
 
     @ExceptionHandler(ForbiddenToResourceException.class)
-    public ResponseEntity<ProblemDetail> handleForbbidenToResourceException(ForbiddenToResourceException ex){
+    public ResponseEntity<ProblemDetail> handleForbiddenToResourceException(ForbiddenToResourceException ex){
         ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         error.setProperty("timestamp", Instant.now());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
+
+    @ExceptionHandler(ZoneConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleZoneConstraintViolationException(ZoneConstraintViolationException ex){
+        ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        error.setProperty("timestamp", Instant.now());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+ 
+
 
 
 

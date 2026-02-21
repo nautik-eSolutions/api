@@ -54,9 +54,9 @@ public class ZoneController {
 
     @DeleteMapping("/{zoneId}")
     public ResponseEntity<Void> deleteZone(
-            @PathVariable Long zoneId
+            @PathVariable Integer zoneId
     ) {
-        zoneService.delete(Math.toIntExact(zoneId));
+        zoneService.delete(zoneId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
