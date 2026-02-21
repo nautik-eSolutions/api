@@ -1,5 +1,6 @@
 package com.nautik.api.dto.mooring;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,11 +15,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MooringDimensionDto implements Serializable {
-    private Long id;
+    private Integer id;
     @NotNull
     private Double maxLength;
     @NotNull
     private Double maxBeam;
     @NotNull
     private Double maxDraft;
+    private String name;
 }

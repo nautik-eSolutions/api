@@ -3,7 +3,7 @@ package com.nautik.api.controller.ports;
 
 import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.location.create.CreateZoneDto;
-import com.nautik.api.service.location.ZoneService;
+import com.nautik.api.service.port.ZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,21 +1,18 @@
-package com.nautik.api.service.location;
+package com.nautik.api.service.port;
 
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.Zone;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.exceptions.ZoneConstraintViolationException;
-import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.location.create.CreateZoneDto;
 import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.port.PortRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

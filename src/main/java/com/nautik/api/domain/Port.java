@@ -1,5 +1,6 @@
 package com.nautik.api.domain;
 
+import com.nautik.api.domain.moorings.MooringDimension;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
 import com.nautik.api.domain.users.User;
@@ -35,8 +36,11 @@ public class Port {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    @ManyToMany(mappedBy = "ports")
+    @OneToMany(mappedBy = "ports")
     private List<User> workers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "port")
+    private List<MooringDimension> mooringDimensions =  new ArrayList<>();
 
     /*
     @ManyToOne

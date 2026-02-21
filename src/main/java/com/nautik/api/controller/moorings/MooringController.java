@@ -42,7 +42,7 @@ public class MooringController {
         return ResponseEntity.ok(moorings);
     }
 
-    @PreAuthorize("hasAnyAuthority()")
+    @PreAuthorize("()")
     @GetMapping("/dimensions")
     public ResponseEntity<List<MooringDimensionDto>> getAllDimensions() {
         List<MooringDimensionDto> dimensions = mooringService.getAllMooringsDimensions();

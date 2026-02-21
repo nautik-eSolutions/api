@@ -1,5 +1,6 @@
 package com.nautik.api.domain.moorings;
 
+import com.nautik.api.domain.Port;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class MooringDimension {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @NotNull
     @Column(name = "max_length", nullable = false)
@@ -30,6 +31,12 @@ public class MooringDimension {
     private Integer maxDraft;
 
 
+    private String name;
+
+
+    @ManyToOne
+    @JoinColumn(name = "port_id")
+    private Port port;
 
 
 }

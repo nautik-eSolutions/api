@@ -63,13 +63,9 @@ public class User {
     @OneToOne(mappedBy = "administrator")
     private Company company;
 
-    @ManyToMany
-    @JoinTable(
-            name = "port_workers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "port_id")
-    )
-    List<Port> ports = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "port_id")
+    private List<Port> ports = new ArrayList<>();
 
 
     /*
