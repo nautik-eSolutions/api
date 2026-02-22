@@ -9,4 +9,5 @@ public class MooringCategoryInfoDto {
     private Integer zoneId;
     private Integer dimensionsId;
     private int minPricePerDay;
+    private String name;
 }

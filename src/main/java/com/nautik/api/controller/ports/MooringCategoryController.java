@@ -47,7 +47,6 @@ public class MooringCategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMooringCategory(
-            @PathVariable Integer portId,
             @PathVariable Integer id) {
         mooringCategoryService.deleteMooringCategory(id);
         return ResponseEntity.noContent().build();
