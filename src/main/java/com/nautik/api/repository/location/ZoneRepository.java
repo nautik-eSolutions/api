@@ -21,4 +21,6 @@ public interface ZoneRepository extends JpaRepository<Zone, Integer> {
     Optional<Zone> findZoneByIdAndPort(Integer id, Port port);
 
     List<Zone> findAllByPort_Id(Integer portId);
+
+    Optional <Zone> findByIdAndPortId(Integer id, Integer portId);
 }

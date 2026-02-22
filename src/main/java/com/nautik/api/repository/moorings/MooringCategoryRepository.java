@@ -66,4 +66,6 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
 
 
     Optional<MooringCategory> findByDimensions_IdAndZone_Id(Long aLong, Integer zoneId);
+
+    Optional<MooringCategory> findByIdAndZonePortId(Integer id, Integer zonePortId);
 }

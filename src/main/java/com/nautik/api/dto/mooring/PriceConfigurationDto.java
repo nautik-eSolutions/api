@@ -9,8 +9,10 @@ import java.util.Date;
 @Data
 public class PriceConfigurationDto {
 
+    Integer id;
     Integer minPricePerDay;
     Date startDate;
     Date endDate;
+    String name;
 
 }

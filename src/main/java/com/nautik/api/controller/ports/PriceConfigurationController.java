@@ -1,4 +1,4 @@
-package com.nautik.api.controller.bookings;
+package com.nautik.api.controller.ports;
 
 import com.nautik.api.dto.mooring.PriceConfigurationDto;
 import com.nautik.api.service.bookings.PriceConfigurationService;
@@ -19,38 +19,31 @@ public class PriceConfigurationController {
 
 
     @GetMapping
-    public ResponseEntity<List<PriceConfigurationDto>> getAll(@PathVariable Integer portId) {
-        return ResponseEntity.ok(priceConfigurationService.getAll());
+    public ResponseEntity<List<PriceConfigurationDto>> getAllByPortId(@PathVariable Integer portId) {
+        return ResponseEntity.ok(priceConfigurationService.getAllByPortId(portId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PriceConfigurationDto> getById(
-            @PathVariable Integer portId,
-            @PathVariable Integer id) {
-        return ResponseEntity.ok(priceConfigurationService.getById( id));
-    }
 
     @PostMapping
-    public ResponseEntity<PriceConfigurationDto> create(
+    public ResponseEntity<PriceConfigurationDto> createPriceConfiguration(
             @PathVariable Integer portId,
             @RequestBody PriceConfigurationDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(priceConfigurationService.create(dto));
+                .body(priceConfigurationService.createPriceConfiguration(portId, dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PriceConfigurationDto> update(
-            @PathVariable Integer portId,
+    public ResponseEntity<PriceConfigurationDto> updatePriceConfiguration(
             @PathVariable Integer id,
             @RequestBody PriceConfigurationDto dto) {
-        return ResponseEntity.ok(priceConfigurationService.update( id, dto));
+        return ResponseEntity.ok(priceConfigurationService.updatePriceConfiguration( id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<Void> deletePriceConfiguration(
             @PathVariable Integer portId,
             @PathVariable Integer id) {
-        priceConfigurationService.delete( id);
+        priceConfigurationService.deletePriceConfiguration( id);
         return ResponseEntity.noContent().build();
     }
 

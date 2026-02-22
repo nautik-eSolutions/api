@@ -1,13 +1,11 @@
 package com.nautik.api.service.bookings;
 
-import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.MooringCategoryAvailabilityDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
-import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.moorings.PriceConfigurationRepository;
@@ -27,7 +25,7 @@ import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
-public class MooringCategoryService {
+public class MooringCategoryAvailabilityService {
 
 
     private final MooringCategoryRepository mooringCategoryRepository;
