@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Date;
 import java.util.List;
 
-public interface PriceConfigurationRepository extends JpaRepository<PriceConfiguration, Long> {
+public interface PriceConfigurationRepository extends JpaRepository<PriceConfiguration, Integer> {
     List<PriceConfiguration> findByMooringCategories(List<MooringCategory> mooringCategories);
 
     List<PriceConfiguration> findAllByMooringCategories(List<MooringCategory> mooringCategories);

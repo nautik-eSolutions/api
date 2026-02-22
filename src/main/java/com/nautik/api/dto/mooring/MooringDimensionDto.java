@@ -8,19 +8,14 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link com.nautik.api.domain.moorings.MooringDimension}
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MooringDimensionDto implements Serializable {
     private Integer id;
-    @NotNull
-    private Double maxLength;
-    @NotNull
-    private Double maxBeam;
-    @NotNull
-    private Double maxDraft;
+    private int maxLength;
+    private int maxBeam;
+    private int maxDraft;
     private String name;
 }

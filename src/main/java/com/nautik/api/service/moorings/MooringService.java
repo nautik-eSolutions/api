@@ -80,7 +80,7 @@ public class MooringService {
                 .orElseGet(() ->{
                     MooringCategory mooringCategory1 = new MooringCategory();
                     mooringCategory1.setZone(zoneRepository.findZoneById(Math.toIntExact(dto.getZoneId())).orElseThrow());
-                    mooringCategory1.setDimensions(dimensionRepository.findById(Long.valueOf(dto.getDimensionsId())).orElseThrow());
+                    mooringCategory1.setDimensions(dimensionRepository.findById(dto.getDimensionsId()).orElseThrow());
                     return mooringCategoryRepository.save(mooringCategory1);
                 });
     }

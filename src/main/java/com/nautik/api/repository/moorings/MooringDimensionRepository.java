@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MooringDimensionRepository extends JpaRepository<MooringDimension, Integer> {
-    List<MooringDimensionDto> findByPortId(Integer portId);
+    List<MooringDimension> findByPortId(Integer portId);
 }

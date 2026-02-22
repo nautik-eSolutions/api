@@ -17,7 +17,7 @@ public class DimensionsController {
 
     private final MooringDimensionsService mooringDimensionsService;
 
-    @GetMapping("/port/{portId}")
+    @GetMapping("/ports/{portId}")
     public ResponseEntity<List<MooringDimensionDto>> getMooringDimensionsByPort(@PathVariable Integer portId){
         return ResponseEntity.ok(mooringDimensionsService.getAllMooringsDimensionsByPort(portId));
     }
@@ -26,13 +26,14 @@ public class DimensionsController {
     public ResponseEntity<MooringDimensionDto> updateMooringDimension(@PathVariable Integer dimensionId, @RequestBody MooringDimensionCreateDto dimensionCreateDto){
         return ResponseEntity.ok(mooringDimensionsService.updateMooringDimension(dimensionId,dimensionCreateDto));
     }
-    @PostMapping("/port/{portId}")
+    @PostMapping("/ports/{portId}")
     public ResponseEntity<MooringDimensionDto> createMooringDimension(@PathVariable Integer portId, @RequestBody MooringDimensionCreateDto dimensionCreateDto){
         return ResponseEntity.ok(mooringDimensionsService.createMooringDimension(portId, dimensionCreateDto));
     }
     @DeleteMapping("/{dimensionId}")
     public ResponseEntity<Void> createMooringDimension(@PathVariable Integer dimensionId ){
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mooringDimensionsService.createMooringDimension(dimensionId));
+        mooringDimensionsService.deleteMooringDimension(dimensionId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-}
+
 }

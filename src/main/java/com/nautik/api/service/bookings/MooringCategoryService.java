@@ -131,7 +131,7 @@ public class MooringCategoryService {
 
         PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);
 
-        mooringCategory.setMinPrice(priceConfiguration.getMinPrice());
+        mooringCategory.setMinPrice(priceConfiguration.getMinPricePerDay());
 
         return mooringCategory;
     }

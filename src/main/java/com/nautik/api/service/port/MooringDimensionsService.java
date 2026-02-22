@@ -57,15 +57,10 @@ public class MooringDimensionsService {
     public MooringDimensionDto updateMooringDimension(Integer mooringDimensionID, MooringDimensionCreateDto mooringDimensionDto) {
 
         MooringDimension providedMooringDimension = modelMapper.map(mooringDimensionDto, MooringDimension.class);
-        providedMooringDimension
-                .setId(
-                        dimensionRepository
-                                .findById(mooringDimensionID)
-                                .orElseThrow(
-                                        ()->new ResourceNotFoundException("Dimension not found")
-                                )
-                                .getId()
-                );
+        MooringDimension searchedMooringDimension =  dimensionRepository.findById(mooringDimensionID).orElseThrow(
+                        ()->new ResourceNotFoundException("Dimension not found"));
+        providedMooringDimension.setId(searchedMooringDimension.getId());
+        providedMooringDimension.setPort(searchedMooringDimension.getPort());
 
         return modelMapper.map( dimensionRepository.save(providedMooringDimension), MooringDimensionDto.class);
     }

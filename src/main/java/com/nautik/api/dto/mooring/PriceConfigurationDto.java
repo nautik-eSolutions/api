@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 public class PriceConfigurationDto {
 
-    Integer minPrice;
+    Integer minPricePerDay;
     Date startDate;
     Date endDate;
 

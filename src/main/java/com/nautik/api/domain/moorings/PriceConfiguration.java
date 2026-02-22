@@ -17,7 +17,7 @@ public class PriceConfiguration {
     private Long id;
 
     @Column(name = "min_price")
-    private Integer minPrice;
+    private Integer minPricePerDay;
 
     @Column(name = "start_date")
     private Date startDate;

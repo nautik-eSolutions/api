@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class MooringDimensionCreateDto {
     private String name;
-    private Double length;
-    private Double beam;
-    private Double draft;
+    private Double maxLength;
+    private Double maxBeam;
+    private Double maxDraft;
 
 }
