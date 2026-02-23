@@ -32,6 +32,19 @@ public class MooringController {
         return ResponseEntity.ok(moorings);
     }
 
+    @GetMapping("/category/{mooringCategoriesId}")
+    public ResponseEntity<List<MooringDto>> getAllMooringByCategoryId(@PathVariable Integer mooringCategoriesId){
+        List<MooringDto> moorings = mooringService.findByMooringCategoryId(mooringCategoriesId);
+        return ResponseEntity.ok(moorings);
+    }
+
+    @GetMapping("/{mooringId}")
+    public ResponseEntity<MooringDto> getMooringById(@PathVariable Integer mooringId) {
+        MooringDto mooring = mooringService.findById(mooringId);
+        return ResponseEntity.ok(mooring);
+    }
+
+
 
     @GetMapping("/ports/{portId}")
     public ResponseEntity<List<MooringDto>> getAllMooringsByPort(
@@ -40,13 +53,6 @@ public class MooringController {
         List<MooringDto> moorings = mooringService.findAllByPortId(portId);
 
         return ResponseEntity.ok(moorings);
-    }
-
-    @PreAuthorize("()")
-    @GetMapping("/dimensions")
-    public ResponseEntity<List<MooringDimensionDto>> getAllDimensions() {
-        List<MooringDimensionDto> dimensions = mooringService.getAllMooringsDimensions();
-        return ResponseEntity.ok(dimensions);
     }
 
     @GetMapping("/ports/{portId}/dimensions")
@@ -58,40 +64,28 @@ public class MooringController {
     }
 
 
-    @PostMapping("/dimensions")
-    public ResponseEntity<MooringDimensionDto> createMooringDimension(
-            @RequestBody MooringDimensionCreateDto mooringDimensionDto) {
-        return ResponseEntity.ok(mooringService.createMooringDimension(mooringDimensionDto));
-    }
 
-    @GetMapping("/{mooringId}")
-    public ResponseEntity<MooringDto> getMooringById(@PathVariable Long mooringId) {
-        MooringDto mooring = mooringService.findById(Math.toIntExact(mooringId));
-        return ResponseEntity.ok(mooring);
-    }
 
-    @PostMapping("/{portId}")
-    public ResponseEntity<MooringDto> createMooring(@PathVariable Long portId, @RequestBody CreateMooringDto mooring) {
-        MooringDto dto = mooringService.createMooring(portId, mooring);
+
+    @PostMapping("/category/{categoryId}")
+    public ResponseEntity<MooringDto> createMooring(@PathVariable Integer categoryId, @RequestBody CreateMooringDto mooring) {
+        MooringDto dto = mooringService.createMooring(categoryId, mooring);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
 
     }
 
     @DeleteMapping("/{mooringId}")
-    public ResponseEntity<MooringDto> deleteMooringById(@PathVariable Long mooringId) {
+    public ResponseEntity<MooringDto> deleteMooringById(@PathVariable Integer mooringId) {
         mooringService.delete(mooringId);
         return ResponseEntity.ok().build();
 
     }
 
     @PutMapping("/{mooringId}")
-    public ResponseEntity<MooringDto> updateMooring(@RequestBody CreateMooringDto mooring, @PathVariable Long mooringId) {
-        MooringCategoryDto mooringCategory = mooringService.findCategoryById(mooring.getDimensionsId(), mooring.getZoneId());
+    public ResponseEntity<MooringDto> updateMooring(@RequestBody CreateMooringDto mooring, @PathVariable Integer mooringId) {
 
-        MooringDto createMooring = new MooringDto(mooringId, mooring.getNumber(), mooringCategory);
-
-        MooringDto mooringDtp = mooringService.update(mooringId, createMooring);
+        MooringDto mooringDtp = mooringService.update(mooringId, mooring);
         return ResponseEntity.ok(mooringDtp);
 
     }

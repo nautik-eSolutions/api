@@ -26,24 +26,18 @@ public class MooringCategoryService {
     private final ModelMapper modelMapper;
 
     public List<MooringCategoryInfoDto> getAllByPortId(Integer portId) {
-        return mooringCategoryRepository.findAllByZonePortId(portId)
-                .stream()
-                .map(mc -> modelMapper.map(mc, MooringCategoryInfoDto.class))
-                .toList();
+        return mooringCategoryRepository.findAllByZonePortId(portId).stream().map(mc -> modelMapper.map(mc, MooringCategoryInfoDto.class)).toList();
     }
 
-    public MooringCategoryInfoDto getById(Integer portId, Integer id) {
-        MooringCategory category = mooringCategoryRepository.findByIdAndZonePortId(id, portId)
-                .orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
-        return modelMapper.map(category, MooringCategoryInfoDto.class);
+    public MooringCategoryDto getById(Integer portId, Integer id) {
+        MooringCategory category = mooringCategoryRepository.findByIdAndZonePortId(id, portId).orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
+        return modelMapper.map(category, MooringCategoryDto.class);
     }
 
     public MooringCategoryInfoDto createMooringCategory(Integer portId, MooringCategoryInfoDto dto) {
-        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId)
-                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId).orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
 
-        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId())
-                .orElseThrow(() -> new ResourceNotFoundException("MooringDimension not found"));
+        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId()).orElseThrow(() -> new ResourceNotFoundException("MooringDimension not found"));
 
         MooringCategory category = modelMapper.map(dto, MooringCategory.class);
         category.setZone(zone);
@@ -53,14 +47,11 @@ public class MooringCategoryService {
     }
 
     public MooringCategoryInfoDto updateMooringCategory(Integer portId, Integer id, MooringCategoryInfoDto dto) {
-        MooringCategory existing = mooringCategoryRepository.findByIdAndZonePortId(id, portId)
-                .orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
+        MooringCategory existing = mooringCategoryRepository.findByIdAndZonePortId(id, portId).orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
 
-        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId)
-                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId).orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
 
-        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId())
-                .orElseThrow(() -> new ResourceNotFoundException("MooringDimension not found"));
+        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId()).orElseThrow(() -> new ResourceNotFoundException("MooringDimension not found"));
 
         MooringCategory updated = modelMapper.map(dto, MooringCategory.class);
         updated.setId(existing.getId());

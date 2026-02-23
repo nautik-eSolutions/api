@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-public interface MooringRepository extends JpaRepository<Mooring, Long> {
+public interface MooringRepository extends JpaRepository<Mooring, Integer> {
 
     List<Mooring> findAllByMooringCategory_Zone_Port_NameIgnoreCase(String mooringCategoryZonePortName);
 
@@ -32,4 +33,5 @@ public interface MooringRepository extends JpaRepository<Mooring, Long> {
     @Query("select m from Mooring m where m.mooringCategory.id = ?1 and m not in ( select m1 from Mooring m1 inner join Booking b on b.mooring = m1 where b.startDate < ?3 and b.endDate > ?2 )")
     List<Mooring> findFreeMooringsByCategory(Integer mooringCategory, Date startDate, Date endDate);
 
+    List<Mooring> findByMooringCategoryId(Integer mooringCategoryId);
 }

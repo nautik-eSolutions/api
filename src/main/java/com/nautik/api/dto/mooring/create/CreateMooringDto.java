@@ -9,7 +9,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreateMooringDto {
-    private Long number;
-    private Integer zoneId;
-    private Integer dimensionsId;
+    private String number;
 }

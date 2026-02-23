@@ -18,13 +18,13 @@ import java.util.List;
 public class MooringCategoryDto {
         private Integer id;
     //ZoneDto zone;
-
+     private String name;
      private String zonePortName;
      private String zoneName;
      private double dimensionsMaxBeam;
      private double dimensionsMaxLength;
      private double dimensionsMaxDraft;
-     private int minPrice;
+     private int minPricePerDay;
      private MooringDimensionDto dimensions;
 
 

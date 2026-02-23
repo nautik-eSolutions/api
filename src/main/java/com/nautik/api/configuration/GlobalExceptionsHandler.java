@@ -1,9 +1,6 @@
 package com.nautik.api.configuration;
 
-import com.nautik.api.domain.exceptions.ForbiddenToResourceException;
-import com.nautik.api.domain.exceptions.NoAvailabilityException;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
-import com.nautik.api.domain.exceptions.ZoneConstraintViolationException;
+import com.nautik.api.domain.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -60,8 +57,16 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
+    @ExceptionHandler(MooringHasBookingsException.class)
+    public ResponseEntity<ProblemDetail> handleMooringConstraintViolationException(MooringHasBookingsException ex){
+        ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        error.setProperty("timestamp", Instant.now());
 
- 
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+
+
 
 
 

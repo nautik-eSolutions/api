@@ -1,6 +1,7 @@
 package com.nautik.api.service.moorings;
 
 
+import com.nautik.api.domain.exceptions.MooringHasBookingsException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
@@ -18,8 +19,11 @@ import com.nautik.api.repository.moorings.MooringDimensionRepository;
 import com.nautik.api.repository.moorings.MooringMooringStatusRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.HibernateException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,23 +39,29 @@ public class MooringService {
     public final MooringDimensionRepository dimensionRepository;
     public final ZoneRepository zoneRepository;
 
-    public List<MooringDto> findAll(){
+    public List<MooringDto> findAll() {
         return mooringRepository.findAll().stream().map(mooring -> modelMapper.map(mooring, MooringDto.class)).toList();
     }
 
-    public MooringDto findById(long mooringId){
+    public MooringDto findById(Integer mooringId) {
         return modelMapper.map(mooringRepository.findById(mooringId), MooringDto.class);
     }
 
-    public MooringDimensionDto createMooringDimension(MooringDimensionCreateDto mooringDimensionDto){
+
+    public List<MooringDto> findByMooringCategoryId(Integer mooringCategoryId) {
+
+        List<Mooring> moorings = mooringRepository.findByMooringCategoryId(mooringCategoryId);
+        return moorings.stream().map(m -> modelMapper.map(m, MooringDto.class)).toList();
+    }
+
+    public MooringDimensionDto createMooringDimension(MooringDimensionCreateDto mooringDimensionDto) {
         MooringDimension mooringDimension = dimensionRepository.save(modelMapper.map(mooringDimensionDto, MooringDimension.class));
         return modelMapper.map(mooringDimension, MooringDimensionDto.class);
     }
 
 
-
-    public List<MooringDto> findAllByPortName(String portName){
-        String port = portName.replace("_"," ");
+    public List<MooringDto> findAllByPortName(String portName) {
+        String port = portName.replace("_", " ");
         return mooringRepository.findAllByMooringCategory_Zone_Port_NameIgnoreCase(port)
                 .stream()
                 .map(mooring -> modelMapper.map(mooring, MooringDto.class))
@@ -59,65 +69,82 @@ public class MooringService {
     }
 
 
-    public List<MooringDto> findAllByPortId(Integer portId){
+    public List<MooringDto> findAllByPortId(Integer portId) {
         return mooringRepository.findAllByMooringCategoryZonePortId(portId)
                 .stream()
                 .map(mooring -> modelMapper.map(mooring, MooringDto.class))
                 .toList();
     }
-    public MooringDto createMooring(Long portId, CreateMooringDto dto){
-        MooringCategory mooringCategory = findOrCreateCategory(dto);
-        Mooring mooring = new Mooring();
+
+    public MooringDto createMooring(Integer mooringCategoryId, CreateMooringDto mooringDto) {
+        MooringCategory mooringCategory = mooringCategoryRepository.findById(mooringCategoryId).orElseThrow(() -> new ResourceNotFoundException("Mooring category not found"));
+        Mooring mooring = modelMapper.map(mooringDto, Mooring.class);
         mooring.setMooringCategory(mooringCategory);
-        mooring.setNumber(dto.getNumber());
         return modelMapper.map(mooringRepository.save(mooring), MooringDto.class);
+    }
+
+
+    /*
+        public MooringDto createMooring(Integer mooringCategoryId, CreateMooringDto dto) {
+            MooringCategory mooringCategory = findOrCreateCategory(dto);
+            Mooring mooring = new Mooring();
+            mooring.setMooringCategory(mooringCategory);
+            mooring.setNumber(dto.getNumber());
+            return modelMapper.map(mooringRepository.save(mooring), MooringDto.class);
+
+        }
+    /*
+        public MooringCategory findOrCreateCategory(CreateMooringDto dto) {
+            return (MooringCategory) mooringCategoryRepository
+                    .findByDimensions_IdAndZone_Id(Long.valueOf(dto.getDimensionsId()), dto.getZoneId())
+                    .orElseGet(() -> {
+                        MooringCategory mooringCategory1 = new MooringCategory();
+                        mooringCategory1.setZone(zoneRepository.findZoneById(Math.toIntExact(dto.getZoneId())).orElseThrow());
+                        mooringCategory1.setDimensions(dimensionRepository.findById(dto.getDimensionsId()).orElseThrow());
+                        return mooringCategoryRepository.save(mooringCategory1);
+                    });
+        }
+    */
+    public void delete(Integer id) {
+        Mooring mooring = mooringRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Mooring not found"));
+        try{
+            mooringRepository.delete(mooring);
+        }catch (Exception hex){
+            throw new MooringHasBookingsException();
+        }
 
     }
 
-    public MooringCategory findOrCreateCategory(CreateMooringDto dto){
-        return (MooringCategory) mooringCategoryRepository
-                .findByDimensions_IdAndZone_Id(Long.valueOf(dto.getDimensionsId()), dto.getZoneId())
-                .orElseGet(() ->{
-                    MooringCategory mooringCategory1 = new MooringCategory();
-                    mooringCategory1.setZone(zoneRepository.findZoneById(Math.toIntExact(dto.getZoneId())).orElseThrow());
-                    mooringCategory1.setDimensions(dimensionRepository.findById(dto.getDimensionsId()).orElseThrow());
-                    return mooringCategoryRepository.save(mooringCategory1);
-                });
-    }
-    public void delete(long id){
-        Mooring mooring = mooringRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Mooring not found"));
-        mooringRepository.delete(mooring);
-    }
-
-    public MooringDto update(long id, MooringDto dto){
-        Mooring mooring = mooringRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Mooring not found"));
+    public MooringDto update(Integer id, CreateMooringDto dto) {
+        Mooring mooring = mooringRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Mooring not found"));
         Mooring providedMooring = modelMapper.map(dto, Mooring.class);
         providedMooring.setId(mooring.getId());
+        providedMooring.setMooringCategory(mooring.getMooringCategory());
         return modelMapper.map(mooringRepository.save(providedMooring), MooringDto.class);
     }
 
-    public List<MooringDto> findAllByZoneId(long zoneId){
+    public List<MooringDto> findAllByZoneId(long zoneId) {
         return mooringRepository.findAllByMooringCategory_Zone_Id(zoneId).stream()
                 .map(mooring -> modelMapper.map(mooring, MooringDto.class))
                 .toList();
     }
 
-    public List<MooringDto> findAllByZoneAvailable(long zoneId){
+    public List<MooringDto> findAllByZoneAvailable(long zoneId) {
         List<MooringDto> mooringsZone = this.findAllByZoneId(zoneId);
         List<MooringDto> available = new ArrayList<>();
 
         mooringsZone.forEach(mooringDto -> {
             MooringMooringStatus status = statusRepository.findFirstByMooring_Id(mooringDto.getId());
 
-            if(status.getMooringStatus().getId() == 1){
+            if (status.getMooringStatus().getId() == 1) {
                 available.add(mooringDto);
             }
 
         });
-        return  available;
+        return available;
     }
 
-    public List<MooringDimensionDto> getAllMooringsDimensions(){
+    public List<MooringDimensionDto> getAllMooringsDimensions() {
         return dimensionRepository.findAll()
                 .stream()
                 .map((element) -> modelMapper
@@ -125,7 +152,7 @@ public class MooringService {
                 .toList();
     }
 
-    public MooringCategoryDto findCategoryById(int zoneId, int dimensionsId){
+    public MooringCategoryDto findCategoryById(int zoneId, int dimensionsId) {
         return modelMapper.map(
                 mooringCategoryRepository
                         .findByDimensions_IdAndZone_Id((long) dimensionsId, zoneId), MooringCategoryDto.class);
