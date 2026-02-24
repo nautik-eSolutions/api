@@ -65,7 +65,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "port_id")
-    private List<Port> ports = new ArrayList<>();
+    private Port port;
 
 
     /*

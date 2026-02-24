@@ -37,14 +37,16 @@ public class Port {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    @OneToMany(mappedBy = "ports")
+    @OneToMany(mappedBy = "port")
     private List<User> workers = new ArrayList<>();
 
     @OneToMany(mappedBy = "port")
     private List<MooringDimension> mooringDimensions =  new ArrayList<>();
 
+    @OneToMany(mappedBy = "port")
+    private List<MooringDimension> photos =  new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "port")
     private List<PriceConfiguration> priceConfigurations = new ArrayList<>();
     /*
     @ManyToOne

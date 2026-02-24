@@ -9,6 +9,6 @@ public class BookingOccupancyDto {
     private String endDate;
     private Long boatId;
     private Long bookingStatusId;
-    private int mooringNumber;
+    private String mooringNumber;
     private int mooringId;
 }

@@ -30,7 +30,7 @@ public class MooringCategoryService {
     }
 
     public MooringCategoryDto getById(Integer portId, Integer id) {
-        MooringCategory category = mooringCategoryRepository.findByIdAndZonePortId(id, portId).orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
+        MooringCategory category = mooringCategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
         return modelMapper.map(category, MooringCategoryDto.class);
     }
 
