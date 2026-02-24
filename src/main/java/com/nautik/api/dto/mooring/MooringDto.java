@@ -12,6 +12,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class MooringDto implements Serializable {
     Long id;
-    Long number;
+    String number;
     MooringCategoryDto mooringCategory;
 }

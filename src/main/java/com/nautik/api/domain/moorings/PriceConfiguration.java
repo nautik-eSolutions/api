@@ -1,5 +1,6 @@
 package com.nautik.api.domain.moorings;
 
+import com.nautik.api.domain.Port;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,16 +15,22 @@ public class PriceConfiguration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "min_price")
-    private Integer minPrice;
+    private Integer minPricePerDay;
 
     @Column(name = "start_date")
     private Date startDate;
 
     @Column(name = "end_date")
     private Date endDate;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "port_id")
+    private Port port;
 
     @ManyToMany
     @JoinTable(

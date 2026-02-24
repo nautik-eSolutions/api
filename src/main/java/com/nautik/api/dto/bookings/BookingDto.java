@@ -18,6 +18,6 @@ public class BookingDto {
         private Double totalCost;
         private Long boatId;
         private Long bookingStatusId;
-        private int mooringNumber;
+        private String mooringNumber;
 
 }

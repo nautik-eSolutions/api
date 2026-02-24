@@ -3,6 +3,7 @@ package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.users.User;
@@ -102,12 +103,14 @@ public class BookingService {
         return true;
     }
 
+    public List<BookingDto> getAllBookingsByMooringId(Integer mooringId){
+        List <Booking> bookings = bookingRepository.findAllByMooringId(mooringId);
+        if (bookings.isEmpty()) {
+            throw new ResourceNotFoundException("No bookings we're found");
+        }
 
-
-
-
-
-
+        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
+    }
 
 
 

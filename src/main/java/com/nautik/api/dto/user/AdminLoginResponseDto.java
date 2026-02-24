@@ -7,9 +7,10 @@ import lombok.Data;
 public class AdminLoginResponseDto {
     String token;
     String role;
-
-    public AdminLoginResponseDto(String token, String role){
-        this.role=role;
-        this.token=token;
+    Integer portId;
+    public AdminLoginResponseDto(String token, String role, Integer portId) {
+        this.token = token;
+        this.role = role;
+        this.portId = portId;
     }
 }

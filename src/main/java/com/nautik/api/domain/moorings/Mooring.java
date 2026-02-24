@@ -15,10 +15,10 @@ public class Mooring {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "number", nullable = false)
-    private Long number;
+    private String number;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mooring_category_id", nullable = false, referencedColumnName = "id")

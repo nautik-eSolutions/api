@@ -86,8 +86,12 @@ public class UserService {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        return new AdminLoginResponseDto(token.getToken(),user.getRole().getName());
+        Integer portId = null;
+        if (user.getPort() != null) {
+            portId = user.getPort().getId();
+        }
 
+        return new AdminLoginResponseDto(token.getToken(), user.getRole().getName(), portId);
     }
 
     public Token OAuthLogin(GoogleIdTokenInfo googleIdTokenInfo){

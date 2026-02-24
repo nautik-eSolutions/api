@@ -26,9 +26,9 @@ public class Zone {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "port_id", nullable = false)
+    @JoinColumn(name = "port_id")
     private Port port;
 
     @OneToMany(mappedBy = "zone")

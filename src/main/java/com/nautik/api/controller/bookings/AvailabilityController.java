@@ -1,15 +1,11 @@
 package com.nautik.api.controller.bookings;
 
-import com.nautik.api.domain.moorings.Mooring;
-import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.mooring.MooringCategoryAvailabilityDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
-import com.nautik.api.dto.mooring.MooringDto;
-import com.nautik.api.service.bookings.MooringCategoryService;
+import com.nautik.api.service.bookings.MooringCategoryAvailabilityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -17,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AvailabilityController {
 
-    private final MooringCategoryService mooringCategoryService;
+    private final MooringCategoryAvailabilityService mooringCategoryService;
 
 
     @GetMapping("/mooring-categories/port/{portId}/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")

@@ -18,6 +18,10 @@ public class MooringCategory {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    private String name;
+
+    @Column(name = "min_price")
+    private Double minPricePerDay;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

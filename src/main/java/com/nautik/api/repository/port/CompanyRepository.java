@@ -2,6 +2,7 @@ package com.nautik.api.repository.port;
 
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -18,5 +19,6 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
     Optional<Company> findFirstByName(String name);
 
+    Optional<Company> findByAdministrator(User administrator);
     Optional<Company> findById(Long id);
 }
