@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -34,5 +35,12 @@ public class Zone {
     @OneToMany(mappedBy = "zone")
     private List<MooringCategory> mooringCategories;
 
+    @ManyToMany
+    @JoinTable(
+            name = "zone_service",
+            joinColumns = @JoinColumn(name = "zone_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<ZoneServicesOffered> services = new ArrayList<>();
 
 }

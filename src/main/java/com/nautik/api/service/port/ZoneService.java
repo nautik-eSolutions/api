@@ -2,16 +2,20 @@ package com.nautik.api.service.port;
 
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.Zone;
+import com.nautik.api.domain.ZoneServicesOffered;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.exceptions.ZoneConstraintViolationException;
 import com.nautik.api.dto.location.ZoneDto;
 import com.nautik.api.dto.location.create.CreateZoneDto;
+import com.nautik.api.dto.service.ServiceDto;
 import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.port.PortRepository;
+import com.nautik.api.repository.service.ServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -23,7 +27,7 @@ public class ZoneService {
     private final ModelMapper modelMapper;
     private final PortRepository portRepository;
     private final MooringCategoryRepository mooringCategoryRepository;
-
+    private final ServiceRepository serviceRepository;
     public List<ZoneDto> findByPort(Long portId) {
 
         return zoneRepository.findAllByPort_Id(Math.toIntExact(portId))
@@ -63,6 +67,38 @@ public class ZoneService {
 
         zoneRepository.delete(zoneDelete);
 
+    }
+
+
+    public List<ServiceDto> getServicesByZone(Integer zoneId) {
+        Zone zone = zoneRepository.findZoneById(zoneId)
+                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        return zone.getServices()
+                .stream()
+                .map(s -> modelMapper.map(s, ServiceDto.class))
+                .toList();
+    }
+
+    public void addServiceToZone(Integer zoneId, Integer serviceId) {
+        Zone zone = zoneRepository.findZoneById(zoneId)
+                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        ZoneServicesOffered service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new ResourceNotFoundException("service not found"));
+
+        if (!zone.getServices().contains(service)) {
+            zone.getServices().add(service);
+            zoneRepository.save(zone);
+        }
+    }
+
+    public void removeServiceFromZone(Integer zoneId, Integer serviceId) {
+        Zone zone = zoneRepository.findZoneById(zoneId)
+                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        ZoneServicesOffered service = serviceRepository.findById(serviceId)
+                .orElseThrow(() -> new ResourceNotFoundException("service not found"));
+
+        zone.getServices().remove(service);
+        zoneRepository.save(zone);
     }
 
 
