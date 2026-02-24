@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "service")
-public class Service {
+public class ZoneServicesOffered {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
