@@ -23,8 +23,8 @@ public class AvailabilityController {
     @GetMapping("/mooring-categories/port/{portId}/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
     public List<MooringCategoryDto> getMooringCategoriesByPortDimensionsAndAvailability (
             @PathVariable Integer portId,
-            @PathVariable Integer length,
-            @PathVariable Integer beam,
+            @PathVariable Double length,
+            @PathVariable Double beam,
             @PathVariable String startDate,
             @PathVariable String endDate
     ){

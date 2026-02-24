@@ -83,21 +83,13 @@ public class BookingService {
         Double totalCost = 435.00D;
         Mooring mooring =  availableMoorings.get(0);
 
-        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring );
+        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring, "" );
 
         bookingRepository.save(booking);
 
 
         return true;
     }
-
-
-
-
-
-
-
-
 
 
     private Date dateFormater(String dateString) {

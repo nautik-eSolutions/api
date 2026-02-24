@@ -3,7 +3,9 @@ package com.nautik.api.domain.booking;
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.moorings.Mooring;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -13,6 +15,8 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "booking")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,18 +40,24 @@ public class Booking {
     @JoinColumn(name = "mooring_id")
     private Mooring mooring;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private BookingStatus status = BookingStatus.PENDING;
+
+    @Column(name = "order_number", unique = true)
+    private String orderNumber;
 
 
-    public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring){
+
+    public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring,String orderNumber){
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalCost = totalCost;
         this.boat = boat;
         this.mooring = mooring;
+        this.orderNumber = orderNumber;
 
     }
-
-
 
 
 }

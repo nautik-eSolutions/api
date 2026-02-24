@@ -41,7 +41,7 @@ public class MooringCategoryService {
     private final ModelMapper modelMapper;
 
 
-    public List<Mooring> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate) {
+    public List<Mooring> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Double length, Double beam, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
@@ -56,7 +56,7 @@ public class MooringCategoryService {
 
 
     public List<MooringCategoryDto> getMooringCategoriesbyPortDimensionsAndAvailability(
-            Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate
+            Integer portId, Double length, Double beam, String stringStartDate, String stringEndDate
     ){
 
         Date startDate = dateFormater(stringStartDate);
@@ -93,7 +93,7 @@ public class MooringCategoryService {
 
 
 
-    private List<MooringCategory> getMooringCategoriesByPortAndDimensions(Integer portId, Integer length, Integer beam) {
+    private List<MooringCategory> getMooringCategoriesByPortAndDimensions(Integer portId, Double length, Double beam) {
 
         List<MooringCategory> mooringCategories =
                 mooringCategoryRepository.findAllByZonePortIdAndDimensionsMaxLengthGreaterThanEqualAndDimensionsMaxBeamGreaterThanEqual(portId, length, beam);
