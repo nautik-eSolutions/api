@@ -16,16 +16,17 @@ public class AvailabilityController {
     private final MooringCategoryAvailabilityService mooringCategoryService;
 
 
-    @GetMapping("/mooring-categories/port/{portId}/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
+    @GetMapping("/mooring-categories/port/{portId}/dimensions/{length}/{beam}/{draft}/dates/{startDate}/{endDate}")
     public List<MooringCategoryDto> getMooringCategoriesByPortDimensionsAndAvailability (
             @PathVariable Integer portId,
             @PathVariable Integer length,
             @PathVariable Integer beam,
+            @PathVariable Integer draft,
             @PathVariable String startDate,
             @PathVariable String endDate
     ){
         return mooringCategoryService.getMooringCategoriesbyPortDimensionsAndAvailability(
-                portId, length, beam, startDate, endDate);
+                portId, length, beam,draft,  startDate, endDate);
     }
 
 

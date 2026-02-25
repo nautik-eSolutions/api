@@ -54,15 +54,14 @@ public class MooringCategoryAvailabilityService {
 
 
     public List<MooringCategoryDto> getMooringCategoriesbyPortDimensionsAndAvailability(
-            Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate
+            Integer portId, Integer length, Integer beam,Integer draft, String stringStartDate, String stringEndDate
     ){
-
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
 
         List<MooringCategory> mooringCategories = mooringCategoryRepository.
-                getAllByDimensionsAndAvailability(portId,length,beam,startDate,endDate);
+                getAllByDimensionsAndAvailability(portId,length,beam,draft,startDate,endDate);
 
         List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc -> setPriceInMooringCategory(mc, startDate, endDate)).toList();
 
