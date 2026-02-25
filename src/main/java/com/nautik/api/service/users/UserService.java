@@ -2,6 +2,7 @@ package com.nautik.api.service.users;
 
 import com.nautik.api.domain.Token;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
@@ -99,8 +100,11 @@ public class UserService {
         String email = googleIdTokenInfo.getEmail();
         String name  = googleIdTokenInfo.getName();
 
+        User user = new User(email, email,name);
+        Role role = roleRepository.findByName("CUSTOMER");
+        user.setRole(role);
         if (userRepository.findByEmail(email).isEmpty()){
-           return jwtService.generateToken(userRepository.save(new User(email, email,name)));
+           return jwtService.generateToken(userRepository.save(user));
         }
 
         return jwtService.generateToken(userRepository.findUserByEmail(email).orElseThrow());
@@ -111,14 +115,14 @@ public class UserService {
 
     public UserLoginResponse loginEmail(LoginEmailRequest loginRequest) {
 
-        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow().getUserName();
+        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow(()->new ResourceNotFoundException("User not found")).getUserName();
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userName,
                         loginRequest.getPassword()
                 )
         );
-
         if (authentication.isAuthenticated()) {
             User user = userRepository.findByEmail(loginRequest.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
@@ -148,9 +152,13 @@ public class UserService {
 
 
     public UserLoginResponse createUser(UserDto userDto) {
+        Role role = roleRepository.findByName("CUSTOMER");
+
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        User providedUser = userRepository.save(modelMapper.map(userDto, User.class));
+        User mappedUser = modelMapper.map(userDto, User.class);
+        mappedUser.setRole(role);
+        User providedUser = userRepository.save(mappedUser);
 
 
 

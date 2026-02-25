@@ -1,7 +1,6 @@
 package com.nautik.api.configuration;
 
 import com.nautik.api.domain.exceptions.*;
-import org.apache.http.auth.InvalidCredentialsException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
