@@ -3,6 +3,7 @@ package com.nautik.api.repository.moorings;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,7 +32,7 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
 
     List<MooringCategory> findAllByDimensionsMaxBeamGreaterThanEqualAndDimensionsMaxLengthGreaterThanEqualAndZonePortId(Integer dimensionsMaxBeamIsGreaterThan, Integer dimensionsMaxLengthIsGreaterThan, Integer zonePortId);
 
-    List<MooringCategory> findAllByZonePortIdAndDimensionsMaxLengthGreaterThanEqualAndDimensionsMaxBeamGreaterThanEqual(Integer zonePortId, Integer dimensionsMaxLengthIsGreaterThan, Integer dimensionsMaxBeamIsGreaterThan);
+    List<MooringCategory> findAllByZonePortIdAndDimensionsMaxLengthGreaterThanEqualAndDimensionsMaxBeamGreaterThanEqual(Integer zone_port_id,  Double dimensions_maxLength,  Double dimensions_maxBeam);
 
 
 

@@ -95,7 +95,7 @@ public class BookingService {
         Double totalCost = 435.00D;
         Mooring mooring =  availableMoorings.get(0);
 
-        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring );
+        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring, "" );
 
         bookingRepository.save(booking);
 
@@ -111,7 +111,6 @@ public class BookingService {
 
         return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }
-
 
 
     private Date dateFormater(String dateString) {

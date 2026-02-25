@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository  extends JpaRepository<Booking, Long> {
 
@@ -25,7 +26,10 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
             " mc where mc in ?1 and b.startDate < ?3 and b.endDate > ?2")
     List<Booking> findByMooringCategoriesAndAvailability(List<MooringCategory>mooringCategories, Date startDate, Date endDate);
 
+
     List<Booking> findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(Integer mooringMooringCategoryZonePortId, Date startDateAfter);
 
     List<Booking> findAllByMooringId(Integer mooringId);
+
+    Optional<Booking> findByOrderNumber(String orderNumber);
 }

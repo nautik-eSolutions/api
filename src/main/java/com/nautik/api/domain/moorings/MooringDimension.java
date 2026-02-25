@@ -20,11 +20,11 @@ public class MooringDimension {
 
     @NotNull
     @Column(name = "max_length", nullable = false)
-    private Integer maxLength;
+    private Double maxLength;
 
     @NotNull
     @Column(name = "max_beam", nullable = false)
-    private Integer maxBeam;
+    private Double maxBeam;
 
     @NotNull
     @Column(name = "max_draft", nullable = false)

@@ -39,18 +39,24 @@ public class Booking {
     @JoinColumn(name = "mooring_id")
     private Mooring mooring;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private BookingStatus status = BookingStatus.PENDING;
+
+    @Column(name = "order_number", unique = true)
+    private String orderNumber;
 
 
-    public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring){
+
+    public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring,String orderNumber){
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalCost = totalCost;
         this.boat = boat;
         this.mooring = mooring;
+        this.orderNumber = orderNumber;
 
     }
-
-
 
 
 }
