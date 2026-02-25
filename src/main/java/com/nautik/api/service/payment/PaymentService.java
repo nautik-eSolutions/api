@@ -76,13 +76,12 @@ public class PaymentService {
         Booking pendingBooking = new Booking(startDate, endDate, totalCost, boat, mooring, orderNumber);
         bookingRepository.save(pendingBooking);
 
-        // 8. Construir orden de Redsys
         OrderCES orderCES = new OrderCES.Builder(appConfig)
                 .transactionType(TransactionType.AUTORIZACION)
                 .currency(Currency.EUR)
                 .consumerLanguage(Language.SPANISH)
                 .order(orderNumber)
-                .amount((long) (totalCost * 100)) // Importe en céntimos
+                .amount((long) (totalCost * 100))
                 .productDescription("Reserva de amarre en " + mooring.getMooringCategory().getZone().getName())
                 .payMethods(PaymentMethod.TARJETA)
                 .urlOk(redsysConfig.getUrlOk() + "?order=" + orderNumber)
