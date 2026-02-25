@@ -3,6 +3,7 @@ package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
@@ -87,8 +88,9 @@ public class BookingService {
 
         List<Mooring> availableMoorings =  mooringRepository.findFreeMooringsByCategory(mooringCategoryId,startDate,endDate);
 
+
         if (availableMoorings.isEmpty()){
-            return false;
+            throw new NoAvailabilityException();
         }
 
 
