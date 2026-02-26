@@ -2,7 +2,7 @@ package com.nautik.api.configuration;
 
 import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.jwt.JwtService;
-import com.nautik.api.service.users.CustomUserDetailsService;
+import com.nautik.api.service.userDetails.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

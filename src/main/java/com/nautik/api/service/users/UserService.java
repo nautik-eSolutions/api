@@ -204,15 +204,7 @@ public class UserService {
 
 
 
-    public UserDtoResponse createAdminUser(UserDto userDto){
-        User providedUser = modelMapper.map(userDto, User.class);
-        User createdUser   = userRepository.save(providedUser);
-        adminRepository.save(new Admin(createdUser));
-        return modelMapper.map(
-                userRepository.save(providedUser),
-                UserDtoResponse.class);
 
-    }
 
     public List<UserDtoResponse> getAllUsers(){
         return userRepository.findAll().stream().map((element) -> modelMapper.map(element, UserDtoResponse.class)).toList();

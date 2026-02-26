@@ -32,8 +32,8 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @OneToMany(mappedBy = "company")
-    private List<Admin> admins;
+    @OneToOne(mappedBy = "company")
+    private Admin admin;
     @OneToOne()
     @JoinColumn(name = "user_id")
     private User administrator;

@@ -30,13 +30,14 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserById(Math.toIntExact(userId)));
     }
 
+    /*
 
     @PostMapping("/administrators")
     public ResponseEntity<UserDtoResponse> createAdminUser(@RequestBody UserDto user) {
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(userService.createAdminUser(user));
     }
-
+*/
     @PatchMapping("/{userId}")
     public ResponseEntity<UserDtoResponse> updateUser(
             @RequestBody UserDto user,

@@ -4,6 +4,7 @@ import com.nautik.api.domain.moorings.MooringDimension;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.domain.roles.RolesConfiguration;
+import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -38,7 +39,7 @@ public class Port {
     private Company company;
 
     @OneToMany(mappedBy = "port")
-    private List<User> workers = new ArrayList<>();
+    private List<Admin> admins = new ArrayList<>();
 
     @OneToMany(mappedBy = "port")
     private List<MooringDimension> mooringDimensions =  new ArrayList<>();

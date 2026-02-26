@@ -1,5 +1,6 @@
 package com.nautik.api.domain.roles;
 
+import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -29,14 +30,14 @@ public class Role {
     )
     private List<Capability> capabilities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "role")
-    List<User>users;
+
 
 
     @ManyToOne
     @JoinColumn(name = "roles_configuration_id")
     private RolesConfiguration rolesConfiguration;
     */
-
+    @OneToMany(mappedBy = "role")
+    List<Admin>admins;
 
 }

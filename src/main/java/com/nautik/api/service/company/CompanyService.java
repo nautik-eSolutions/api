@@ -34,7 +34,7 @@ public class CompanyService {
     public CompanyDtoResponse createCompany(CompanyDto companyDto, Long userId) {
         Company providedCompany = modelMapper.map(companyDto, Company.class);
 
-        providedCompany.getAdmins().add(adminRepository.findByUser_Id(Math.toIntExact(userId)).orElseThrow(()->new ResourceNotFoundException("Administrador not found")));
+        providedCompany.setAdmin(adminRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("Administrador not found")));
 
         return modelMapper.map(
                 companyRepository.save(providedCompany),

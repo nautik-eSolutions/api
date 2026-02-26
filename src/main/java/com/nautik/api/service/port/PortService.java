@@ -34,6 +34,21 @@ public class PortService {
                 .map(port -> modelMapper.map(port, PortDto.class))
                 .toList();
     }
+    public List<PortDto> findAllByCompanyAdmin(Integer companyAdmin) {
+        List<Port> ports = portRepository.findAllByCompanyAdministratorId(companyAdmin);
+        if (ports.isEmpty()){
+            throw new ResourceNotFoundException("No ports were found");
+        }
+
+        return ports.stream().map(p-> modelMapper.map(p, PortDto.class)).toList();
+    }
+    public PortDto findAllByPortAdmin(Integer portAdminId) {
+        User user = userRepository.findById(portAdminId).orElseThrow(()->new ResourceNotFoundException("User no found"));
+
+        Port port = user.getPort();
+
+        return modelMapper.map(port, PortDto.class);
+    }
 
     public PortDto findById(Integer portId) {
         return modelMapper.map(portRepository.findById(portId), PortDto.class);

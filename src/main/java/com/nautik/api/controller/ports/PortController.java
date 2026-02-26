@@ -25,10 +25,27 @@ public class PortController {
     private final PortService portService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @PreAuthorize("hasAuthority('DEVELOPER')")
     public ResponseEntity<List<PortDto>> getAllPorts() {
         List<PortDto> allPorts = portService.findAll();
         return ResponseEntity.ok(allPorts);
+    }
+
+    @GetMapping("/company/administrator")
+    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    public ResponseEntity<List<PortDto>> getAllPortsByCompanyAdmin(@AuthenticationPrincipal UserDetails userDetails) {
+        Integer userId = Integer.parseInt(userDetails.getUsername());
+        List<PortDto> allPorts = portService.findAllByCompanyAdmin(userId);
+        return ResponseEntity.ok(allPorts);
+    }
+    @GetMapping("/administrator")
+    @PreAuthorize("hasAuthority('ADMIN_PORT')")
+    public ResponseEntity<PortDto> getPortByPortAdmin(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        Integer userId = Integer.parseInt(userDetails.getUsername());
+        PortDto portDto = portService.findAllByPortAdmin(userId);
+        return ResponseEntity.ok(portDto);
     }
 
     @GetMapping("/{portId}")
