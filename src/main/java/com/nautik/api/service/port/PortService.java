@@ -37,7 +37,7 @@ public class PortService {
                 .toList();
     }
     public List<PortDto> findAllByCompanyAdmin(Integer companyAdmin) {
-        List<Port> ports = portRepository.findAllByCompanyAdministratorId(companyAdmin);
+        List<Port> ports = portRepository.findAllByCompanyAdminId(companyAdmin);
         if (ports.isEmpty()){
             throw new ResourceNotFoundException("No ports were found");
         }

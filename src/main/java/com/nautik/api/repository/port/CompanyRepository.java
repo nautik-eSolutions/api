@@ -6,7 +6,6 @@ import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.lang.ScopedValue;
 import java.util.List;
 import java.util.Optional;
 

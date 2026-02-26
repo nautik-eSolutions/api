@@ -35,7 +35,7 @@ public class CompanyController {
     @PostMapping("/administrators/{idUser}")
     public ResponseEntity<CompanyDtoResponse> createCompany(
             @RequestBody CompanyDto companyDto,
-            @PathVariable Long idUser){
+            @PathVariable Integer idUser){
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,idUser));
     }
 
