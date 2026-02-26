@@ -1,5 +1,6 @@
 package com.nautik.api.configuration;
 
+import com.nautik.api.service.userDetails.ComposedDetailsService;
 import com.nautik.api.service.userDetails.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -111,8 +112,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+    public AuthenticationProvider authenticationProvider(ComposedDetailsService composedDetailsService) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(composedDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

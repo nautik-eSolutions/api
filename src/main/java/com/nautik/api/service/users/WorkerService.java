@@ -31,6 +31,7 @@ public class WorkerService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
+    /*
     public void authorizeAdminToPortResource(Integer userId, Integer portId){
         User administrator =  userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("No user was found"));
         administrator.getCompany().getPorts().stream()
@@ -41,10 +42,10 @@ public class WorkerService {
 
 
 
-
-    public List<UserDtoResponse> getWorkersByPort(Integer portId){
+    /*
+    public List<Admin> getWorkersByPort(Integer portId){
         Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));
-        List<User> workers = port.getWorkers();
+        List<Admin> admins = port.getAdmins();
 
         if (workers.isEmpty()){
             throw new ResourceNotFoundException("This port has no workers");
@@ -52,7 +53,7 @@ public class WorkerService {
 
         return workers.stream().map(worker-> modelMapper.map(worker, UserDtoResponse.class)).toList();
     }
-
+*/
 
 
     public UserDtoResponse createCompanyAdministrator(UserAdminDto userAdminDto, Integer companyId){
@@ -66,7 +67,6 @@ public class WorkerService {
 
         User savedUser =  userRepository.save(providedUser);
 
-        company.setAdministrator(savedUser);
         companyRepository.save(company);
 
 

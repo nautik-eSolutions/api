@@ -4,12 +4,14 @@ import com.nautik.api.domain.City;
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.repository.location.CityRepository;
 import com.nautik.api.repository.port.CompanyRepository;
 import com.nautik.api.repository.port.PortRepository;
+import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,7 +28,7 @@ public class PortService {
     private final ModelMapper modelMapper;
     private final CompanyRepository companyRepository;
     private final CityRepository cityRepository;
-    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 
     public List<PortDto> findAll() {
         return portRepository.findAll()
@@ -43,9 +45,9 @@ public class PortService {
         return ports.stream().map(p-> modelMapper.map(p, PortDto.class)).toList();
     }
     public PortDto findAllByPortAdmin(Integer portAdminId) {
-        User user = userRepository.findById(portAdminId).orElseThrow(()->new ResourceNotFoundException("User no found"));
+        Admin admin = adminRepository.findById(portAdminId).orElseThrow(()->new ResourceNotFoundException("User no found"));
 
-        Port port = user.getPort();
+        Port port = admin.getPort();
 
         return modelMapper.map(port, PortDto.class);
     }
@@ -58,15 +60,15 @@ public class PortService {
         return modelMapper.map(portRepository.findByName(name), PortDto.class);
     }
 
-    private Company getCompanyByUserId(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return companyRepository.findByAdministrator(user)
+    private Company getCompanyByAdminId(Integer adminId) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+        return companyRepository.findByAdmin(admin)
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
     }
 
-    public PortDto create(CreatePortDto dto, Integer userId) {
-        Company company = getCompanyByUserId(userId);
+    public PortDto create(CreatePortDto dto, Integer adminId) {
+        Company company = getCompanyByAdminId(adminId);
         City city = cityRepository.findCityByName(dto.getCityName())
                 .orElseThrow(() -> new ResourceNotFoundException("City not found"));
 
@@ -78,8 +80,8 @@ public class PortService {
         return modelMapper.map(portRepository.save(port), PortDto.class);
     }
 
-    public PortDto update(Integer portId, CreatePortDto dto, Integer userId) {
-        Company company = getCompanyByUserId(userId);
+    public PortDto update(Integer portId, CreatePortDto dto, Integer adminId) {
+        Company company = getCompanyByAdminId(adminId);
 
         Port port = portRepository.findById(portId)
                 .orElseThrow(() -> new ResourceNotFoundException("Port not found"));
@@ -97,8 +99,8 @@ public class PortService {
         return modelMapper.map(portRepository.save(port), PortDto.class);
     }
 
-    public void delete(Integer portId, Integer userId) {
-        Company company = getCompanyByUserId(userId);
+    public void delete(Integer portId, Integer adminId) {
+        Company company = getCompanyByAdminId(adminId);
 
         Port port = portRepository.findById(portId)
                 .orElseThrow(() -> new ResourceNotFoundException("Port not found"));

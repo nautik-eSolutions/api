@@ -60,8 +60,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Boat> boats;
 
-    @OneToOne(mappedBy = "administrator")
-    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "port_id")

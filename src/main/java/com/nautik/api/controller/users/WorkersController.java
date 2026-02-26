@@ -20,7 +20,7 @@ public class WorkersController {
     private final WorkerService workerService;
     private final JwtService  jwtService;
 
-
+/*
     @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
     @GetMapping("/ports/{portId}")
     public ResponseEntity<List<UserDtoResponse>> getAllWorkersByPort(@PathVariable Integer portId,  @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader ){
@@ -37,7 +37,7 @@ public class WorkersController {
 
         return ResponseEntity.ok(workerService.getWorkersByPort(portId));
     }
-
+*/
 
     @PreAuthorize("hasAuthority('DEVELOPER')")
     @PostMapping("/company/{companyId}/administrator")

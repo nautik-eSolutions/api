@@ -34,9 +34,7 @@ public class Company {
 
     @OneToOne(mappedBy = "company")
     private Admin admin;
-    @OneToOne()
-    @JoinColumn(name = "user_id")
-    private User administrator;
+
 
     @OneToMany(mappedBy = "company")
     private List<Port> ports;
