@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +20,7 @@ public class ComposedDetailsService implements UserDetailsService {
     private final CustomUserDetailsService customUserDetailsService;
 
 
-    private final AdminDetailsService adminDetailsService;
+    private final CustomAdminDetailsService adminDetailsService;
 
     private List<UserDetailsService> serviceList;
 

@@ -1,10 +1,10 @@
 package com.nautik.api.service.moorings;
 
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.MooringDimension;
 import com.nautik.api.domain.Zone;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.dto.mooring.MooringCategoryInfoDto;
 import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
@@ -30,14 +30,14 @@ public class MooringCategoryService {
     }
 
     public MooringCategoryDto getById(Integer portId, Integer id) {
-        MooringCategory category = mooringCategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
+        MooringCategory category = mooringCategoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("MooringCategory not found"));
         return modelMapper.map(category, MooringCategoryDto.class);
     }
 
     public MooringCategoryInfoDto createMooringCategory(Integer portId, MooringCategoryInfoDto dto) {
-        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId).orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId).orElseThrow(() -> new EntityNotFoundException("Zone not found"));
 
-        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId()).orElseThrow(() -> new ResourceNotFoundException("MooringDimension not found"));
+        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId()).orElseThrow(() -> new EntityNotFoundException("MooringDimension not found"));
 
         MooringCategory category = modelMapper.map(dto, MooringCategory.class);
         category.setZone(zone);
@@ -47,11 +47,11 @@ public class MooringCategoryService {
     }
 
     public MooringCategoryInfoDto updateMooringCategory(Integer portId, Integer id, MooringCategoryInfoDto dto) {
-        MooringCategory existing = mooringCategoryRepository.findByIdAndZonePortId(id, portId).orElseThrow(() -> new ResourceNotFoundException("MooringCategory not found"));
+        MooringCategory existing = mooringCategoryRepository.findByIdAndZonePortId(id, portId).orElseThrow(() -> new EntityNotFoundException("MooringCategory not found"));
 
-        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId).orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+        Zone zone = zoneRepository.findByIdAndPortId(dto.getZoneId(), portId).orElseThrow(() -> new EntityNotFoundException("Zone not found"));
 
-        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId()).orElseThrow(() -> new ResourceNotFoundException("MooringDimension not found"));
+        MooringDimension dimensions = mooringDimensionRepository.findById(dto.getDimensionsId()).orElseThrow(() -> new EntityNotFoundException("MooringDimension not found"));
 
         MooringCategory updated = modelMapper.map(dto, MooringCategory.class);
         updated.setId(existing.getId());
@@ -63,7 +63,7 @@ public class MooringCategoryService {
 
     public void deleteMooringCategory(Integer id) {
         if (!mooringCategoryRepository.existsById(id)) {
-            throw new ResourceNotFoundException("MooringCategory not found");
+            throw new EntityNotFoundException("MooringCategory not found");
         }
         mooringCategoryRepository.deleteById(id);
     }

@@ -1,9 +1,8 @@
 package com.nautik.api.service.users;
 
 import com.nautik.api.domain.Token;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.roles.Role;
-import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
@@ -115,7 +114,7 @@ public class UserService {
 
     public UserLoginResponse loginEmail(LoginEmailRequest loginRequest) {
 
-        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow(()->new ResourceNotFoundException("User not found")).getUserName();
+        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow(()->new EntityNotFoundException("User not found")).getUserName();
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -141,12 +140,12 @@ public class UserService {
 
 
         public UserDtoResponse findUserById(Integer id) {
-        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
     public UserDtoResponse findUserByFirstName(String firstName) {
-        User user = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User user = userRepository.findByFirstName(firstName).orElseThrow(()->new EntityNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
@@ -184,7 +183,7 @@ public class UserService {
 
     public UserDtoResponse updateUser(UserDto userDto, Long userId) {
 
-        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow(()->new EntityNotFoundException("User not found"));
         User providedUser = modelMapper.map(userDto, User.class);
 
         providedUser.setId(searchedUser.getId());
@@ -197,7 +196,7 @@ public class UserService {
 
 
     public void deleteUser(Long userid) {
-        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         userRepository.deleteById(searchedUser.getId());
     }

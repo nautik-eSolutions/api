@@ -2,14 +2,15 @@ package com.nautik.api.configuration;
 
 import com.nautik.api.domain.exceptions.*;
 import org.hibernate.exception.ConstraintViolationException;
+import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 
@@ -26,14 +27,18 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleUserNotFoundException(ResourceNotFoundException ex) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleEntityNotFoundException(EntityNotFoundException ex) {
         ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         error.setProperty("timestamp", Instant.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @Override
+    protected @Nullable ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return super.handleNoResourceFoundException(ex, headers, status, request);
+    }
 
     @ExceptionHandler(NoAvailabilityException.class)
     public ResponseEntity<ProblemDetail> handleNoAvailabilityException(NoAvailabilityException ex){
@@ -43,8 +48,8 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(error);
     }
 
-    @ExceptionHandler(ForbiddenToResourceException.class)
-    public ResponseEntity<ProblemDetail> handleForbiddenToResourceException(ForbiddenToResourceException ex){
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ProblemDetail> handleForbiddenException(ForbiddenException ex){
         ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
         error.setProperty("timestamp", Instant.now());
 
@@ -79,6 +84,9 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         error.setProperty("timestamp", Instant.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+
+
 
 
 

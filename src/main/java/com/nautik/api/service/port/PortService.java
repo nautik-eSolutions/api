@@ -3,16 +3,14 @@ package com.nautik.api.service.port;
 import com.nautik.api.domain.City;
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.users.Admin;
-import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.repository.location.CityRepository;
 import com.nautik.api.repository.port.CompanyRepository;
 import com.nautik.api.repository.port.PortRepository;
 import com.nautik.api.repository.user.AdminRepository;
-import com.nautik.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -39,13 +37,13 @@ public class PortService {
     public List<PortDto> findAllByCompanyAdmin(Integer companyAdmin) {
         List<Port> ports = portRepository.findAllByCompanyAdminId(companyAdmin);
         if (ports.isEmpty()){
-            throw new ResourceNotFoundException("No ports were found");
+            throw new EntityNotFoundException("No ports were found");
         }
 
         return ports.stream().map(p-> modelMapper.map(p, PortDto.class)).toList();
     }
     public PortDto findAllByPortAdmin(Integer portAdminId) {
-        Admin admin = adminRepository.findById(portAdminId).orElseThrow(()->new ResourceNotFoundException("User no found"));
+        Admin admin = adminRepository.findById(portAdminId).orElseThrow(()->new EntityNotFoundException("User no found"));
 
         Port port = admin.getPort();
 
@@ -62,15 +60,15 @@ public class PortService {
 
     private Company getCompanyByAdminId(Integer adminId) {
         Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
         return companyRepository.findByAdmin(admin)
-                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
     }
 
     public PortDto create(CreatePortDto dto, Integer adminId) {
         Company company = getCompanyByAdminId(adminId);
         City city = cityRepository.findCityByName(dto.getCityName())
-                .orElseThrow(() -> new ResourceNotFoundException("City not found"));
+                .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
         Port port = new Port();
         port.setName(dto.getName());
@@ -84,14 +82,14 @@ public class PortService {
         Company company = getCompanyByAdminId(adminId);
 
         Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new ResourceNotFoundException("Port not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Port not found"));
 
         if (!port.getCompany().getId().equals(company.getId())) {
             throw new AccessDeniedException("No permission to access this resource");
         }
 
         City city = cityRepository.findCityByName(dto.getCityName())
-                .orElseThrow(() -> new ResourceNotFoundException("City not found"));
+                .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
         port.setName(dto.getName());
         port.setCity(city);
@@ -103,7 +101,7 @@ public class PortService {
         Company company = getCompanyByAdminId(adminId);
 
         Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new ResourceNotFoundException("Port not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Port not found"));
 
         if (!port.getCompany().getId().equals(company.getId())) {
             throw new AccessDeniedException("No permission to access this resource");

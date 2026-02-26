@@ -1,7 +1,7 @@
 package com.nautik.api.service.port;
 
 import com.nautik.api.domain.Port;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.moorings.MooringDimension;
 import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.create.MooringDimensionCreateDto;
@@ -45,7 +45,7 @@ public class MooringDimensionsService {
 
         Port providedPort = portRepository
                 .findById(portId).orElseThrow(
-                        ()->new ResourceNotFoundException("Port not found")
+                        ()->new EntityNotFoundException("Port not found")
                 );
 
         providedMooringDimension.setPort(providedPort);
@@ -58,7 +58,7 @@ public class MooringDimensionsService {
 
         MooringDimension providedMooringDimension = modelMapper.map(mooringDimensionDto, MooringDimension.class);
         MooringDimension searchedMooringDimension =  dimensionRepository.findById(mooringDimensionID).orElseThrow(
-                        ()->new ResourceNotFoundException("Dimension not found"));
+                        ()->new EntityNotFoundException("Dimension not found"));
         providedMooringDimension.setId(searchedMooringDimension.getId());
         providedMooringDimension.setPort(searchedMooringDimension.getPort());
 
@@ -70,7 +70,7 @@ public class MooringDimensionsService {
         MooringDimension mooringDimension = dimensionRepository
                 .findById(mooringDimensionID)
                 .orElseThrow(
-                        ()->new ResourceNotFoundException("Dimension not found")
+                        ()->new EntityNotFoundException("Dimension not found")
                 );
 
 

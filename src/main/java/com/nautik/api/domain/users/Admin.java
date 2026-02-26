@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Size(max = 40)
     @NotNull
@@ -40,7 +40,7 @@ public class Admin {
     private Port port;
 
 
-    @OneToOne
+    @OneToOne(mappedBy = "admin")
     private Company company;
 
 }

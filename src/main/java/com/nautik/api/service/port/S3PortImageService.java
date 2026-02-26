@@ -2,7 +2,7 @@ package com.nautik.api.service.port;
 
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.PortImage;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.dto.port.PortImageDto;
 import com.nautik.api.repository.port.PortImageRepository;
 import com.nautik.api.repository.port.PortRepository;
@@ -46,7 +46,7 @@ public class S3PortImageService {
         validateImage(file);
 
         Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new ResourceNotFoundException("Port not found exception"));
+                .orElseThrow(() -> new EntityNotFoundException("Port not found exception"));
 
         String key = buildPortImageKey(portId, file.getOriginalFilename());
 

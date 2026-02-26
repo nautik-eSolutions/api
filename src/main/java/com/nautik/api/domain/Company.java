@@ -32,7 +32,8 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @OneToOne(mappedBy = "company")
+    @OneToOne
+    @JoinColumn(name = "admin_id")
     private Admin admin;
 
 
