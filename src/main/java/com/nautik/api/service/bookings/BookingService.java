@@ -3,6 +3,7 @@ package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.ResourceNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
@@ -87,15 +88,16 @@ public class BookingService {
 
         List<Mooring> availableMoorings =  mooringRepository.findFreeMooringsByCategory(mooringCategoryId,startDate,endDate);
 
+
         if (availableMoorings.isEmpty()){
-            return false;
+            throw new NoAvailabilityException();
         }
 
 
         Double totalCost = 435.00D;
         Mooring mooring =  availableMoorings.get(0);
 
-        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring );
+        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring, "" );
 
         bookingRepository.save(booking);
 
@@ -111,7 +113,6 @@ public class BookingService {
 
         return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }
-
 
 
     private Date dateFormater(String dateString) {

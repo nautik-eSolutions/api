@@ -17,9 +17,14 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 
@@ -39,13 +44,11 @@ public class MooringCategoryAvailabilityService {
     private final ModelMapper modelMapper;
 
 
-    public List<Mooring> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate) {
+    public List<Mooring> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Double length, Double beam, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
         List<MooringCategory> mooringCategories = getMooringCategoriesByPortAndDimensions(portId, length, beam);
-
-
 
 
         return new ArrayList<>();
@@ -53,22 +56,22 @@ public class MooringCategoryAvailabilityService {
 
 
 
-    public List<MooringCategoryDto> getMooringCategoriesbyPortDimensionsAndAvailability(
-            Integer portId, Integer length, Integer beam, String stringStartDate, String stringEndDate
-    ){
+    public List<MooringCategoryAvailabilityDto> getMooringCategoriesbyPortDimensionsAndAvailability(
+            Integer portId, Double length, Double beam,Double draft, String stringStartDate, String stringEndDate
 
+    ){
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
 
         List<MooringCategory> mooringCategories = mooringCategoryRepository.
-                getAllByDimensionsAndAvailability(portId,length,beam,startDate,endDate);
+                getAllByDimensionsAndAvailability(portId,length,beam,draft,startDate,endDate);
 
         List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc -> setPriceInMooringCategory(mc, startDate, endDate)).toList();
 
 
         return mooringCategoriesWithMinPrice
-                .stream().map(mc ->modelMapper.map(mc, MooringCategoryDto.class)).toList();
+                .stream().map(mc ->getPricedMooringCategoryDto(mc,stringStartDate,stringEndDate)).toList();
 
     }
 
@@ -87,11 +90,21 @@ public class MooringCategoryAvailabilityService {
         );
     }
 
+    private double getMultiplyer(MooringCategory mooringCategory, Date startDate, Date endDate){
+        int availableMoorings = mooringRepository.findNumberOfFreeMooringsByCategory(mooringCategory.getId(), startDate,endDate);
+        int totalMoorings = mooringRepository.findNumberMooringsByCategory(mooringCategory.getId());
+
+        if (availableMoorings == 0 && totalMoorings == 0){
+            return 0;
+        }
+        double occupancyRate = (double) (totalMoorings - availableMoorings) / totalMoorings;
+
+        return 1.0 + (occupancyRate * 0.4);
+    }
 
 
 
-
-    private List<MooringCategory> getMooringCategoriesByPortAndDimensions(Integer portId, Integer length, Integer beam) {
+    private List<MooringCategory> getMooringCategoriesByPortAndDimensions(Integer portId, Double length, Double beam) {
 
         List<MooringCategory> mooringCategories =
                 mooringCategoryRepository.findAllByZonePortIdAndDimensionsMaxLengthGreaterThanEqualAndDimensionsMaxBeamGreaterThanEqual(portId, length, beam);
@@ -112,38 +125,47 @@ public class MooringCategoryAvailabilityService {
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
 
-        if (mooringCategory.getPriceConfigurations().isEmpty()) {
-            mooringCategory.setMinPrice(200);
-            return mooringCategory;
-
-        }
-
         List<PriceConfiguration> filteredPriceConfigurations = mooringCategory.getPriceConfigurations().stream().filter(priceConfigurationDateFilter).toList();
 
 
-        if (filteredPriceConfigurations.isEmpty()){
-            mooringCategory.setMinPrice(200);
+        if (filteredPriceConfigurations.isEmpty()) {
+            mooringCategory.setMinPricePerDay(
+                    mooringCategory.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate)
+            );
             return mooringCategory;
         }
 
 
         PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);
 
-        mooringCategory.setMinPrice(priceConfiguration.getMinPricePerDay());
+        mooringCategory.setMinPricePerDay(priceConfiguration.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate));
 
         return mooringCategory;
     }
 
-    private MooringCategoryAvailabilityDto getPricedMooringCategoryDto(MooringCategory pricedMooringCategory, String startDate, String endDate) {
+    private MooringCategoryAvailabilityDto getPricedMooringCategoryDto(MooringCategory pricedMooringCategory, String stringStartDate, String stringEndDate) {
+        Date startDate = dateFormater(stringStartDate);
+        Date endDate = dateFormater(stringEndDate);
+
+
+
+        int days = getDaysBetweenDates(startDate,endDate);
+        System.out.println(days);
+        double totalPrice = pricedMooringCategory.getMinPricePerDay() * days;
+
         MooringCategoryAvailabilityDto mooringCategoryAvailabilityDto =  modelMapper.map(pricedMooringCategory, MooringCategoryAvailabilityDto.class);
-        mooringCategoryAvailabilityDto.setStartDate(startDate);
-        mooringCategoryAvailabilityDto.setEndDate(endDate);
-        mooringCategoryAvailabilityDto.setBasePrice(pricedMooringCategory.getMinPrice());
-        mooringCategoryAvailabilityDto.setTax(pricedMooringCategory.getMinPrice()*0.21);
-        mooringCategoryAvailabilityDto.setTotalPrice(pricedMooringCategory.getMinPrice()*1.21);
+        mooringCategoryAvailabilityDto.setStartDate(stringStartDate);
+        mooringCategoryAvailabilityDto.setEndDate(stringEndDate);
+        mooringCategoryAvailabilityDto.setMinPricePerDay((totalPrice*1.21)/days);
+        mooringCategoryAvailabilityDto.setBasePrice(totalPrice);
+        mooringCategoryAvailabilityDto.setTax(totalPrice*0.21);
+        mooringCategoryAvailabilityDto.setTotalPrice(totalPrice*1.21);
         return mooringCategoryAvailabilityDto;
     }
-
+    private int getDaysBetweenDates(Date startDate, Date endDate) {
+        long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
+        return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
 
 
     private Date dateFormater(String dateString) {
