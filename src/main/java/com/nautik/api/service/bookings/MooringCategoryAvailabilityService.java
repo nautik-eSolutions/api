@@ -24,6 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 
@@ -55,8 +56,8 @@ public class MooringCategoryAvailabilityService {
 
 
 
-    public List<MooringCategoryDto> getMooringCategoriesbyPortDimensionsAndAvailability(
-            Integer portId, Integer length, Integer beam,Integer draft, String stringStartDate, String stringEndDate
+    public List<MooringCategoryAvailabilityDto> getMooringCategoriesbyPortDimensionsAndAvailability(
+            Integer portId, Double length, Double beam,Double draft, String stringStartDate, String stringEndDate
 
     ){
         Date startDate = dateFormater(stringStartDate);
@@ -70,7 +71,7 @@ public class MooringCategoryAvailabilityService {
 
 
         return mooringCategoriesWithMinPrice
-                .stream().map(mc ->modelMapper.map(mc, MooringCategoryDto.class)).toList();
+                .stream().map(mc ->getPricedMooringCategoryDto(mc,stringStartDate,stringEndDate)).toList();
 
     }
 
@@ -91,7 +92,7 @@ public class MooringCategoryAvailabilityService {
 
     private double getMultiplyer(MooringCategory mooringCategory, Date startDate, Date endDate){
         int availableMoorings = mooringRepository.findNumberOfFreeMooringsByCategory(mooringCategory.getId(), startDate,endDate);
-        long totalMoorings = mooringRepository.count(mooringRepository.findByMooringCategory(mooringCategory));
+        int totalMoorings = mooringRepository.findNumberMooringsByCategory(mooringCategory.getId());
 
         if (availableMoorings == 0 && totalMoorings == 0){
             return 0;
@@ -146,22 +147,25 @@ public class MooringCategoryAvailabilityService {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
-        LocalDateTime startDateLocal = LocalDateTime.from(Instant.ofEpochMilli(startDate.getTime()));
-        LocalDateTime endDateLocal = LocalDateTime.from(Instant.ofEpochMilli(endDate.getTime()));
 
-        int days = (int) ChronoUnit.DAYS.between(startDateLocal,endDateLocal);
 
+        int days = getDaysBetweenDates(startDate,endDate);
+        System.out.println(days);
         double totalPrice = pricedMooringCategory.getMinPricePerDay() * days;
 
         MooringCategoryAvailabilityDto mooringCategoryAvailabilityDto =  modelMapper.map(pricedMooringCategory, MooringCategoryAvailabilityDto.class);
         mooringCategoryAvailabilityDto.setStartDate(stringStartDate);
         mooringCategoryAvailabilityDto.setEndDate(stringEndDate);
-        mooringCategoryAvailabilityDto.setBasePrice(pricedMooringCategory.getMinPricePerDay());
-        mooringCategoryAvailabilityDto.setTax(pricedMooringCategory.getMinPricePerDay()*0.21);
+        mooringCategoryAvailabilityDto.setMinPricePerDay((totalPrice*1.21)/days);
+        mooringCategoryAvailabilityDto.setBasePrice(totalPrice);
+        mooringCategoryAvailabilityDto.setTax(totalPrice*0.21);
         mooringCategoryAvailabilityDto.setTotalPrice(totalPrice*1.21);
         return mooringCategoryAvailabilityDto;
     }
-
+    private int getDaysBetweenDates(Date startDate, Date endDate) {
+        long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
+        return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
 
 
     private Date dateFormater(String dateString) {

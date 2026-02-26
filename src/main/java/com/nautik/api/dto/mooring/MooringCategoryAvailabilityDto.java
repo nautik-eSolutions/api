@@ -18,6 +18,7 @@ public class MooringCategoryAvailabilityDto {
     private int dimensionsMaxLength;
     private String startDate;
     private String endDate;
+    private double minPricePerDay;
     private double basePrice;
     private double tax ;
     private double totalPrice;

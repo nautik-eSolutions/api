@@ -49,9 +49,9 @@ public interface MooringCategoryRepository extends JpaRepository<MooringCategory
             "inner join Port p1 on z.port = p1 " +
             "where p.id = ?1 and b.startDate <= ?6 and b.endDate >= ?5 )")
     List<MooringCategory>getAllByDimensionsAndAvailability(Integer portId,
-                                                           Integer length,
-                                                           Integer beam,
-                                                           Integer draft,
+                                                           Double length,
+                                                           Double beam,
+                                                           Double draft,
                                                            Date startDate,
                                                            Date endDate);
 

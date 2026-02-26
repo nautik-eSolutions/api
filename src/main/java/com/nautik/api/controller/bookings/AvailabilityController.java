@@ -4,6 +4,7 @@ import com.nautik.api.dto.mooring.MooringCategoryAvailabilityDto;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.service.bookings.MooringCategoryAvailabilityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,16 +18,16 @@ public class AvailabilityController {
 
 
     @GetMapping("/mooring-categories/port/{portId}/dimensions/{length}/{beam}/{draft}/dates/{startDate}/{endDate}")
-    public List<MooringCategoryDto> getMooringCategoriesByPortDimensionsAndAvailability (
+    public ResponseEntity<List<MooringCategoryAvailabilityDto>> getMooringCategoriesByPortDimensionsAndAvailability (
             @PathVariable Integer portId,
-            @PathVariable Integer length,
-            @PathVariable Integer beam,
-            @PathVariable Integer draft,
+            @PathVariable Double length,
+            @PathVariable Double beam,
+            @PathVariable Double draft,
             @PathVariable String startDate,
             @PathVariable String endDate
     ){
-        return mooringCategoryService.getMooringCategoriesbyPortDimensionsAndAvailability(
-                portId, length, beam,draft,  startDate, endDate);
+        return ResponseEntity.ok(mooringCategoryService.getMooringCategoriesbyPortDimensionsAndAvailability(
+                portId, length, beam,draft,  startDate, endDate));
     }
 
 
