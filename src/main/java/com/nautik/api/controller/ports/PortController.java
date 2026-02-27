@@ -4,11 +4,13 @@ import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.service.port.PortService;
 import com.nautik.api.service.port.S3PortImageService;
+import com.nautik.api.service.userDetails.CustomAdminUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +35,20 @@ public class PortController {
 
     @GetMapping("/company/administrator")
     @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
-    public ResponseEntity<List<PortDto>> getAllPortsByCompanyAdmin(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<PortDto>> getAllPortsByCompanyAdmin(
+            @AuthenticationPrincipal UserDetails userDetails) {
         Integer userId = Integer.parseInt(userDetails.getUsername());
         List<PortDto> allPorts = portService.findAllByCompanyAdmin(userId);
         return ResponseEntity.ok(allPorts);
     }
-    @GetMapping("/administrator")
+
+    @GetMapping("/admin")
     @PreAuthorize("hasAuthority('ADMIN_PORT')")
     public ResponseEntity<PortDto> getPortByPortAdmin(
-            @AuthenticationPrincipal UserDetails userDetails
+            Authentication authentication
     ) {
-        Integer userId = Integer.parseInt(userDetails.getUsername());
+        CustomAdminUserDetails adminUserDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer userId = Integer.parseInt(adminUserDetails.getUsername());
         PortDto portDto = portService.findAllByPortAdmin(userId);
         return ResponseEntity.ok(portDto);
     }

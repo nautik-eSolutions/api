@@ -54,8 +54,9 @@ public class BookingService {
     public List<BookingOccupancyDto> getAllBookingsByPortFromNow(Integer portId){
         Date startDate = new Date();
 
-        List<Booking> getBookings = bookingRepository.findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(portId, startDate);
+        //List<Booking> getBookings = bookingRepository.findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(portId, startDate);
 
+        List<Booking> getBookings = bookingRepository.findAllByMooringMooringCategoryZonePortId(portId);
         return getBookings.stream().map(b->modelMapper.map(b, BookingOccupancyDto.class)).toList();
     }
 
@@ -86,20 +87,36 @@ public class BookingService {
 
         Integer mooringCategoryId =  bookingRequestDto.getMooringCategoryId();
 
-        List<Mooring> availableMoorings =  mooringRepository.findFreeMooringsByCategory(mooringCategoryId,startDate,endDate);
+
+        //falta implementar status, a decidir si sera con registro o sin
+        List<Mooring> availableMoorings =  mooringRepository.findMooringsByMooringCategory(mooringCategoryId);
+
 
 
         if (availableMoorings.isEmpty()){
             throw new NoAvailabilityException();
         }
 
+        List<Booking> bookings = bookingRepository.findByMooringCategoryAndStartDateAndStatusConfirmed
+                (mooringCategoryId,startDate,endDate);
+
 
         Double totalCost = 435.00D;
-        Mooring mooring =  availableMoorings.get(0);
 
-        Booking booking =  new Booking(startDate,endDate,totalCost,boat,mooring, "" );
+        Booking newBooking =  new Booking(startDate,endDate);
 
-        bookingRepository.save(booking);
+        Mooring assignedMooring =  IntervalPartitionService.assignMooring
+                (newBooking,bookings,availableMoorings);
+
+        if (assignedMooring == null){
+            throw new NoAvailabilityException();
+        }
+
+        newBooking.setMooring(assignedMooring);
+        newBooking.setBoat(boat);
+        newBooking.setTotalCost(totalCost);
+
+        bookingRepository.save(newBooking);
 
 
         return true;

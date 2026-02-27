@@ -38,4 +38,6 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
     List<Booking> findAllByMooringId(Integer mooringId);
 
     Optional<Booking> findByOrderNumber(String orderNumber);
+
+    List<Booking> findAllByMooringMooringCategoryZonePortId(Integer mooringMooringCategoryZonePortId);
 }

@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 public class AdminResponse {
     private Integer id;
     private String username;
-    private Integer companyId;
-    private Integer portId;
-    private String adminType;
-    private Token token;// "COMPANY" o "PORT"
+    private Boolean isCompanyAdmin = false;
+    private Token token;
 }

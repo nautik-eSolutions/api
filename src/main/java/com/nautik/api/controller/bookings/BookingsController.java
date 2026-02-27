@@ -39,7 +39,7 @@ public class BookingsController {
         return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
     }
 
-    @PreAuthorize("hasAnyAuthority('STAFF','ADMIN_PORT')")
+    @PreAuthorize("hasAnyAuthority('STAFF','ADMIN_PORT','ADMIN_COMPANY')")
     @GetMapping("ports/{portId}")
     public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
         return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
@@ -79,9 +79,7 @@ public class BookingsController {
     @PostMapping
     public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto,
                                  Authentication  authentication ){
-
         User userDetails = (User) authentication.getPrincipal();
-
 
         return bookingService.createBooking(bookingRequestDto, Integer.parseInt(userDetails.getUsername()));
     }

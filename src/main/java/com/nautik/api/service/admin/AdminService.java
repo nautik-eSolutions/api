@@ -60,7 +60,6 @@ public class AdminService {
             Admin admin = adminRepository.findByUsername(loginRequest.getUserName())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-            Token token =  jwtService.generateAdminToken(admin);
 
 
             return mapToResponse(admin);
@@ -225,12 +224,8 @@ public class AdminService {
         response.setId(admin.getId());
         response.setUsername(admin.getUsername());
 
-        if (admin.getCompany() != null) {
-            response.setCompanyId(admin.getCompany().getId());
-            response.setAdminType("COMPANY");
-        } else if (admin.getPort() != null) {
-            response.setPortId(admin.getPort().getId());
-            response.setAdminType("PORT");
+        if (admin.getCompany() != null){
+            response.setIsCompanyAdmin(true);
         }
 
         return response;
