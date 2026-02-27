@@ -26,25 +26,15 @@ public class ReassignmentService {
     private final MooringCategoryRepository mooringCategoryRepository;
 
 
-
     public ReassignmentResultDto reassignBookings(Integer mooringCategoryId) {
-        MooringCategory category = mooringCategoryRepository.findById(mooringCategoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        MooringCategory category = mooringCategoryRepository.findById(mooringCategoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
-        List<Mooring> moorings = mooringRepository
-                .findMooringsByMooringCategory(mooringCategoryId);
+        List<Mooring> moorings = mooringRepository.findMooringsByMooringCategory(mooringCategoryId);
 
-        List<Booking> bookings = bookingRepository
-                .findByMooringCategoryAndStartDateAndStatusConfirmed
-                        (
-                                mooringCategoryId,
-                                new Date(),
-                                new Date(System.currentTimeMillis() + (365L * 24 * 60 * 60 * 1000))
-                        );
+        List<Booking> bookings = bookingRepository.findByMooringCategoryAndStartDateAndStatusConfirmed(mooringCategoryId, new Date(), new Date(System.currentTimeMillis() + (365L * 24 * 60 * 60 * 1000)));
 
 
-        Map<Integer, Integer> newAssignments = IntervalPartitionService
-                .reassignBookins(bookings, moorings);
+        Map<Integer, Integer> newAssignments = IntervalPartitionService.reassignBookins(bookings, moorings);
 
         List<BookingReassignmentDto> reassignments = new ArrayList<>();
         int totalReassigned = 0;
@@ -53,33 +43,20 @@ public class ReassignmentService {
             Integer bookingId = entry.getKey();
             Integer newMooringId = entry.getValue();
 
-            Booking booking = bookingRepository.findById(bookingId)
-                    .orElseThrow(() -> new EntityNotFoundException("Booking not found with"));
+            Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new EntityNotFoundException("Booking not found with"));
 
             Integer oldMooringId = booking.getMooring() != null ? booking.getMooring().getId() : null;
 
             if (oldMooringId == null || !oldMooringId.equals(newMooringId)) {
-                Mooring newMooring = mooringRepository.findById(newMooringId)
-                        .orElseThrow(() -> new EntityNotFoundException("Mooring not found"));
+                Mooring newMooring = mooringRepository.findById(newMooringId).orElseThrow(() -> new EntityNotFoundException("Mooring not found"));
 
-                reassignments.add(new BookingReassignmentDto(
-                        bookingId,
-                        oldMooringId,
-                        newMooringId,
-                        booking.getStartDate(),
-                        booking.getEndDate()
-                ));
+                reassignments.add(new BookingReassignmentDto(bookingId, oldMooringId, newMooringId, booking.getStartDate(), booking.getEndDate()));
                 booking.setMooring(newMooring);
                 bookingRepository.save(booking);
                 totalReassigned++;
             }
         }
 
-        return new ReassignmentResultDto(
-                totalReassigned,
-                bookings.size(),
-                mooringCategoryId,
-                reassignments
-        );
+        return new ReassignmentResultDto(totalReassigned, bookings.size(), mooringCategoryId, reassignments);
     }
 }
