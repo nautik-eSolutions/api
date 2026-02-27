@@ -47,6 +47,7 @@ public class UserController {
                 .body(userService.updateUser(user,userId));
     }
 
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
@@ -54,8 +55,6 @@ public class UserController {
     }
 
 
-
-    //----------------------------------------------------------------------------------
 
 
 
