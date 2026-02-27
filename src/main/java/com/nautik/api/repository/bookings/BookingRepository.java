@@ -27,6 +27,12 @@ public interface BookingRepository  extends JpaRepository<Booking, Long> {
     List<Booking> findByMooringCategoriesAndAvailability(List<MooringCategory>mooringCategories, Date startDate, Date endDate);
 
 
+    @Query("select b from Booking b " +
+            "inner join Mooring m on b.mooring = m " +
+            "inner join MooringCategory mc on m.mooringCategory = mc " +
+            "where mc.id = ?1 and b.startDate < ?3 and b.endDate > ?2 and (b.status = 'PAID' or b.status = 'PENDING')")
+    List<Booking> findByMooringCategoryAndStartDateAndStatusConfirmed(Integer mooringCategoryId, Date startDate, Date endDate);
+
     List<Booking> findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(Integer mooringMooringCategoryZonePortId, Date startDateAfter);
 
     List<Booking> findAllByMooringId(Integer mooringId);
