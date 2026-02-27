@@ -6,7 +6,6 @@ import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.MooringCategoryAvailabilityDto;
-import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.repository.bookings.BookingRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
@@ -19,10 +18,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,7 +76,7 @@ public class MooringCategoryAvailabilityService {
                 .toList();
 
         return pricedCategories.stream()
-                .map(mc -> getPricedMooringCategoryDto(mc, stringStartDate, stringEndDate))
+                .map(mc -> setPriceInMooringCategoryDto(mc, stringStartDate, stringEndDate))
                 .collect(Collectors.toList());
 
 
@@ -127,7 +122,7 @@ public class MooringCategoryAvailabilityService {
         List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc -> setPriceInMooringCategory(mc, startDate, endDate)).toList();
 
 
-        return mooringCategoriesWithMinPrice.stream().map(mc -> getPricedMooringCategoryDto(mc, stringStartDate, stringEndDate)).toList();
+        return mooringCategoriesWithMinPrice.stream().map(mc -> setPriceInMooringCategoryDto(mc, stringStartDate, stringEndDate)).toList();
 
     }
 
@@ -140,7 +135,7 @@ public class MooringCategoryAvailabilityService {
 
         MooringCategory pricedMooringCategory = setPriceInMooringCategory(mooringCategory, startDate, endDate);
 
-        return getPricedMooringCategoryDto(pricedMooringCategory, stringStartDate, stringEndDate);
+        return setPriceInMooringCategoryDto(pricedMooringCategory, stringStartDate, stringEndDate);
     }
 
     private double getMultiplyer(MooringCategory mooringCategory, Date startDate, Date endDate) {
@@ -170,7 +165,7 @@ public class MooringCategoryAvailabilityService {
     }
 
 
-    private MooringCategory setPriceInMooringCategory(MooringCategory mooringCategory, Date startDate, Date endDate) {
+    protected MooringCategory setPriceInMooringCategory(MooringCategory mooringCategory, Date startDate, Date endDate) {
 
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
@@ -180,7 +175,8 @@ public class MooringCategoryAvailabilityService {
 
 
         if (filteredPriceConfigurations.isEmpty()) {
-            mooringCategory.setMinPricePerDay(mooringCategory.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate));
+            mooringCategory.setMinPricePerDay(
+                    mooringCategory.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate));
             return mooringCategory;
         }
 
@@ -192,7 +188,7 @@ public class MooringCategoryAvailabilityService {
         return mooringCategory;
     }
 
-    private MooringCategoryAvailabilityDto getPricedMooringCategoryDto(MooringCategory pricedMooringCategory, String stringStartDate, String stringEndDate) {
+    private MooringCategoryAvailabilityDto setPriceInMooringCategoryDto(MooringCategory pricedMooringCategory, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 

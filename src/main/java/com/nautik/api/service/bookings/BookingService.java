@@ -7,6 +7,7 @@ import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
+import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.dto.bookings.BookingOccupancyDto;
@@ -25,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -36,20 +38,8 @@ public class BookingService {
     private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
+    private final MooringCategoryAvailabilityService mooringCategoryAvailabilityService;
 
-
-    public List<BookingDto> getAvailableMooringCategoriesByPortAndStartDateAndEndDate(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-        List<Booking> bookingsWithinSelectedDates = bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
-
-
-        List<Mooring> mooringsOcuppied = mooringRepository.findAllByBookingsIn(bookingsWithinSelectedDates);
-
-
-        return bookingsWithinSelectedDates.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
-    }
 
     public List<BookingOccupancyDto> getAllBookingsByPortFromNow(Integer portId){
         Date startDate = new Date();
@@ -58,20 +48,6 @@ public class BookingService {
 
         List<Booking> getBookings = bookingRepository.findAllByMooringMooringCategoryZonePortId(portId);
         return getBookings.stream().map(b->modelMapper.map(b, BookingOccupancyDto.class)).toList();
-    }
-
-
-
-    public List<MooringDto> getAllFreeMooringsByDateAndCategory(Integer mooringCategoryId, String stringStartDate, String stringEndDate){
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate =  dateFormater(stringEndDate);
-
-
-        return mooringRepository
-                .findFreeMooringsByCategory(mooringCategoryId,startDate,endDate)
-                .stream()
-                .map(m->modelMapper.map(m, MooringDto.class)).toList();
-
     }
 
 
@@ -101,7 +77,6 @@ public class BookingService {
                 (mooringCategoryId,startDate,endDate);
 
 
-        Double totalCost = 435.00D;
 
         Booking newBooking =  new Booking(startDate,endDate);
 
@@ -111,6 +86,9 @@ public class BookingService {
         if (assignedMooring == null){
             throw new NoAvailabilityException();
         }
+
+        Double totalCost = getPriceForBooking(assignedMooring,startDate,endDate);
+
 
         newBooking.setMooring(assignedMooring);
         newBooking.setBoat(boat);
@@ -122,6 +100,31 @@ public class BookingService {
         return true;
     }
 
+
+    protected double getPriceForBooking(Mooring mooring, Date startDate, Date endDate) {
+        MooringCategory  mooringCategory = mooring.getMooringCategory();
+        Double totalPrice = mooringCategory.getMinPricePerDay();
+
+        Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
+        Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
+        Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
+
+        List<PriceConfiguration> filteredPriceConfigurations = mooringCategory.getPriceConfigurations().stream().filter(priceConfigurationDateFilter).toList();
+
+
+        if (filteredPriceConfigurations.isEmpty()) {
+            return totalPrice * getMultiplyer(mooringCategory, startDate, endDate);
+        }
+
+
+        PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);
+
+        return priceConfiguration.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate);
+
+    }
+
+
+
     public List<BookingDto> getAllBookingsByMooringId(Integer mooringId){
         List <Booking> bookings = bookingRepository.findAllByMooringId(mooringId);
         if (bookings.isEmpty()) {
@@ -130,6 +133,31 @@ public class BookingService {
 
         return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }
+    public List<BookingDto> getBookingsByMooringDimensionsAndAvailability(Integer beam , Integer length, String stringStartDate, String stringEndDate){
+
+        Date startDate =  dateFormater(stringStartDate);
+        Date endDate = dateFormater(stringEndDate);
+
+        List<Booking> bookings = bookingRepository.findAllByMooringMooringCategoryDimensionsMaxLengthGreaterThanEqualAndMooringMooringCategoryDimensionsMaxBeamGreaterThanEqualAndStartDateBeforeAndEndDateAfter(length,beam,endDate,startDate);
+
+        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
+    }
+
+
+
+
+    private double getMultiplyer(MooringCategory mooringCategory, Date startDate, Date endDate) {
+        int availableMoorings = mooringRepository.findNumberOfFreeMooringsByCategory(mooringCategory.getId(), startDate, endDate);
+        int totalMoorings = mooringRepository.findNumberMooringsByCategory(mooringCategory.getId());
+
+        if (availableMoorings == 0 && totalMoorings == 0) {
+            return 0;
+        }
+        double occupancyRate = (double) (totalMoorings - availableMoorings) / totalMoorings;
+
+        return 1.0 + (occupancyRate * 0.4);
+    }
+
 
 
     private Date dateFormater(String dateString) {
@@ -146,30 +174,10 @@ public class BookingService {
     }
 
 
-    public List<Booking> getBookingsByMooringCategoriesAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-        return bookingRepository.findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(mooringCategoryId, endDate, startDate);
-    }
 
 
-    public List<BookingDto> getBookingsByMooringDimensionsAndAvailability(Integer beam , Integer length, String stringStartDate, String stringEndDate){
-
-        Date startDate =  dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-        List<Booking> bookings = bookingRepository.findAllByMooringMooringCategoryDimensionsMaxLengthGreaterThanEqualAndMooringMooringCategoryDimensionsMaxBeamGreaterThanEqualAndStartDateBeforeAndEndDateAfter(length,beam,endDate,startDate);
-
-        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
-    }
 
 
-    public List<Booking> getBookingsByMooringCategoriesAndAvailability(List<MooringCategory> mooringCategories, Date startDate, Date endDate){
-
-        return bookingRepository.findByMooringCategoriesAndAvailability(mooringCategories,startDate,endDate);
-
-    }
 
 
 

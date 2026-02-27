@@ -25,14 +25,7 @@ public class BookingsController {
     private final BookingService bookingService;
     private final JwtService jwtService;
 
-    @GetMapping("/{mooringCategoryId}/{startDate}/{endDate}")
-    public List<BookingDto> getBookings(
-            @PathVariable Integer mooringCategoryId,
-            @PathVariable String startDate,
-            @PathVariable String endDate
-    ){
-        return bookingService.getAvailableMooringCategoriesByPortAndStartDateAndEndDate(mooringCategoryId,startDate,endDate);
-    }
+
 
     @OnlyAdministrators
     @GetMapping("ports/{portId}")
@@ -51,15 +44,6 @@ public class BookingsController {
         return bookingService.getBookingsByMooringDimensionsAndAvailability(beam,length,startDate,endDate);
     }
 
-    @PreAuthorize("hasAnyAuthority('STAFF','PORT_ADMIN','ADMIN_COMPANY')")
-    @GetMapping("/moorings/{mooringCategoryId}/dates/{startDate}/{endDate}")
-    public List<MooringDto> getFreeMooringsByAvailabilityAndCategory(
-            @PathVariable Integer mooringCategoryId,
-            @PathVariable String startDate,
-            @PathVariable String endDate
-    ){
-     return   bookingService.getAllFreeMooringsByDateAndCategory(mooringCategoryId,startDate,endDate);
-    }
 
     @GetMapping("/moorings/{mooringId}")
     public List<BookingDto> getBookingsByMooringId(
