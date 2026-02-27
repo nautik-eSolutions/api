@@ -26,7 +26,7 @@ public class AvailabilityController {
             @PathVariable String startDate,
             @PathVariable String endDate
     ){
-        return ResponseEntity.ok(mooringCategoryService.getMooringCategoriesbyPortDimensionsAndAvailability(
+        return ResponseEntity.ok(mooringCategoryService.getMooringCategoriesWithByAvailability(
                 portId, length, beam,draft,  startDate, endDate));
     }
 

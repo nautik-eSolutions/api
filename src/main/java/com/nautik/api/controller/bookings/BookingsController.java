@@ -9,11 +9,15 @@ import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.bookings.BookingService;
 import com.nautik.api.service.jwt.JwtService;
+import com.nautik.api.service.userDetails.CustomAdminUserDetails;
+import com.nautik.api.service.userDetails.CustomUserDetailsService;
 import com.nautik.api.service.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,12 +77,13 @@ public class BookingsController {
 
 
     @PostMapping
-    public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader ){
+    public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto,
+                                 Authentication  authentication ){
 
-        String token = authHeader.substring(7);
-        String userName = jwtService.extractUsername(token);
+        User userDetails = (User) authentication.getPrincipal();
 
-        return bookingService.createBooking(bookingRequestDto, userName);
+
+        return bookingService.createBooking(bookingRequestDto, Integer.parseInt(userDetails.getUsername()));
     }
 
 

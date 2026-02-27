@@ -6,7 +6,6 @@ import com.nautik.api.domain.exceptions.MooringHasBookingsException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.MooringDimension;
-import com.nautik.api.domain.moorings.MooringMooringStatus;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
@@ -15,7 +14,6 @@ import com.nautik.api.dto.mooring.create.MooringDimensionCreateDto;
 import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringDimensionRepository;
-import com.nautik.api.repository.moorings.MooringMooringStatusRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,7 +30,6 @@ public class MooringService {
     public final MooringRepository mooringRepository;
     public final MooringCategoryRepository mooringCategoryRepository;
     public final ModelMapper modelMapper;
-    public final MooringMooringStatusRepository statusRepository;
     public final MooringDimensionRepository dimensionRepository;
     public final ZoneRepository zoneRepository;
 
@@ -126,20 +123,7 @@ public class MooringService {
                 .toList();
     }
 
-    public List<MooringDto> findAllByZoneAvailable(long zoneId) {
-        List<MooringDto> mooringsZone = this.findAllByZoneId(zoneId);
-        List<MooringDto> available = new ArrayList<>();
 
-        mooringsZone.forEach(mooringDto -> {
-            MooringMooringStatus status = statusRepository.findFirstByMooring_Id(mooringDto.getId());
-
-            if (status.getMooringStatus().getId() == 1) {
-                available.add(mooringDto);
-            }
-
-        });
-        return available;
-    }
 
     public List<MooringDimensionDto> getAllMooringsDimensions() {
         return dimensionRepository.findAll()

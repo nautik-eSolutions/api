@@ -74,10 +74,10 @@ public class BookingService {
     }
 
 
-    public Boolean createBooking(BookingRequestDto bookingRequestDto, String userName){
+    public Boolean createBooking(BookingRequestDto bookingRequestDto, Integer userId){
         Date startDate = dateFormater(bookingRequestDto.getStartDate());
         Date endDate =  dateFormater(bookingRequestDto.getEndDate());
-        User user = userRepository.findByUserName(userName).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
         Boat boat = user
                     .getBoats()
                     .stream()

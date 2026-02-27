@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IntervalPartitionService {
 
-    public Mooring assignMooring(Booking newBooking, List<Booking> existingBookings, List<Mooring> availableMoorings) {
+    public static Mooring assignMooring(Booking newBooking, List<Booking> existingBookings, List<Mooring> availableMoorings) {
 
         Map<Integer, MooringResource> mooringResources = new HashMap<>();
 
@@ -40,7 +40,33 @@ public class IntervalPartitionService {
         }
 
         return null;
+    }    public Map<Integer, Integer> rebalanceBookings(List<Booking> bookings, List<Mooring> moorings) {
+
+        Map<Integer, Integer> newAssignments = new HashMap<>();
+        List<Booking> sortedBookings = bookings.stream().sorted(Comparator.comparing(Booking::getStartDate)).toList();
+        List<MooringResource> resources = moorings.stream().map(MooringResource::new).toList();
+
+        for (Booking booking : sortedBookings) {
+            boolean assigned = false;
+            for (MooringResource resource : resources) {
+                if (resource.isAvailableFor(booking)) {
+                    resource.addBooking(booking);
+                    newAssignments.put(booking.getId(), resource.getMooring().getId());
+                    assigned = true;
+                    break;
+                }
+            }
+
+            if (!assigned) {
+                if (booking.getMooring() != null) {
+                    newAssignments.put(booking.getId(), booking.getMooring().getId());
+                }
+            }
+        }
+
+        return newAssignments;
     }
+
 
 
 }
