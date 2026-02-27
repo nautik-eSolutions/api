@@ -33,12 +33,10 @@ import java.util.function.Predicate;
 public class BookingService {
 
     private final MooringRepository mooringRepository;
-    private final MooringCategoryRepository mooringCategoryRepository;
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
-    private final MooringCategoryAvailabilityService mooringCategoryAvailabilityService;
 
 
     public List<BookingOccupancyDto> getAllBookingsByPortFromNow(Integer portId){
@@ -87,7 +85,8 @@ public class BookingService {
             throw new NoAvailabilityException();
         }
 
-        Double totalCost = getPriceForBooking(assignedMooring,startDate,endDate);
+        double iva = 1.21;
+        Double totalCost = getPriceForBooking(assignedMooring,startDate,endDate) * iva;
 
 
         newBooking.setMooring(assignedMooring);
@@ -119,7 +118,7 @@ public class BookingService {
 
         PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);
 
-        return priceConfiguration.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate);
+        return priceConfiguration.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate) ;
 
     }
 

@@ -43,6 +43,10 @@ public interface MooringRepository extends JpaRepository<Mooring, Integer> {
     @Query("select COUNT (m) from Mooring m where m.mooringCategory.id = ?1")
     Integer findNumberMooringsByCategory(Integer mooringCategory);
 
+    @Query("select m from Mooring m inner join MooringCategory mc on m.mooringCategory = m inner join Zone z on mc.zone = z inner join Port p on z.port = p where p.id = ?1")
+    List<Mooring> findMooringsByPortId(Integer portId);
+
+
     List<Mooring> findByMooringCategoryId(Integer mooringCategoryId);
 
 }

@@ -3,12 +3,10 @@ package com.nautik.api.service.bookings;
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringResource;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +38,9 @@ public class IntervalPartitionService {
         }
 
         return null;
-    }    public Map<Integer, Integer> rebalanceBookings(List<Booking> bookings, List<Mooring> moorings) {
+    }
+
+    static public Map<Integer, Integer> reassignBookins(List<Booking> bookings, List<Mooring> moorings) {
 
         Map<Integer, Integer> newAssignments = new HashMap<>();
         List<Booking> sortedBookings = bookings.stream().sorted(Comparator.comparing(Booking::getStartDate)).toList();
