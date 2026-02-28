@@ -20,6 +20,7 @@ import com.nautik.api.dto.payment.PaymentResponseDto;
 import com.nautik.api.repository.bookings.BookingRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.user.UserRepository;
+import com.nautik.api.service.bookings.BookingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,8 @@ public class PaymentService {
     private final RedsysConfig redsysConfig;
     private final AppConfigImpl appConfig;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final BookingService bookingService;
+
 
     @Transactional
     public PaymentResponseDto initPayment(PaymentInitRequestDto request, String userName) throws Exception {
@@ -60,20 +63,11 @@ public class PaymentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Embarcación no encontrada"));
 
-        List<Mooring> availableMoorings = mooringRepository.findFreeMooringsByCategory(
-                request.getMooringCategoryId(), startDate, endDate);
+        Booking pendingBooking = bookingService.createBooking(request.getMooringCategoryId(), boat, startDate,endDate);
 
-        if (availableMoorings.isEmpty()) {
-            throw new RuntimeException("No hay amarres disponibles para las fechas seleccionadas");
-        }
+        String orderNumber = String.format("%012d", System.currentTimeMillis() % 1_000_000_000_000L);
 
-        Mooring mooring = availableMoorings.get(0);
-
-        Double totalCost = 435.00;
-
-        String orderNumber = String.format("%012d", System.currentTimeMillis() % 1_000_000_000_000L); // Ejemplo simple
-
-        Booking pendingBooking = new Booking(startDate, endDate, totalCost, boat, mooring, orderNumber);
+        pendingBooking.setOrderNumber(orderNumber);
         bookingRepository.save(pendingBooking);
 
         OrderCES orderCES = new OrderCES.Builder(appConfig)
@@ -81,8 +75,8 @@ public class PaymentService {
                 .currency(Currency.EUR)
                 .consumerLanguage(Language.SPANISH)
                 .order(orderNumber)
-                .amount((long) (totalCost * 100))
-                .productDescription("Reserva de amarre en " + mooring.getMooringCategory().getZone().getName())
+                .amount((long) (pendingBooking.getTotalCost() * 100))
+                .productDescription("Reserva de amarre en " + pendingBooking.getMooring().getMooringCategory().getZone().getName())
                 .payMethods(PaymentMethod.TARJETA)
                 .urlOk(redsysConfig.getUrlOk() + "?order=" + orderNumber)
                 .urlKo(redsysConfig.getUrlKo() + "?order=" + orderNumber)

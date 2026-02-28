@@ -56,13 +56,14 @@ public class BookingsController {
 
 
 
-
+    /*
     @PostMapping
     public Boolean createBooking(@RequestBody BookingRequestDto bookingRequestDto, Authentication  authentication ){
         User userDetails = (User) authentication.getPrincipal();
 
         return bookingService.createBooking(bookingRequestDto, Integer.parseInt(userDetails.getUsername()));
     }
+    */
 
 
 
