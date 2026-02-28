@@ -54,23 +54,18 @@ public class AdminController {
 
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer adminCompanyId = userDetails.getAdminId();
-        Integer companyId = userDetails.getCompanyId();
-
-        AdminResponse response = adminService.createPortAdmin(adminCompanyId, companyId, portId, request);
+        AdminResponse response = adminService.createPortAdmin(adminCompanyId, portId, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/ports/{portId}")
+    @GetMapping("/company/ports}")
     @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
     public ResponseEntity<List<AdminResponse>> getPortAdmins(
-            @PathVariable Integer portId,
             Authentication authentication) {
 
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer adminCompanyId = userDetails.getAdminId();
-        Integer companyId = userDetails.getCompanyId();
-
-        List<AdminResponse> admins = adminService.getPortAdmins(adminCompanyId, companyId, portId);
+        List<AdminResponse> admins = adminService.getPortAdmins(adminCompanyId);
         return ResponseEntity.ok(admins);
     }
 

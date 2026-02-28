@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -126,8 +127,14 @@ public class AdminService {
     }
 
 
-    public AdminResponse createPortAdmin(Integer adminCompanyId, Integer companyId, Integer portId, AdminPortRequest request) {
-        verifyPortOwnership(companyId, portId);
+    public AdminResponse createPortAdmin( Integer adminCompanyId,Integer portId, AdminPortRequest request) {
+        Company company = adminRepository.findById(adminCompanyId).orElseThrow(
+                ()-> new EntityNotFoundException("Admin not found")
+        ).getCompany();
+        if (company == null){
+            throw new ForbiddenException("You are not a company admin");
+        }
+        verifyPortOwnership(company.getId(), portId);
 
         Role role = roleRepository.findByName("ADMIN_PORT");
         if (role == null) {
@@ -148,14 +155,15 @@ public class AdminService {
         return mapToResponse(savedAdmin);
     }
 
-    @Transactional(readOnly = true)
-    public List<AdminResponse> getPortAdmins(Integer adminCompanyId, Integer companyId, Integer portId) {
-        verifyPortOwnership(companyId, portId);
+    public List<AdminResponse> getPortAdmins(Integer adminCompanyId) {
+        Company company  =  adminRepository.findById(adminCompanyId).orElseThrow(
+                ()->new EntityNotFoundException("Administrator not found")
+        ).getCompany();
 
-        Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new EntityNotFoundException("Port not found with id: " + portId));
-
-        return port.getAdmins().stream()
+        List<Port> ports = company.getPorts();
+        List<Admin> admins = new ArrayList<>();
+        ports.forEach(port -> admins.addAll(port.getAdmins()));
+        return admins.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -223,9 +231,10 @@ public class AdminService {
         response.setToken(token);
         response.setId(admin.getId());
         response.setUsername(admin.getUsername());
-
-        if (admin.getCompany() != null){
-            response.setIsCompanyAdmin(true);
+        response.setRole(admin.getRole().getName());
+        if (admin.getRole() != null){
+            response.setPortId(admin.getPort().getId());
+            response.setPortName(admin.getPort().getName());
         }
 
         return response;
