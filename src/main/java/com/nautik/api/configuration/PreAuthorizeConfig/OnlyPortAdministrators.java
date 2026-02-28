@@ -10,4 +10,4 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("hasAuthority('PORT_ADMIN')")
-public @interface OnlyPortAdmin {}
+public @interface OnlyPortAdministrators {}

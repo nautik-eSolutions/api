@@ -1,5 +1,7 @@
 package com.nautik.api.controller.users;
 
+import com.nautik.api.configuration.PreAuthorizeConfig.OnlyCompanyAdministrators;
+import com.nautik.api.configuration.PreAuthorizeConfig.OnlyDevelopers;
 import com.nautik.api.dto.admin.AdminPortRequest;
 import com.nautik.api.dto.admin.AdminResponse;
 import com.nautik.api.dto.admin.AdminCompanyRequest;
@@ -9,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class AdminController {
     }
 
     @PutMapping("/company/{adminId}")
-    @PreAuthorize("hasAuthority('DEVELOPER')")
+    @OnlyDevelopers
     public ResponseEntity<AdminResponse> updateCompanyAdmin(
             @PathVariable Integer adminId,
            @Valid @RequestBody AdminCompanyRequest request) {
@@ -39,14 +40,14 @@ public class AdminController {
     }
 
     @DeleteMapping("/company/{adminId}")
-    @PreAuthorize("hasAuthority('DEVELOPER')")
+    @OnlyDevelopers
     public ResponseEntity<Void> deleteCompanyAdmin(@PathVariable Integer adminId) {
         adminService.deleteCompanyAdmin(adminId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/ports/{portId}")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<AdminResponse> createPortAdmin(
             @PathVariable Integer portId,
             @RequestBody AdminPortRequest request,
@@ -59,7 +60,7 @@ public class AdminController {
     }
 
     @GetMapping("/company/ports")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<List<AdminResponse>> getPortAdmins(
             Authentication authentication) {
 
@@ -70,7 +71,7 @@ public class AdminController {
     }
 
     @PutMapping("/ports/{portId}/{adminId}")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<AdminResponse> updatePortAdmin(
             @PathVariable Integer portId,
             @PathVariable Integer adminId,
@@ -86,7 +87,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/ports/{portId}/{adminId}")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<Void> deletePortAdmin(
             @PathVariable Integer portId,
             @PathVariable Integer adminId,
