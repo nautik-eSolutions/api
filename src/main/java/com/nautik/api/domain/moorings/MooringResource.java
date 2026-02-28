@@ -29,8 +29,7 @@ public  class MooringResource {
         return true;
     }
     private boolean overlaps(Booking b1, Booking b2) {
-        return b1.getStartDate().before(b2.getEndDate())
-                && b2.getStartDate().before(b1.getEndDate());
+        return b1.getStartDate().before(b2.getEndDate()) && b2.getStartDate().before(b1.getEndDate());
     }
 
     public void addBooking(Booking booking) {
@@ -41,8 +40,7 @@ public  class MooringResource {
         if (bookings.isEmpty()) {
             return new Date(0);
         }
-        return bookings.stream()
-                .map(Booking::getEndDate)
+        return bookings.stream().map(Booking::getEndDate)
                 .max(Comparator.naturalOrder())
                 .orElse(new Date(0));
     }

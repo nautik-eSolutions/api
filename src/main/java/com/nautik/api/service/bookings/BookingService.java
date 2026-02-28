@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -79,8 +80,8 @@ public class BookingService {
             throw new NoAvailabilityException();
         }
 
-        double iva = 1.21;
-        Double totalCost = getPriceForBooking(assignedMooring,startDate,endDate) * iva;
+
+        Double totalCost = (double) Math.round(getPriceForBooking(assignedMooring,startDate,endDate));
 
 
         newBooking.setMooring(assignedMooring);
@@ -111,28 +112,32 @@ public class BookingService {
     }
 
 
-    protected double getPriceForBooking(Mooring mooring, Date startDate, Date endDate) {
+    protected Double getPriceForBooking(Mooring mooring, Date startDate, Date endDate) {
         MooringCategory  mooringCategory = mooring.getMooringCategory();
         Double totalPrice = mooringCategory.getMinPricePerDay();
-
+        double iva = 1.21;
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
 
         List<PriceConfiguration> filteredPriceConfigurations = mooringCategory.getPriceConfigurations().stream().filter(priceConfigurationDateFilter).toList();
 
-
+        int days = getDaysBetweenDates(startDate, endDate);
         if (filteredPriceConfigurations.isEmpty()) {
-            return totalPrice * getMultiplyer(mooringCategory, startDate, endDate);
+            return ((totalPrice * getMultiplyer(mooringCategory, startDate, endDate)) * days) * iva ;
         }
 
 
         PriceConfiguration priceConfiguration = filteredPriceConfigurations.get(0);
 
-        return priceConfiguration.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate) ;
+        return ((priceConfiguration.getMinPricePerDay() * getMultiplyer(mooringCategory, startDate, endDate)) * days ) * iva ;
 
     }
 
+    private int getDaysBetweenDates(Date startDate, Date endDate) {
+        long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
+        return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
 
 
     public List<BookingDto> getAllBookingsByMooringId(Integer mooringId){

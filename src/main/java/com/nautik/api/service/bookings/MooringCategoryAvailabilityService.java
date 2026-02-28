@@ -32,26 +32,12 @@ public class MooringCategoryAvailabilityService {
 
 
     private final MooringCategoryRepository mooringCategoryRepository;
-
     private final PriceConfigurationRepository priceConfigurationRepository;
-
     private final MooringRepository mooringRepository;
-
     private final BookingService bookingService;
-
     private final ModelMapper modelMapper;
     private final BookingRepository bookingRepository;
 
-
-    public List<Mooring> getMooringCategoriesByAvailabilityPortAndAvailability(Integer portId, Double length, Double beam, String stringStartDate, String stringEndDate) {
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-        List<MooringCategory> mooringCategories = getMooringCategoriesByPortAndDimensions(portId, length, beam);
-
-
-        return new ArrayList<>();
-    }
 
     public List<MooringCategoryAvailabilityDto> getMooringCategoriesWithByAvailability(Integer portId, Double length, Double beam, Double draft, String stringStartDate, String stringEndDate) {
 
@@ -86,7 +72,7 @@ public class MooringCategoryAvailabilityService {
 
         List<Mooring> mooringsInMooringCategory =
                 mooringRepository.findByMooringCategoryId(mooringCategory.getId());
-        System.out.println("Ingeniero hay que validar el status de mooring");
+        System.out.println("Ingeniero hay que validar el status de mooring, ES DECIR QUE NO ESTE EN MANTENIMIENTO? EL PUERTO SE QUEDÓ SIN AGUA ");
 
         if (mooringsInMooringCategory.isEmpty()){
             throw new NoAvailabilityException();
@@ -109,28 +95,13 @@ public class MooringCategoryAvailabilityService {
 
 
 
-
-    public List<MooringCategoryAvailabilityDto> getMooringCategoriesbyPortDimensionsAndAvailability(Integer portId, Double length, Double beam, Double draft, String stringStartDate, String stringEndDate
-
-    ) {
-        Date startDate = dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-
-        List<MooringCategory> mooringCategories = mooringCategoryRepository.getAllByDimensionsAndAvailability(portId, length, beam, draft, startDate, endDate);
-
-        List<MooringCategory> mooringCategoriesWithMinPrice = mooringCategories.stream().map(mc -> setPriceInMooringCategory(mc, startDate, endDate)).toList();
-
-
-        return mooringCategoriesWithMinPrice.stream().map(mc -> setPriceInMooringCategoryDto(mc, stringStartDate, stringEndDate)).toList();
-
-    }
-
     public MooringCategoryAvailabilityDto getMooringCategoryByIdAndAvailability(Integer mooringCategoryId, String stringStartDate, String stringEndDate) {
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 
-        MooringCategory mooringCategory = mooringCategoryRepository.getMooringCategoryByAvailability(mooringCategoryId, startDate, endDate).orElseThrow(NoAvailabilityException::new);
+        MooringCategory mooringCategory = mooringCategoryRepository
+                .getMooringCategoryByAvailability(mooringCategoryId, startDate, endDate)
+                .orElseThrow(NoAvailabilityException::new);
 
 
         MooringCategory pricedMooringCategory = setPriceInMooringCategory(mooringCategory, startDate, endDate);
@@ -148,20 +119,6 @@ public class MooringCategoryAvailabilityService {
         double occupancyRate = (double) (totalMoorings - availableMoorings) / totalMoorings;
 
         return 1.0 + (occupancyRate * 0.4);
-    }
-
-
-    private List<MooringCategory> getMooringCategoriesByPortAndDimensions(Integer portId, Double length, Double beam) {
-
-        List<MooringCategory> mooringCategories = mooringCategoryRepository.findAllByZonePortIdAndDimensionsMaxLengthGreaterThanEqualAndDimensionsMaxBeamGreaterThanEqual(portId, length, beam);
-
-
-        if (mooringCategories.isEmpty()) {
-
-            //throw new error
-        }
-
-        return mooringCategories;
     }
 
 
