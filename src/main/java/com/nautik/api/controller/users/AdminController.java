@@ -58,7 +58,7 @@ public class AdminController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/company/ports}")
+    @GetMapping("/company/ports")
     @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
     public ResponseEntity<List<AdminResponse>> getPortAdmins(
             Authentication authentication) {
@@ -81,7 +81,7 @@ public class AdminController {
         Integer adminCompanyId = userDetails.getAdminId();
         Integer companyId = userDetails.getCompanyId();
 
-        AdminResponse response = adminService.updatePortAdmin(adminCompanyId, companyId, portId, adminId, request);
+        AdminResponse response = adminService.updatePortAdmin(companyId, portId, adminId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -93,10 +93,8 @@ public class AdminController {
             Authentication authentication) {
 
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
-        Integer adminCompanyId = userDetails.getAdminId();
         Integer companyId = userDetails.getCompanyId();
-
-        adminService.deletePortAdmin(adminCompanyId, companyId, portId, adminId);
+        adminService.deletePortAdmin( companyId, portId, adminId);
         return ResponseEntity.noContent().build();
     }
 

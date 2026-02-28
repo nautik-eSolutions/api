@@ -29,6 +29,9 @@ public class Company {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
+    @Column(name = "namePrefix", length = 100)
+    private String namePrefix;
+
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 

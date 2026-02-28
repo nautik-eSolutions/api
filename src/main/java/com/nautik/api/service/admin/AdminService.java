@@ -145,7 +145,7 @@ public class AdminService {
                 .orElseThrow(() -> new EntityNotFoundException("Port not found with id: " + portId));
 
         Admin admin = new Admin();
-        admin.setUsername(request.getUsername());
+        admin.setUsername(company.getNamePrefix()+request.getUsername());
         admin.setPassword(passwordEncoder.encode(request.getPassword()));
         admin.setRole(role);
         admin.setPort(port);
@@ -168,30 +168,26 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    public AdminResponse updatePortAdmin(Integer adminCompanyId, Integer companyId, Integer portId, Integer adminPortId, AdminPortRequest request) {
+    public AdminResponse updatePortAdmin(Integer companyId, Integer portId, Integer adminPortId, AdminPortRequest request) {
         verifyPortOwnership(companyId, portId);
 
         Admin admin = adminRepository.findById(adminPortId)
-                .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + adminPortId));
-
-        if (admin.getPort() == null || !admin.getPort().getId().equals(portId)) {
-            throw new ForbiddenException("Admin does not belong to the specified port");
-        }
-
-        admin.setUsername(request.getUsername());
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found with id"));
+        Port port = portRepository.findById(portId).orElseThrow(()->new EntityNotFoundException("Port not found"));
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             admin.setPassword(passwordEncoder.encode(request.getPassword()));
         }
-
+        admin.setPort(port);
+        admin.setUsername(request.getUsername());
         Admin updatedAdmin = adminRepository.save(admin);
         return mapToResponse(updatedAdmin);
     }
 
-    public void deletePortAdmin(Integer adminCompanyId, Integer companyId, Integer portId, Integer adminPortId) {
+    public void deletePortAdmin( Integer companyId, Integer portId, Integer adminPortId) {
         verifyPortOwnership(companyId, portId);
 
         Admin admin = adminRepository.findById(adminPortId)
-                .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + adminPortId));
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
 
         if (admin.getPort() == null || !admin.getPort().getId().equals(portId)) {
             throw new ForbiddenException("Admin does not belong to the specified port");
@@ -202,14 +198,12 @@ public class AdminService {
 
 
 
-    @Transactional(readOnly = true)
     public AdminResponse getAdmin(Integer adminId) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new EntityNotFoundException("Admin not found with id: " + adminId));
         return mapToResponse(admin);
     }
 
-    @Transactional(readOnly = true)
     public List<AdminResponse> getAllAdmins() {
         return adminRepository.findAll().stream()
                 .map(this::mapToResponse)
@@ -218,7 +212,7 @@ public class AdminService {
 
     private void verifyPortOwnership(Integer companyId, Integer portId) {
         Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new EntityNotFoundException("Port not found with id: " + portId));
+                .orElseThrow(() -> new EntityNotFoundException("Port not found"));
 
         if (!port.getCompany().getId().equals(companyId)) {
             throw new ForbiddenException("Port does not belong to your company");
