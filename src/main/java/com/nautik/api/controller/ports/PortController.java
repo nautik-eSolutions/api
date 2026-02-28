@@ -1,5 +1,7 @@
 package com.nautik.api.controller.ports;
 
+import com.nautik.api.configuration.PreAuthorizeConfig.OnlyCompanyAdministrators;
+import com.nautik.api.configuration.PreAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.service.port.PortService;
@@ -42,7 +44,7 @@ public class PortController {
         return ResponseEntity.ok(allPorts);
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/port-administrator")
     @PreAuthorize("hasAuthority('ADMIN_PORT')")
     public ResponseEntity<PortDto> getPortByPortAdmin(
             Authentication authentication
@@ -54,7 +56,7 @@ public class PortController {
     }
 
     @GetMapping("/{portId}")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyPortAdministrators
     public ResponseEntity<PortDto> getPortById(@PathVariable Integer portId) {
         PortDto port = portService.findById(portId);
         return ResponseEntity.ok(port);
@@ -97,17 +99,39 @@ public class PortController {
 
 
     @GetMapping("/{portId}/images")
-    @PreAuthorize("hasAnyAuthority('ADMIN_COMPANY', 'ADMIN_PORT')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<List<PortImageDto>> getPortImages(@PathVariable Integer portId) {
         return ResponseEntity.ok(s3PortImageService.getPortImages(portId));
     }
 
     @PostMapping(value = "/{portId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyAuthority('ADMIN_COMPANY', 'ADMIN_PORT')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<PortImageDto> uploadPortImage(
             @PathVariable Integer portId,
             @RequestParam("file") MultipartFile file
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(s3PortImageService.uploadPortImage(portId, file));
     }
+
+    @GetMapping("/images")
+    @OnlyPortAdministrators
+    public ResponseEntity<List<PortImageDto>> getPortImagesByPortAdmin(
+            Authentication authentication
+           ) {
+        CustomAdminUserDetails adminUserDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(s3PortImageService.getPortImages(adminUserDetails.getPortId()));
+    }
+
+    @PostMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @OnlyPortAdministrators
+    public ResponseEntity<PortImageDto> uploadPortImageByPortAdmin(
+            Authentication authentication,
+            @RequestParam("file") MultipartFile file
+    ) {
+        CustomAdminUserDetails adminUserDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        return ResponseEntity.status(HttpStatus.CREATED).body(s3PortImageService.uploadPortImage(adminUserDetails.getPortId(), file));
+    }
+
+
 }
