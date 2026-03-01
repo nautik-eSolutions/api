@@ -4,6 +4,7 @@ package com.nautik.api.service.bookings;
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.booking.CheckInOut;
 import com.nautik.api.domain.exceptions.BoatAlreadyInPort;
 import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
@@ -17,6 +18,7 @@ import com.nautik.api.dto.bookings.BookingRequestDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.boat.BoatRepository;
 import com.nautik.api.repository.bookings.BookingRepository;
+import com.nautik.api.repository.bookings.CheckInOutRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.port.PortRepository;
@@ -27,10 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -46,6 +45,7 @@ public class BookingService {
     private final ModelMapper modelMapper;
     private final BoatRepository boatRepository;
     private final PortRepository portRepository;
+    private final CheckInOutRepository checkInOutRepository;
 
 
     public List<BookingOccupancyDto> getAllBookingsByPortFromNow(Integer portId){
@@ -116,6 +116,8 @@ public class BookingService {
         MooringCategory  mooringCategory = mooring.getMooringCategory();
         Double totalPrice = mooringCategory.getMinPricePerDay();
         double iva = 1.21;
+
+        //Query bd quitar predicates
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
@@ -173,7 +175,34 @@ public class BookingService {
         return 1.0 + (occupancyRate * 0.4);
     }
 
+    public void saveBookingAfterSuccessPayment(Booking booking){
+        CheckInOut checkInOut = new CheckInOut();
+        Date startDate =booking.getStartDate();
+        Date endDate = booking.getEndDate();
 
+        String arrivalTime = "15:00";
+        String departureTime = "13:00";
+
+        checkInOut.setScheduledCheckinTime(addTimeToDate(startDate,arrivalTime));
+        checkInOut.setScheduledCheckoutTime(addTimeToDate(endDate,departureTime));
+        checkInOut.setBooking(booking);
+
+        bookingRepository.save(booking);
+        checkInOutRepository.save(checkInOut);
+    }
+
+    private Date addTimeToDate(Date date, String hoursAndMinutes){
+        String[] parts = hoursAndMinutes.split(":");
+        int hoursToAdd = Integer.parseInt(parts[0]);
+        int minutesToAdd = Integer.parseInt(parts[1]);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        calendar.add(Calendar.MINUTE, minutesToAdd);
+
+        return calendar.getTime();
+    }
 
     private Date dateFormater(String dateString) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");

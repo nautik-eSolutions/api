@@ -131,7 +131,7 @@ public class PaymentService {
             booking.setStatus(BookingStatus.FAILED);
         }
 
-        bookingRepository.save(booking);
+        bookingService.saveBookingAfterSuccessPayment(booking);
     }
 
     private boolean validateSignature(String merchantParams, String signature, String secretKey) {
