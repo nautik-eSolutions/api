@@ -2,11 +2,13 @@ package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.booking.CheckInOut;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.exceptions.ForbiddenException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.dto.bookings.BookingDto;
+import com.nautik.api.dto.bookings.CheckInOutDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.occupancy.OccupancyDto;
 import com.nautik.api.repository.bookings.BookingRepository;
@@ -22,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,6 +80,8 @@ public class OccupancyService {
         }
 
     }
+
+
 
 
     private Date dateFormatter(String dateString) {
