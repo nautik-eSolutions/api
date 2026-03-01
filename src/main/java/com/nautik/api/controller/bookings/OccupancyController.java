@@ -1,16 +1,11 @@
 package com.nautik.api.controller.bookings;
 
 import com.nautik.api.configuration.PreAuthorizeConfig.OnlyPortAdministrators;
-import com.nautik.api.dto.occupancy.OccupancyDto;
-import com.nautik.api.service.bookings.OccupancyService;
 import com.nautik.api.service.userDetails.CustomAdminUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,26 +14,101 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OccupancyController {
 
-    private final OccupancyService occupancyService;
+    private final CheckInOutService checkInOutService;
 
-
-    @GetMapping("/mooring-categories/{mooringCategoryId}/dates/{startDate}/{endDate}")
+    @GetMapping("/checkins")
     @OnlyPortAdministrators
-    public ResponseEntity<OccupancyDto> getOccupancyByMooringCategoryAndDates(
-            @PathVariable Integer mooringCategoryId,
-            @PathVariable String startDate,
-            @PathVariable String endDate,
+    public ResponseEntity<List<CheckInOutDto>> getCheckInsByDate(
+            @RequestParam String date,
             Authentication authentication
     ) {
+        CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer portId = userDetails.getPortId();
 
-        CustomAdminUserDetails customAdminUserDetails = (CustomAdminUserDetails) authentication.getPrincipal();
-        OccupancyDto occupancy = occupancyService.getOccupancyByMooringCategoryAndDates(
-                mooringCategoryId, customAdminUserDetails.getPortId(), startDate, endDate
-        );
-        return ResponseEntity.ok(occupancy);
+        List<CheckInOutDto> checkIns = checkInOutService.getCheckInsByDate(parsedDate, portId);
+
+        return ResponseEntity.ok(checkIns);
     }
 
+    @GetMapping("/checkouts")
+    @OnlyPortAdministrators
+    public ResponseEntity<List<CheckInOutDto>> getCheckOutsByDate(
+            @RequestParam String date,
+            Authentication authentication
+    ) {
+        CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer portId = userDetails.getPortId();
 
+        List<CheckInOutDto> checkOuts = checkInOutService.getCheckOutsByDate(parsedDate, portId);
 
+        return ResponseEntity.ok(checkOuts);
+    }
 
+    @PatchMapping("/{checkInOutId}/arrival")
+    @OnlyPortAdministrators
+    public ResponseEntity<Void> updateArrivalStatus(
+            @PathVariable Integer checkInOutId,
+            @RequestBody UpdateArrivalStatusDto dto,
+            Authentication authentication
+    ) {
+        CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer portId = userDetails.getPortId();
+
+        checkInOutService.updateArrivalStatus(
+                checkInOutId,
+                dto.getHasArrived(),
+                dto.getActualTime(),
+                portId
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{checkInOutId}/departure")
+    @OnlyPortAdministrators
+    public ResponseEntity<Void> updateDepartureStatus(
+            @PathVariable Integer checkInOutId,
+            @RequestBody UpdateArrivalStatusDto dto,
+            Authentication authentication
+    ) {
+        CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer portId = userDetails.getPortId();
+
+        checkInOutService.updateDepartureStatus(
+                checkInOutId,
+                dto.getHasArrived(),
+                dto.getActualTime(),
+                portId
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{checkInOutId}/checkin-time")
+    @OnlyPortAdministrators
+    public ResponseEntity<Void> updateCheckInTime(
+            @PathVariable Integer checkInOutId,
+            @RequestBody UpdateTimeDto dto,
+            Authentication authentication
+    ) {
+        CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer portId = userDetails.getPortId();
+
+        checkInOutService.updateCheckInTime(checkInOutId, dto.getTime(), portId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{checkInOutId}/checkout-time")
+    @OnlyPortAdministrators
+    public ResponseEntity<Void> updateCheckOutTime(
+            @PathVariable Integer checkInOutId,
+            @RequestBody UpdateTimeDto dto,
+            Authentication authentication
+    ) {
+        CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
+        Integer portId = userDetails.getPortId();
+
+        checkInOutService.updateCheckOutTime(checkInOutId, dto.getTime(), portId);
+        return ResponseEntity.ok().build();
+    }
 }

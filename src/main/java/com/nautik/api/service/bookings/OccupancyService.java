@@ -10,6 +10,7 @@ import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.dto.occupancy.OccupancyDto;
 import com.nautik.api.repository.bookings.BookingRepository;
+import com.nautik.api.repository.bookings.CheckInOutRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.port.PortRepository;
@@ -31,6 +32,7 @@ public class OccupancyService {
     private final MooringRepository mooringRepository;
     private final MooringCategoryRepository mooringCategoryRepository;
     private final ModelMapper modelMapper;
+    private final CheckInOutRepository checkInOutRepository;
 
     public OccupancyDto getOccupancyByMooringCategoryAndDates(
             Integer mooringCategoryId, Integer portId, String stringStartDate, String stringEndDate
@@ -60,13 +62,13 @@ public class OccupancyService {
     }
 
 
-    private void validateOwnerShip(Integer portId , Integer mooringCategoryId){
+    private void validateOwnerShip(Integer portId, Integer mooringCategoryId) {
         Port port = portRepository.findById(portId).orElseThrow(
-                ()-> new EntityNotFoundException("Port not found")
+                () -> new EntityNotFoundException("Port not found")
         );
 
         MooringCategory mooringCategory = mooringCategoryRepository.findById(mooringCategoryId).orElseThrow(
-                ()->new EntityNotFoundException("Mooring category not found")
+                () -> new EntityNotFoundException("Mooring category not found")
         );
 
         Integer mooringCategoryPortId = mooringCategory.getZone().getPort().getId();
