@@ -66,7 +66,7 @@ public class UserService {
         throw new RuntimeException("Credenciales inválidas");
     }
 
-
+/**
     public AdminLoginResponseDto adminLogin(LoginRequest loginRequest) {
         Token token;
         User user;
@@ -93,15 +93,13 @@ public class UserService {
 
         return new AdminLoginResponseDto(token.getToken(), user.getRole().getName(), portId);
     }
-
+*/
     public Token OAuthLogin(GoogleIdTokenInfo googleIdTokenInfo){
 
         String email = googleIdTokenInfo.getEmail();
         String name  = googleIdTokenInfo.getName();
 
         User user = new User(email, email,name);
-        Role role = roleRepository.findByName("CUSTOMER");
-        user.setRole(role);
         if (userRepository.findByEmail(email).isEmpty()){
            return jwtService.generateToken(userRepository.save(user));
         }
@@ -151,12 +149,9 @@ public class UserService {
 
 
     public UserLoginResponse createUser(UserDto userDto) {
-        Role role = roleRepository.findByName("CUSTOMER");
-
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User mappedUser = modelMapper.map(userDto, User.class);
-        mappedUser.setRole(role);
         User providedUser = userRepository.save(mappedUser);
 
 

@@ -27,6 +27,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    Optional<User> findUserByUserName(String userName);
 
    Optional<User> findUserByEmail(String email);
-
-    Integer port(Port port);
 }

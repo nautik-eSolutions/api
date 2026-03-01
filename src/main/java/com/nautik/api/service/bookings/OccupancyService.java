@@ -16,7 +16,6 @@ import com.nautik.api.repository.port.PortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,8 +37,8 @@ public class OccupancyService {
     ) {
         validateOwnerShip(portId, mooringCategoryId);
 
-        Date startDate = parseDate(stringStartDate);
-        Date endDate = parseDate(stringEndDate);
+        Date startDate = dateFormatter(stringStartDate);
+        Date endDate = dateFormatter(stringEndDate);
 
         List<Booking> bookings = bookingRepository
                 .findByMooringCategoryAndStartDateAndStatusConfirmed(mooringCategoryId, startDate, endDate);
@@ -78,12 +77,12 @@ public class OccupancyService {
     }
 
 
-    private Date parseDate(String dateString) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    private Date dateFormatter(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return formatter.parse(dateString);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Expected dd-MM-yyyy, got: " + dateString);
+            throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd, got: " + dateString);
         }
     }
 }
