@@ -60,6 +60,7 @@ public class MooringCategoryAvailabilityService {
             Integer portId, Double length, Double beam,Double draft, String stringStartDate, String stringEndDate
 
     ){
+        System.out.println("2222222222222222");
         Date startDate = dateFormater(stringStartDate);
         Date endDate = dateFormater(stringEndDate);
 

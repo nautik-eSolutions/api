@@ -26,6 +26,7 @@ public class AvailabilityController {
             @PathVariable String startDate,
             @PathVariable String endDate
     ){
+        System.out.println("1111111111111111111111111");
         return ResponseEntity.ok(mooringCategoryService.getMooringCategoriesbyPortDimensionsAndAvailability(
                 portId, length, beam,draft,  startDate, endDate));
     }
