@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateArrivalStatusDto {
-    private Boolean hasArrived;
+    private Boolean hasCheckedIn;
     private String actualTime;
 
 }

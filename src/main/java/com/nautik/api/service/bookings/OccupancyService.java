@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +105,48 @@ public class OccupancyService {
     }
 
 
+    public void updateCheckInStatus(Integer checkInOutId, Boolean hasCheckedIn, String actualTime, Integer portId) {
+    CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId).orElseThrow(
+            ()->new EntityNotFoundException("Check in or check out not found")
+    );
+
+    validateOwnerShipForCheckInOut(checkInOut,portId);
+    Date startDate = checkInOut.getScheduledCheckinTime();
+
+    checkInOut.setActualCheckinTime(addTimeToDate(startDate,actualTime));
+    checkInOut.setHasCheckedIn(hasCheckedIn);
+
+    checkInOutRepository.save(checkInOut);
+    }
+
+    public void updateCheckOutStatus(Integer checkInOutId, Boolean hasCheckedOut, String actualTime, Integer portId) {
+        CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId).orElseThrow(
+                ()->new EntityNotFoundException("Check in or check out not found")
+        );
+
+        validateOwnerShipForCheckInOut(checkInOut,portId);
+        Date startDate = checkInOut.getScheduledCheckinTime();
+
+        checkInOut.setActualCheckoutTime(addTimeToDate(startDate,actualTime));
+        checkInOut.setHasCheckedOut(hasCheckedOut);
+
+        checkInOutRepository.save(checkInOut);
+    }
+
+    private void validateOwnerShipForCheckInOut(CheckInOut checkInOut, Integer portId) {
+        Integer checkInOutPortId = checkInOut.getBooking()
+                .getMooring()
+                .getMooringCategory()
+                .getZone()
+                .getPort()
+                .getId();
+
+        if (!checkInOutPortId.equals(portId)) {
+            throw new ForbiddenException("You don't have access to this resource");
+        }
+    }
+
+
     private void validateOwnerShip(Integer portId, Integer mooringCategoryId) {
         Port port = portRepository.findById(portId).orElseThrow(
                 () -> new EntityNotFoundException("Port not found")
@@ -132,29 +175,17 @@ public class OccupancyService {
         }
     }
 
-    public void updateArrivalStatus(Integer checkInOutId, Boolean hasArrived, String actualTime, Integer portId) {
-    CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId).orElseThrow(
-            ()->new EntityNotFoundException("Check in or check out not found")
-    );
+    private Date addTimeToDate(Date date, String hoursAndMinutes){
+        String[] parts = hoursAndMinutes.split(":");
+        int hoursToAdd = Integer.parseInt(parts[0]);
+        int minutesToAdd = Integer.parseInt(parts[1]);
 
-    validateOwnerShipForCheckInOut(checkInOut,portId);
-    Date startDate = checkInOut.getScheduledCheckinTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        calendar.add(Calendar.MINUTE, minutesToAdd);
 
-
-
-
+        return calendar.getTime();
     }
 
-    private void validateOwnerShipForCheckInOut(CheckInOut checkInOut, Integer portId) {
-        Integer checkInOutPortId = checkInOut.getBooking()
-                .getMooring()
-                .getMooringCategory()
-                .getZone()
-                .getPort()
-                .getId();
-
-        if (!checkInOutPortId.equals(portId)) {
-            throw new ForbiddenException("You don't have access to this resource");
-        }
-    }
 }
