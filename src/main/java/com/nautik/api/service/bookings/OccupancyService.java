@@ -64,6 +64,46 @@ public class OccupancyService {
         return occupancyDto;
     }
 
+    public List<CheckInOutDto> getCheckInsByDate(String stringStartDate,Integer portId){
+        Date startDate= dateFormatter(stringStartDate);
+        List<CheckInOut> checkIns = checkInOutRepository.findCheckInsByDateAndPort(startDate,portId);
+        return checkIns
+                .stream()
+                .map(this::mapToCheckInOutDto).toList();
+                
+    }
+    public List<CheckInOutDto> getCheckOutsByDate(String stringEndDate,Integer portId){
+        Date startDate= dateFormatter(stringEndDate);
+        List<CheckInOut> checkouts = checkInOutRepository.findCheckOutsByDateAndPort(startDate,portId);
+        return checkouts
+                .stream()
+                .map(this::mapToCheckInOutDto).toList();
+
+    }
+
+    public CheckInOutDto mapToCheckInOutDto(CheckInOut checkInOut){
+        CheckInOutDto dto = new CheckInOutDto();
+        dto.setId(checkInOut.getId());
+        dto.setBookingId(checkInOut.getBooking().getId());
+        if (checkInOut.getBooking().getBoat() != null &&
+                checkInOut.getBooking().getBoat().getUser() != null) {
+            String guestName = checkInOut.getBooking().getBoat().getUser().getFirstName() + " " +
+                    checkInOut.getBooking().getBoat().getUser().getLastName();
+            dto.setGuestName(guestName);
+        }
+        if (checkInOut.getBooking().getBoat() != null) {
+            dto.setBoatName(checkInOut.getBooking().getBoat().getName());
+        }
+        if (checkInOut.getBooking().getMooring() != null) {
+            dto.setMooringNumber(checkInOut.getBooking().getMooring().getNumber());
+        }
+        dto.setScheduledTime(checkInOut.getScheduledCheckinTime());
+        dto.setActualTime(checkInOut.getActualCheckinTime());
+        dto.setHasArrived(checkInOut.getHasCheckedIn());
+
+        return dto;
+    }
+
 
     private void validateOwnerShip(Integer portId, Integer mooringCategoryId) {
         Port port = portRepository.findById(portId).orElseThrow(
@@ -91,5 +131,8 @@ public class OccupancyService {
         } catch (ParseException e) {
             throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd, got: " + dateString);
         }
+    }
+
+    public void updateArrivalStatus(Integer checkInOutId, Boolean hasArrived, String actualTime, Integer portId) {
     }
 }
