@@ -105,7 +105,7 @@ public class OccupancyService {
     }
 
 
-    public void updateCheckInStatus(Integer checkInOutId, Boolean hasCheckedIn, String actualTime, Integer portId) {
+    public void updateArrivalTime(Integer checkInOutId, Boolean hasCheckedIn, String actualTime, Integer portId) {
     CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId).orElseThrow(
             ()->new EntityNotFoundException("Check in or check out not found")
     );
@@ -119,7 +119,7 @@ public class OccupancyService {
     checkInOutRepository.save(checkInOut);
     }
 
-    public void updateCheckOutStatus(Integer checkInOutId, Boolean hasCheckedOut, String actualTime, Integer portId) {
+    public void updateDepartureStatus(Integer checkInOutId, Boolean hasCheckedOut, String actualTime, Integer portId) {
         CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId).orElseThrow(
                 ()->new EntityNotFoundException("Check in or check out not found")
         );
@@ -131,6 +131,30 @@ public class OccupancyService {
         checkInOut.setHasCheckedOut(hasCheckedOut);
 
         checkInOutRepository.save(checkInOut);
+    }
+
+    public void updateCheckInTime (Integer checkInOutId, String time, Integer portId){
+        CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId)
+                .orElseThrow(() -> new RuntimeException("CheckInOut no encontrado con id: " + checkInOutId));
+
+        validateOwnerShipForCheckInOut(checkInOut, portId);
+
+        validateOwnerShipForCheckInOut(checkInOut,portId);
+        Date startDate = checkInOut.getScheduledCheckinTime();
+
+        checkInOut.setScheduledCheckinTime(addTimeToDate(startDate,time));
+
+    }
+    public void updateCheckOutTime (Integer checkInOutId, String time, Integer portId){
+        CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId)
+                .orElseThrow(() -> new RuntimeException("CheckInOut no encontrado con id: " + checkInOutId));
+
+        validateOwnerShipForCheckInOut(checkInOut, portId);
+
+        validateOwnerShipForCheckInOut(checkInOut,portId);
+        Date endDate = checkInOut.getScheduledCheckinTime();
+
+        checkInOut.setScheduledCheckoutTime(addTimeToDate(endDate,time));
     }
 
     private void validateOwnerShipForCheckInOut(CheckInOut checkInOut, Integer portId) {
