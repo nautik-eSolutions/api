@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -134,5 +133,28 @@ public class OccupancyService {
     }
 
     public void updateArrivalStatus(Integer checkInOutId, Boolean hasArrived, String actualTime, Integer portId) {
+    CheckInOut checkInOut = checkInOutRepository.findById(checkInOutId).orElseThrow(
+            ()->new EntityNotFoundException("Check in or check out not found")
+    );
+
+    validateOwnerShipForCheckInOut(checkInOut,portId);
+    Date startDate = checkInOut.getScheduledCheckinTime();
+
+
+
+
+    }
+
+    private void validateOwnerShipForCheckInOut(CheckInOut checkInOut, Integer portId) {
+        Integer checkInOutPortId = checkInOut.getBooking()
+                .getMooring()
+                .getMooringCategory()
+                .getZone()
+                .getPort()
+                .getId();
+
+        if (!checkInOutPortId.equals(portId)) {
+            throw new ForbiddenException("You don't have access to this resource");
+        }
     }
 }
