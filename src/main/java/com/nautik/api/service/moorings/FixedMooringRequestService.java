@@ -4,7 +4,6 @@ import com.nautik.api.domain.Port;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.exceptions.ForbiddenException;
 import com.nautik.api.domain.moorings.FixedMooringRequest;
-import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.mooring.create.CreateFixedMooringRequestDto;
 import com.nautik.api.dto.mooring.FixedMooringRequestDto;
@@ -16,8 +15,7 @@ import com.nautik.api.repository.moorings.MooringRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
+import com.nautik.api.dto.mooring.FixedMooringRequesCustomerDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,6 @@ public class FixedMooringRequestService {
     private final MooringRepository mooringRepository;
     private final UserRepository userRepository;
 
-
     public List<FixedMooringRequestDto> getAllRequestsByPort(Integer portId) {
         List<FixedMooringRequest> requests = requestRepository.findByPortIdOrderByCreatedAtDesc(portId);
         return requests.stream().map(this::mapToDto).collect(Collectors.toList());
@@ -40,8 +37,7 @@ public class FixedMooringRequestService {
     public List<FixedMooringRequestDto> getPendingRequestsByPort(Integer portId) {
         List<FixedMooringRequest> requests = requestRepository.findByPortIdAndStatusOrderByCreatedAtDesc(
                 portId,
-                FixedMooringRequest.RequestStatus.PENDING
-        );
+                FixedMooringRequest.RequestStatus.PENDING);
         return requests.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -55,9 +51,8 @@ public class FixedMooringRequestService {
         Port port = portRepository.findById(dto.getPortId())
                 .orElseThrow(() -> new EntityNotFoundException("Port not found"));
 
-        Mooring mooring = null;
         if (dto.getMooringNumber() != null) {
-
+            new RuntimeException("Mooring number cannot be null");
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -72,11 +67,11 @@ public class FixedMooringRequestService {
         request = requestRepository.save(request);
         return mapToDto(request);
     }
+
     public FixedMooringRequestDto reviewRequest(
             Integer requestId,
             ReviewFixedMooringRequestDto dto,
-            Integer portId
-    ) {
+            Integer portId) {
         FixedMooringRequest request = requestRepository.findByIdAndPortId(requestId, portId)
                 .orElseThrow(() -> new EntityNotFoundException("Request not found"));
 
@@ -113,35 +108,44 @@ public class FixedMooringRequestService {
         requestRepository.save(request);
     }
 
-    public List<FixedMooringRequestDto> getRequestsByUser(Integer userId) {
+    public List<FixedMooringRequesCustomerDto> getRequestsByUser(Integer userId) {
         List<FixedMooringRequest> requests = requestRepository.findByUserIdOrderByCreatedAtDesc(userId);
-        return requests.stream().map(this::mapToDto).collect(Collectors.toList());
+        return requests.stream().map(this::mapToCustomerDto).collect(Collectors.toList());
+    }
+
+    private FixedMooringRequesCustomerDto mapToCustomerDto(FixedMooringRequest request) {
+        FixedMooringRequesCustomerDto fixedMooringDto = new FixedMooringRequesCustomerDto();
+        fixedMooringDto.setId(request.getId());
+        fixedMooringDto.setPortId(request.getPort().getId());
+        fixedMooringDto.setMooringNumber(request.getMooringNumber());
+        fixedMooringDto.setStatus(request.getStatus().name());
+        return fixedMooringDto;
     }
 
     private FixedMooringRequestDto mapToDto(FixedMooringRequest request) {
-        FixedMooringRequestDto dto = new FixedMooringRequestDto();
-        dto.setId(request.getId());
-        dto.setPortId(request.getPort().getId());
-        dto.setPortName(request.getPort().getName());
+        FixedMooringRequestDto fixedMooringDto = new FixedMooringRequestDto();
+        fixedMooringDto.setId(request.getId());
+        fixedMooringDto.setPortId(request.getPort().getId());
+        fixedMooringDto.setPortName(request.getPort().getName());
 
         if (request.getMooringNumber() != null) {
-            dto.setMooringNumber(request.getMooringNumber());
+            fixedMooringDto.setMooringNumber(request.getMooringNumber());
         }
 
-        dto.setUserId(request.getUser().getId());
-        dto.setUserFirstName(request.getUser().getFirstName());
-        dto.setUserLastName(request.getUser().getLastName());
-        dto.setUserEmail(request.getUser().getEmail());
-        dto.setUserIdentificationDocument(request.getUser().getIdentificationDocument());
+        fixedMooringDto.setUserId(request.getUser().getId());
+        fixedMooringDto.setUserFirstName(request.getUser().getFirstName());
+        fixedMooringDto.setUserLastName(request.getUser().getLastName());
+        fixedMooringDto.setUserEmail(request.getUser().getEmail());
+        fixedMooringDto.setUserIdentificationDocument(request.getUser().getIdentificationDocument());
 
-        dto.setMessage(request.getMessage());
-        dto.setStatus(request.getStatus().name());
-        dto.setRejectionReason(request.getRejectionReason());
+        fixedMooringDto.setMessage(request.getMessage());
+        fixedMooringDto.setStatus(request.getStatus().name());
+        fixedMooringDto.setRejectionReason(request.getRejectionReason());
 
         if (request.getCreatedAt() != null) {
-            dto.setCreatedAt(String.valueOf(request.getCreatedAt()));
+            fixedMooringDto.setCreatedAt(String.valueOf(request.getCreatedAt()));
         }
 
-        return dto;
+        return fixedMooringDto;
     }
 }
