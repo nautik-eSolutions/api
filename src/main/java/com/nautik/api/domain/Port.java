@@ -1,5 +1,6 @@
 package com.nautik.api.domain;
 
+import com.nautik.api.domain.moorings.FixedMooringRequest;
 import com.nautik.api.domain.moorings.MooringDimension;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.domain.roles.Role;
@@ -46,6 +47,10 @@ public class Port {
 
     @OneToMany(mappedBy = "port")
     private List<MooringDimension> photos =  new ArrayList<>();
+
+    @OneToMany(mappedBy = "port")
+    private List<FixedMooringRequest> fixedMooringRequests =  new ArrayList<>();
+
 
     @OneToMany(mappedBy = "port")
     private List<PriceConfiguration> priceConfigurations = new ArrayList<>();

@@ -4,6 +4,7 @@ package com.nautik.api.domain.users;
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.Company;
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.moorings.FixedMooringRequest;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.roles.Role;
 import com.nautik.api.dto.user.UserDto;
@@ -55,6 +56,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Boat> boats;
+
+    @OneToMany(mappedBy = "user")
+    private List<FixedMooringRequest> fixedMooringRequests;
 
 
 

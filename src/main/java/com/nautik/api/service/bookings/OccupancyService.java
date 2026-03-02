@@ -191,11 +191,11 @@ public class OccupancyService {
 
 
     private Date dateFormatter(String dateString) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         try {
             return formatter.parse(dateString);
         } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd, got: " + dateString);
+            throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd");
         }
     }
 
