@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateFixedMooringRequestDto {
     private Integer portId;
-    private Integer mooringId;
+    private String mooringNumber;
     private String message;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.lang.ScopedValue;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -49,4 +50,6 @@ public interface MooringRepository extends JpaRepository<Mooring, Integer> {
 
     List<Mooring> findByMooringCategoryId(Integer mooringCategoryId);
 
+
+    Optional<Mooring> findByNumber(String number);
 }

@@ -11,7 +11,6 @@ public class FixedMooringRequestDto {
     private Integer id;
     private Integer portId;
     private String portName;
-    private Integer mooringId;
     private String mooringNumber;
     private Integer userId;
     private String userFirstName;
