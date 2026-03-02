@@ -46,7 +46,13 @@ public class FixedMooringRequest {
     @Column(name = "rejection_reason")
     private String rejectionReason;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
 
     public enum RequestStatus {
         PENDING,
