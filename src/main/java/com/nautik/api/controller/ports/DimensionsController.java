@@ -18,7 +18,7 @@ public class DimensionsController {
     private final MooringDimensionsService mooringDimensionsService;
 
     @GetMapping("/ports/{portId}")
-    public ResponseEntity<List<MooringDimensionDto>> getMooringDimensionsByPort(@PathVariable Integer portId){
+    public ResponseEntity<List<MooringDimensionDto>> getMooringDimensionsByPort(@PathVariable(name = "portId") Integer portId){
         return ResponseEntity.ok(mooringDimensionsService.getAllMooringsDimensionsByPort(portId));
     }
 

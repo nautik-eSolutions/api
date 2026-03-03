@@ -20,7 +20,7 @@ public class ZoneController {
 
     @GetMapping("/port/{portId}")
     public ResponseEntity<List<ZoneDto>> getZonesByPort(
-            @PathVariable Long portId
+            @PathVariable(name = "portId") Long portId
     ) {
         List<ZoneDto> zoneList = zoneService.findByPort(portId);
         return ResponseEntity.ok(zoneList);

@@ -18,22 +18,22 @@ public class MooringCategoryController {
     private final MooringCategoryService mooringCategoryService;
 
     @GetMapping
-    public ResponseEntity<List<MooringCategoryInfoDto>> getAllMooringCategoriesByPortId(@PathVariable Integer portId) {
+    public ResponseEntity<List<MooringCategoryInfoDto>> getAllMooringCategoriesByPortId(@PathVariable(name = "portId") Integer portId) {
         return ResponseEntity.ok(mooringCategoryService.getAllByPortId(portId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MooringCategoryDto> getMooringCategoryById(@PathVariable Integer portId, @PathVariable Integer id) {
+    public ResponseEntity<MooringCategoryDto> getMooringCategoryById(@PathVariable(name = "portId") Integer portId, @PathVariable Integer id) {
         return ResponseEntity.ok(mooringCategoryService.getById(portId, id));
     }
 
     @PostMapping
-    public ResponseEntity<MooringCategoryInfoDto> createMooringCategory(@PathVariable Integer portId, @RequestBody MooringCategoryInfoDto dto) {
+    public ResponseEntity<MooringCategoryInfoDto> createMooringCategory(@PathVariable(name = "portId") Integer portId, @RequestBody MooringCategoryInfoDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mooringCategoryService.createMooringCategory(portId, dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MooringCategoryInfoDto> updateMooringCategory(@PathVariable Integer portId, @PathVariable Integer id, @RequestBody MooringCategoryInfoDto dto) {
+    public ResponseEntity<MooringCategoryInfoDto> updateMooringCategory(@PathVariable(name = "portId") Integer portId, @PathVariable Integer id, @RequestBody MooringCategoryInfoDto dto) {
         return ResponseEntity.ok(mooringCategoryService.updateMooringCategory(portId, id, dto));
     }
 

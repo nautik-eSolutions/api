@@ -56,6 +56,8 @@ public class ZoneService {
         Zone zoneProvided = modelMapper.map(zone, Zone.class);
         zoneProvided.setId(searchedZone.getId());
         zoneProvided.setPort(searchedZone.getPort());
+        zoneProvided.setMooringCategories(searchedZone.getMooringCategories());
+        zoneProvided.setServices(searchedZone.getServices());
         return modelMapper.map(zoneRepository.save(zoneProvided), ZoneDto.class);
     }
 
