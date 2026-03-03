@@ -46,6 +46,8 @@ public class Booking {
     @Column(name = "order_number", unique = true)
     private String orderNumber;
 
+    @OneToOne(mappedBy = "booking")
+    private Payment payment;
 
 
     public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring,String orderNumber){

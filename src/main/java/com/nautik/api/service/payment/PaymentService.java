@@ -13,6 +13,8 @@ import com.nautik.api.configuration.redsys.RedsysConfig;
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.booking.BookingStatus;
+import com.nautik.api.domain.booking.Payment;
+import com.nautik.api.domain.booking.PaymentStatus;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.payment.PaymentInitRequestDto;
@@ -24,6 +26,7 @@ import com.nautik.api.service.bookings.BookingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.Repository;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
@@ -63,11 +66,22 @@ public class PaymentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Embarcación no encontrada"));
 
-        Booking pendingBooking = bookingService.createBooking(request.getMooringCategoryId(), boat, startDate,endDate);
+        Booking pendingBooking = bookingService.createBooking(request.getMooringCategoryId(), boat, startDate, endDate);
 
         String orderNumber = String.format("%012d", System.currentTimeMillis() % 1_000_000_000_000L);
 
         pendingBooking.setOrderNumber(orderNumber);
+
+
+        Payment pendingPayment = new Payment(
+                pendingBooking.getTotalCost(),
+                request.getBillingAddress(),
+                request.getCity(),
+                request.getCountry(),
+                PaymentStatus.PENDING
+        );
+        pendingPayment.setBooking(pendingBooking);
+
         bookingRepository.save(pendingBooking);
 
         OrderCES orderCES = new OrderCES.Builder(appConfig)
@@ -173,3 +187,5 @@ public class PaymentService {
     }
 
 }
+
+
