@@ -33,7 +33,7 @@ public class AdminController {
     @PutMapping("/company/{adminId}")
     @OnlyDevelopers
     public ResponseEntity<AdminResponse> updateCompanyAdmin(
-            @PathVariable Integer adminId,
+            @PathVariable("adminId") Integer adminId,
            @Valid @RequestBody AdminCompanyRequest request) {
         AdminResponse response = adminService.updateCompanyAdmin(adminId, request);
         return ResponseEntity.ok(response);
@@ -41,7 +41,7 @@ public class AdminController {
 
     @DeleteMapping("/company/{adminId}")
     @OnlyDevelopers
-    public ResponseEntity<Void> deleteCompanyAdmin(@PathVariable Integer adminId) {
+    public ResponseEntity<Void> deleteCompanyAdmin( @PathVariable("adminId") Integer adminId) {
         adminService.deleteCompanyAdmin(adminId);
         return ResponseEntity.noContent().build();
     }
@@ -49,7 +49,7 @@ public class AdminController {
     @PostMapping("/ports/{portId}")
     @OnlyCompanyAdministrators
     public ResponseEntity<AdminResponse> createPortAdmin(
-            @PathVariable Integer portId,
+            @PathVariable(name = "portId") Integer portId,
             @RequestBody AdminPortRequest request,
             Authentication authentication) {
 
@@ -73,13 +73,12 @@ public class AdminController {
     @PutMapping("/ports/{portId}/{adminId}")
     @OnlyCompanyAdministrators
     public ResponseEntity<AdminResponse> updatePortAdmin(
-            @PathVariable Integer portId,
-            @PathVariable Integer adminId,
+            @PathVariable(name = "portId") Integer portId,
+            @PathVariable(name = "adminId") Integer adminId,
             @RequestBody AdminPortRequest request,
             Authentication authentication) {
 
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
-        Integer adminCompanyId = userDetails.getAdminId();
         Integer companyId = userDetails.getCompanyId();
 
         AdminResponse response = adminService.updatePortAdmin(companyId, portId, adminId, request);
@@ -89,8 +88,8 @@ public class AdminController {
     @DeleteMapping("/ports/{portId}/{adminId}")
     @OnlyCompanyAdministrators
     public ResponseEntity<Void> deletePortAdmin(
-            @PathVariable Integer portId,
-            @PathVariable Integer adminId,
+            @PathVariable("portId") Integer portId,
+            @PathVariable("adminId") Integer adminId,
             Authentication authentication) {
 
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
@@ -100,7 +99,8 @@ public class AdminController {
     }
 
     @GetMapping("/{adminId}")
-    public ResponseEntity<AdminResponse> getAdmin(@PathVariable Integer adminId) {
+    public ResponseEntity<AdminResponse> getAdmin(
+            @PathVariable("adminId") Integer adminId) {
         AdminResponse response = adminService.getAdmin(adminId);
         return ResponseEntity.ok(response);
     }

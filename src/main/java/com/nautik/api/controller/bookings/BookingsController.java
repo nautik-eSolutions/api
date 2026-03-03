@@ -31,17 +31,18 @@ public class BookingsController {
 
     @OnlyAdministrators
     @GetMapping("ports/{portId}")
-    public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(@PathVariable Integer portId){
+    public ResponseEntity<List<BookingOccupancyDto>> getBookingsByPortFromNow(
+            @PathVariable(name = "portId") Integer portId){
         return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
     }
 
     @OnlyAdministrators
     @GetMapping("/dimensions/{length}/{beam}/dates/{startDate}/{endDate}")
     public List<BookingDto> getBookingsByDimensionsAndAvailability(
-            @PathVariable Integer length,
-            @PathVariable Integer beam,
-            @PathVariable String startDate,
-            @PathVariable String endDate
+            @PathVariable(name = "length") Integer length,
+            @PathVariable(name="beam") Integer beam,
+            @PathVariable(name="startDate") String startDate,
+            @PathVariable(name="endDate") String endDate
     ){
         return bookingService.getBookingsByMooringDimensionsAndAvailability(beam,length,startDate,endDate);
     }
@@ -49,7 +50,7 @@ public class BookingsController {
 
     @GetMapping("/moorings/{mooringId}")
     public List<BookingDto> getBookingsByMooringId(
-            @PathVariable Integer mooringId
+            @PathVariable(name = "mooringId") Integer mooringId
     ){
         return bookingService.getAllBookingsByMooringId(mooringId);
     }
@@ -68,7 +69,8 @@ public class BookingsController {
 
 
     @PostMapping("/reassignment/mooring-category/{mooringCategoryId}")
-    public ResponseEntity<ReassignmentResultDto>reassignBookingsByMooringCategory(@PathVariable Integer mooringCategoryId){
+    public ResponseEntity<ReassignmentResultDto>reassignBookingsByMooringCategory(
+            @PathVariable(name = "mooringCategoryId") Integer mooringCategoryId){
         return ResponseEntity.ok(reassignmentService.reassignBookings(mooringCategoryId));
     }
 

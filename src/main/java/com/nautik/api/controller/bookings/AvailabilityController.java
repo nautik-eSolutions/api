@@ -19,12 +19,12 @@ public class AvailabilityController {
 
     @GetMapping("/mooring-categories/port/{portId}/dimensions/{length}/{beam}/{draft}/dates/{startDate}/{endDate}")
     public ResponseEntity<List<MooringCategoryAvailabilityDto>> getMooringCategoriesByPortDimensionsAndAvailability (
-            @PathVariable Integer portId,
-            @PathVariable Double length,
-            @PathVariable Double beam,
-            @PathVariable Double draft,
-            @PathVariable String startDate,
-            @PathVariable String endDate
+            @PathVariable("portId") Integer portId,
+            @PathVariable("length") Double length,
+            @PathVariable("beam") Double beam,
+            @PathVariable("draft") Double draft,
+            @PathVariable("startDate") String startDate,
+            @PathVariable("endDate") String endDate
     ){
         return ResponseEntity.ok(mooringCategoryService.getMooringCategoriesWithByAvailability(
                 portId, length, beam,draft,  startDate, endDate));
@@ -33,9 +33,9 @@ public class AvailabilityController {
 
     @GetMapping("/mooring-categories/{mooringCategoryId}/dates/{startDate}/{endDate}")
     public MooringCategoryAvailabilityDto getMooringCategoryByIdAndAvailability (
-            @PathVariable Integer mooringCategoryId,
-            @PathVariable String startDate,
-            @PathVariable String endDate
+            @PathVariable("mooringCategoryId") Integer mooringCategoryId,
+            @PathVariable("startDate") String startDate,
+            @PathVariable("endDate") String endDate
     ){
         return mooringCategoryService.getMooringCategoryByIdAndAvailability(
                 mooringCategoryId, startDate, endDate);

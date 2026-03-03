@@ -61,6 +61,8 @@ public class MooringCategoryAvailabilityService {
                 .map(mc -> setPriceInMooringCategory(mc, startDate, endDate))
                 .toList();
 
+
+
         return pricedCategories.stream()
                 .map(mc -> setPriceInMooringCategoryDto(mc, stringStartDate, stringEndDate))
                 .collect(Collectors.toList());
