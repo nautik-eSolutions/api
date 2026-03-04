@@ -20,7 +20,7 @@ public class EmailService {
     private final Environment environment;
     private final Resend resend;
 
-    @Value("${EMAIL_FROM}")
+    @Value("${resend.email}")
     private String from;
 
     public Map<String, ?> sendEmail( Map<String, String> body) {
