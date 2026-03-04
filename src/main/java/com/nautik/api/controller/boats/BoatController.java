@@ -42,23 +42,24 @@ public class BoatController {
 
     @PostMapping("/{idUser}")
     public ResponseEntity<BoatDto> createBoat(
-            @PathVariable Long idUser, @RequestBody CreateBoatDto boatDto){
+            @PathVariable(name = "idUser") Long idUser, @RequestBody CreateBoatDto boatDto){
         BoatDto boat = boatService.createBoat(idUser, boatDto );
         return ResponseEntity.ok(boat);
     }
 
     @PatchMapping("/{idUser}/{idBoat}")
     public ResponseEntity<BoatDto> updateBoat(
-            @PathVariable Long idUser,
+            @PathVariable(name = "idUser") Long idUser,
             @RequestBody CreateBoatDto boatDto,
-            @PathVariable Long idBoat){
+            @PathVariable("idBoat") Long idBoat){
 
         BoatDto dto = boatService.updateBoat(idUser,boatDto, idBoat);
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{idBoat}")
-    public ResponseEntity<BoatDto> deleteBoat( @PathVariable Long idBoat){
+    public ResponseEntity<BoatDto> deleteBoat(
+            @PathVariable(name = "idBoat") Long idBoat){
         boatService.deletBoat(idBoat);
         return ResponseEntity.ok().build();
     }

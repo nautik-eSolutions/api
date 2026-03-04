@@ -24,7 +24,11 @@ public class OccupancyController {
 
     @GetMapping("/mooring-categories/{mooringCategoryId}/dates/{startDate}/{endDate}")
     @OnlyPortAdministrators
-    public ResponseEntity<OccupancyDto> getOccupancyByMooringCategoryAndDates(@PathVariable Integer mooringCategoryId, @PathVariable String startDate, @PathVariable String endDate, Authentication authentication) {
+    public ResponseEntity<OccupancyDto> getOccupancyByMooringCategoryAndDates(
+            @PathVariable(name = "mooringCategoryId") Integer mooringCategoryId,
+            @PathVariable(name = "startDate") String startDate,
+            @PathVariable(name = "endDate") String endDate,
+            Authentication authentication) {
 
         CustomAdminUserDetails customAdminUserDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         OccupancyDto occupancy = occupancyService.getOccupancyByMooringCategoryAndDates(mooringCategoryId, customAdminUserDetails.getPortId(), startDate, endDate);
@@ -33,7 +37,8 @@ public class OccupancyController {
 
     @GetMapping("/checkins/{startDate}")
     @OnlyPortAdministrators
-    public ResponseEntity<List<CheckInOutDto>> getCheckInsByDate(Authentication authentication, @PathVariable String startDate) {
+    public ResponseEntity<List<CheckInOutDto>> getCheckInsByDate(Authentication authentication,
+                                                                 @PathVariable(name = "startDate") String startDate) {
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer portId = userDetails.getPortId();
 
@@ -44,7 +49,9 @@ public class OccupancyController {
 
     @GetMapping("/checkouts/{endDate}")
     @OnlyPortAdministrators
-    public ResponseEntity<List<CheckInOutDto>> getCheckOutsByDate(@PathVariable String endDate, Authentication authentication) {
+    public ResponseEntity<List<CheckInOutDto>> getCheckOutsByDate(
+            @PathVariable(name = "endDate") String endDate,
+            Authentication authentication) {
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer portId = userDetails.getPortId();
 
@@ -55,7 +62,9 @@ public class OccupancyController {
 
     @PutMapping("/{checkInOutId}/arrival")
     @OnlyPortAdministrators
-    public ResponseEntity<Void> updateArrivalStatus(@PathVariable Integer checkInOutId, @RequestBody UpdateArrivalStatusDto dto, Authentication authentication) {
+    public ResponseEntity<Void> updateArrivalStatus(
+            @PathVariable(name = "checkInOutId") Integer checkInOutId,
+            @RequestBody UpdateArrivalStatusDto dto, Authentication authentication) {
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer portId = userDetails.getPortId();
 
@@ -66,7 +75,8 @@ public class OccupancyController {
 
     @PatchMapping("/{checkInOutId}/departure")
     @OnlyPortAdministrators
-    public ResponseEntity<Void> updateDepartureStatus(@PathVariable Integer checkInOutId, @RequestBody UpdateArrivalStatusDto dto, Authentication authentication) {
+    public ResponseEntity<Void> updateDepartureStatus(
+            @PathVariable(name = "checkInOutId") Integer checkInOutId, @RequestBody UpdateArrivalStatusDto dto, Authentication authentication) {
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer portId = userDetails.getPortId();
 
@@ -78,7 +88,8 @@ public class OccupancyController {
 
     @PatchMapping("/{checkInOutId}/checkin-time")
     @OnlyPortAdministrators
-    public ResponseEntity<Void> updateCheckInTime(@PathVariable Integer checkInOutId, @RequestBody UpdateTimeDto dto, Authentication authentication) {
+    public ResponseEntity<Void> updateCheckInTime(
+            @PathVariable(name = "checkInOutId") Integer checkInOutId, @RequestBody UpdateTimeDto dto, Authentication authentication) {
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer portId = userDetails.getPortId();
 
@@ -89,7 +100,9 @@ public class OccupancyController {
 
     @PatchMapping("/{checkInOutId}/checkout-time")
     @OnlyPortAdministrators
-    public ResponseEntity<Void> updateCheckOutTime(@PathVariable Integer checkInOutId, @RequestBody UpdateTimeDto dto, Authentication authentication) {
+    public ResponseEntity<Void> updateCheckOutTime(
+            @PathVariable(name = "checkInOutId") Integer checkInOutId,
+            @RequestBody UpdateTimeDto dto, Authentication authentication) {
         CustomAdminUserDetails userDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer portId = userDetails.getPortId();
 

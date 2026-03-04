@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class Payment {
     private Integer id;
 
     @Column(name = "issue_date", nullable = false)
-    private LocalDate issueDate;
+    private Date issueDate;
 
     @Column(name = "total_amount", nullable = false)
     private Double totalAmount;
@@ -35,6 +36,12 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private PaymentStatus status = PaymentStatus.PENDING;
+
+    @PrePersist
+    public void onCreate(){
+        this.issueDate = new Date();
+    }
+
 
     public Payment(Double totalAmount, String billingAddress,String city, String country,PaymentStatus status){
         this.totalAmount = totalAmount;

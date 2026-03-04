@@ -20,7 +20,8 @@ public class CompanyController {
 
 
     @GetMapping("/{idCompany}")
-    public ResponseEntity<CompanyDtoResponse> getCompanyByName(@PathVariable Long idCompany){
+    public ResponseEntity<CompanyDtoResponse> getCompanyByName(
+            @PathVariable(name = "idCompany") Long idCompany){
 
         return ResponseEntity.ok(companyService.findCompanyById(idCompany));
 
@@ -35,14 +36,14 @@ public class CompanyController {
     @PostMapping("/administrators/{idUser}")
     public ResponseEntity<CompanyDtoResponse> createCompany(
             @RequestBody CompanyDto companyDto,
-            @PathVariable Integer idUser){
+            @PathVariable(name = "idUser") Integer idUser){
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,idUser));
     }
 
     @PatchMapping("/{companyId}")
     public ResponseEntity<CompanyDtoResponse>updateCompany(
             @RequestBody CompanyDto companyDto,
-            @PathVariable Long companyId){
+            @PathVariable(name = "companyId") Long companyId){
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -50,7 +51,8 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{companyId}")
-    public ResponseEntity<Void> deleteCompanyByName(@PathVariable Long companyId){
+    public ResponseEntity<Void> deleteCompanyByName(
+            @PathVariable(name = "companyId") Long companyId){
         companyService.deleteCompany(companyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

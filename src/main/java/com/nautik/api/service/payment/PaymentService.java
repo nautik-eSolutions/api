@@ -15,11 +15,13 @@ import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.booking.BookingStatus;
 import com.nautik.api.domain.booking.Payment;
 import com.nautik.api.domain.booking.PaymentStatus;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.payment.PaymentInitRequestDto;
 import com.nautik.api.dto.payment.PaymentResponseDto;
 import com.nautik.api.repository.bookings.BookingRepository;
+import com.nautik.api.repository.bookings.PaymentRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.bookings.BookingService;
@@ -52,6 +54,7 @@ public class PaymentService {
     private final AppConfigImpl appConfig;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final BookingService bookingService;
+    private final PaymentRepository paymentRepository;
 
 
     @Transactional
@@ -80,10 +83,13 @@ public class PaymentService {
                 request.getCountry(),
                 PaymentStatus.PENDING
         );
-        pendingPayment.setBooking(pendingBooking);
 
-        bookingRepository.save(pendingBooking);
 
+
+        Booking savedBooking = bookingRepository.save(pendingBooking);
+        pendingPayment.setBooking(savedBooking);
+
+        paymentRepository.save(pendingPayment);
         OrderCES orderCES = new OrderCES.Builder(appConfig)
                 .transactionType(TransactionType.AUTORIZACION)
                 .currency(Currency.EUR)
@@ -135,16 +141,22 @@ public class PaymentService {
         String errorCode = json.has("Ds_ErrorCode") ? json.get("Ds_ErrorCode").asText() : null;
 
         Booking booking = bookingRepository.findByOrderNumber(orderNumber)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada con número de pedido: " + orderNumber));
+                .orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada con número de pedido: " + orderNumber));
+        Payment payment = booking.getPayment();
+        if (payment == null){
+           throw new EntityNotFoundException("Payment not found");
+        }
 
         boolean isSuccess = responseCode != null && responseCode.matches("0\\d{3}");
 
         if (isSuccess) {
             booking.setStatus(BookingStatus.PAID);
+            payment.setStatus(PaymentStatus.SUCCESS);
         } else {
+            payment.setStatus(PaymentStatus.FAILED);
             booking.setStatus(BookingStatus.FAILED);
         }
-
+        paymentRepository.save(payment);
         bookingService.saveBookingAfterSuccessPayment(booking);
     }
 

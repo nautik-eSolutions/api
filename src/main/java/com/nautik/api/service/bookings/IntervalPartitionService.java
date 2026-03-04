@@ -11,15 +11,11 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class IntervalPartitionService {
-    //explicació rapida del greedy,
     public static Mooring assignMooring(Booking newBooking, List<Booking> existingBookings, List<Mooring> availableMoorings) {
-        //cream un timeline es a dir un interval de temps, on un amarratge té x bookings
         Map<Integer, MooringResource> mooringResources = new HashMap<>();
-        //assignam cada amarratge al seu interval
         for (Mooring mooring : availableMoorings) {
             mooringResources.put(mooring.getId(), new MooringResource(mooring));
         }
-        //aquí feim un per cada, i miram si el array de bookings que ens han passat per alguna raó no te un amarratge assignat
         for (Booking existingBooking : existingBookings) {
             if (existingBooking.getMooring() != null) {
                 Integer mooringId = existingBooking.getMooring().getId();
@@ -30,7 +26,6 @@ public class IntervalPartitionService {
         }
 
         List<MooringResource> sortedResources = mooringResources.values().stream().sorted(Comparator.comparing(MooringResource::getLastEndTime)).toList();
-        //un altre per cada ja després de que els interval estiguin ordenats, després miram si el booking que volem crear es trepitja amb els del interval i si es que no tornam el amarratge
         for (MooringResource resource : sortedResources) {
             if (resource.isAvailableFor(newBooking)) {
                 return resource.getMooring();
