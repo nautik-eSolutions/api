@@ -1,20 +1,15 @@
 package com.nautik.api.controller.bookings;
 
 
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyAdministrators;
 import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.dto.bookings.BookingOccupancyDto;
-import com.nautik.api.dto.bookings.BookingRequestDto;
 import com.nautik.api.dto.bookings.ReassignmentResultDto;
-import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.service.bookings.BookingService;
 import com.nautik.api.service.bookings.ReassignmentService;
 import com.nautik.api.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

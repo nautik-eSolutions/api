@@ -1,7 +1,7 @@
 package com.nautik.api.controller.users;
 
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyCompanyAdministrators;
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyDevelopers;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyCompanyAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyDevelopers;
 import com.nautik.api.dto.admin.AdminPortRequest;
 import com.nautik.api.dto.admin.AdminResponse;
 import com.nautik.api.dto.admin.AdminCompanyRequest;

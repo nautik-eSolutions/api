@@ -1,4 +1,4 @@
-package com.nautik.api.configuration.PreAuthorizeConfig;
+package com.nautik.api.configuration.preAuthorizeConfig;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAuthority('ADMIN_COMPANY')")
-public @interface OnlyCompanyAdministrators {}
+@PreAuthorize("hasAuthority('DEVELOPER')")
+public @interface OnlyDevelopers {}

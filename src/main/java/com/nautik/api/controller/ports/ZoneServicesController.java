@@ -1,6 +1,6 @@
 package com.nautik.api.controller.ports;
 
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyPortAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.service.CreateServiceDto;
 import com.nautik.api.dto.service.ServiceDto;
 import com.nautik.api.service.port.ServicesOffered;
@@ -8,7 +8,6 @@ import com.nautik.api.service.port.ZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

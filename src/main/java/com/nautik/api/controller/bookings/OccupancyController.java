@@ -1,6 +1,6 @@
 package com.nautik.api.controller.bookings;
 
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyPortAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.bookings.CheckInOutDto;
 import com.nautik.api.dto.bookings.UpdateArrivalStatusDto;
 import com.nautik.api.dto.bookings.UpdateTimeDto;

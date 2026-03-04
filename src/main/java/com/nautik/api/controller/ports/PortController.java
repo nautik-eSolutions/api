@@ -1,7 +1,7 @@
 package com.nautik.api.controller.ports;
 
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyCompanyAdministrators;
-import com.nautik.api.configuration.PreAuthorizeConfig.OnlyPortAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyCompanyAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.service.port.PortService;

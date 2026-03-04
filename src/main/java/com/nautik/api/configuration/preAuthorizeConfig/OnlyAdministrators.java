@@ -1,4 +1,4 @@
-package com.nautik.api.configuration.PreAuthorizeConfig;
+package com.nautik.api.configuration.preAuthorizeConfig;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
