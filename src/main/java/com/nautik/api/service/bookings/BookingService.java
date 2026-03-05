@@ -6,6 +6,7 @@ import com.nautik.api.domain.Port;
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.booking.CheckInOut;
 import com.nautik.api.domain.exceptions.BoatAlreadyInPort;
+import com.nautik.api.domain.exceptions.BookingNotFoundException;
 import com.nautik.api.domain.exceptions.NoAvailabilityException;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
@@ -25,6 +26,8 @@ import com.nautik.api.repository.port.PortRepository;
 import com.nautik.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -141,6 +144,17 @@ public class BookingService {
         return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
+    public Page<BookingDto> getBookingsByPort(Integer portId, String search, Pageable pageable) {
+        Page<Booking> bookingsPage;
+            bookingsPage = bookingRepository.findByPortId(portId, pageable);
+
+        return bookingsPage.map(this::convertToDto);
+    }
+    public BookingDto getBookingById(Integer id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+        return convertToDto(booking);
+    }
 
     public List<BookingDto> getAllBookingsByMooringId(Integer mooringId){
         List <Booking> bookings = bookingRepository.findAllByMooringId(mooringId);
