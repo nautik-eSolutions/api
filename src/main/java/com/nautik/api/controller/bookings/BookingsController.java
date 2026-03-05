@@ -3,6 +3,7 @@ package com.nautik.api.controller.bookings;
 
 import com.nautik.api.configuration.preAuthorizeConfig.OnlyAdministrators;
 import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
+import com.nautik.api.domain.booking.BookingStatus;
 import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.dto.bookings.BookingOccupancyDto;
 import com.nautik.api.dto.bookings.ReassignmentResultDto;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/bookings")
@@ -53,6 +55,27 @@ public class BookingsController {
         return ResponseEntity.ok(bookingService.getAllBookingsByPortFromNow(portId));
     }
 
+    @OnlyPortAdministrators
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookingDto> updateBookingStatus(
+            @AuthenticationPrincipal CustomAdminUserDetails currentUser,
+            @PathVariable Integer id,
+            @RequestBody Map<String, String> request) {
+        if (!request.containsKey("status")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status field is required");
+        }
+        BookingStatus newStatus;
+
+        try {
+            newStatus = BookingStatus.valueOf(request.get("status").toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status value");
+        }
+
+
+        BookingDto updated = bookingService.updateBookingStatus(id, newStatus);
+        return ResponseEntity.ok(updated);
+    }
 
     @OnlyPortAdministrators
     @GetMapping("/{bookingId}")

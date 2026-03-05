@@ -170,6 +170,18 @@ public class BookingService {
         Integer mooringCategoryId = booking.getMooring().getMooringCategory().getId();
         reassignmentService.reassignBookings(mooringCategoryId);
     }
+    public BookingDto updateBookingStatus(Integer id, BookingStatus newStatus) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found "));
+        if (newStatus == BookingStatus.CANCELLED) {
+            throw new InvalidStatusTransitionException("Cannot change to CANCELLED.");
+        }
+        booking.setStatus(newStatus);
+        booking = bookingRepository.save(booking);
+        return mapToBookingDto(booking);
+    }
+
+
 
     private BookingDto mapToBookingDto(Booking booking) {
         BookingDto bookingDto = modelMapper.map(booking, BookingDto.class);
