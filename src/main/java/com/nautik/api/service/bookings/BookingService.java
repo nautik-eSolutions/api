@@ -4,23 +4,17 @@ package com.nautik.api.service.bookings;
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.Port;
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.booking.BookingStatus;
 import com.nautik.api.domain.booking.CheckInOut;
-import com.nautik.api.domain.exceptions.BoatAlreadyInPort;
-import com.nautik.api.domain.exceptions.BookingNotFoundException;
-import com.nautik.api.domain.exceptions.NoAvailabilityException;
-import com.nautik.api.domain.exceptions.EntityNotFoundException;
+import com.nautik.api.domain.exceptions.*;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.PriceConfiguration;
-import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.bookings.BookingDto;
 import com.nautik.api.dto.bookings.BookingOccupancyDto;
-import com.nautik.api.dto.bookings.BookingRequestDto;
-import com.nautik.api.dto.mooring.MooringDto;
 import com.nautik.api.repository.boat.BoatRepository;
 import com.nautik.api.repository.bookings.BookingRepository;
 import com.nautik.api.repository.bookings.CheckInOutRepository;
-import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.port.PortRepository;
 import com.nautik.api.repository.user.UserRepository;
@@ -49,6 +43,7 @@ public class BookingService {
     private final BoatRepository boatRepository;
     private final PortRepository portRepository;
     private final CheckInOutRepository checkInOutRepository;
+    private final ReassignmentService reassignmentService;
 
 
     public List<BookingOccupancyDto> getAllBookingsByPortFromNow(Integer portId){
@@ -148,18 +143,44 @@ public class BookingService {
         Page<Booking> bookingsPage;
             bookingsPage = bookingRepository.findByPortId(portId, pageable);
 
-        return bookingsPage.map(this::convertToDto);
+        return bookingsPage.map(this::mapToBookingDto);
     }
     public BookingDto getBookingById(Integer id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
-        return convertToDto(booking);
+        return mapToBookingDto(booking);
     }
+
+    public void cancelBooking(Integer id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found with id"));
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new BookingAlreadyCancelledException("Booking is already cancelled");
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+
+        Integer mooringCategoryId = booking.getMooring().getMooringCategory().getId();
+        reassignmentService.reassignBookings(mooringCategoryId);
+    }
+
+    private BookingDto mapToBookingDto(Booking booking) {
+        BookingDto bookingDto = modelMapper.map(booking, BookingDto.class);
+        bookingDto.setBoatName(booking.getBoat().getName());
+        bookingDto.setBoatRegistryNumber(booking.getBoat().getRegistryNumber());
+        bookingDto.setClientName(booking.getBoat().getUser().getFirstName() + " " + booking.getBoat().getUser().getLastName());
+        bookingDto.setClientEmail(booking.getBoat().getUser().getEmail());
+        bookingDto.setPortId(booking.getMooring().getMooringCategory().getZone().getPort().getId());
+        return bookingDto;
+    }
+
 
     public List<BookingDto> getAllBookingsByMooringId(Integer mooringId){
         List <Booking> bookings = bookingRepository.findAllByMooringId(mooringId);
         if (bookings.isEmpty()) {
-            throw new EntityNotFoundException("No bookings we're found");
+            throw new BookingNotFoundException("No bookings we're found");
         }
 
         return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
