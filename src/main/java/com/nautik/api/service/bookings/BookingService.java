@@ -145,9 +145,14 @@ public class BookingService {
 
         return bookingsPage.map(this::mapToBookingDto);
     }
-    public BookingDto getBookingById(Integer id) {
+    public BookingDto getBookingById(Integer id, Integer portId) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+        Integer bookingPortId = bookingRepository.getPortIdByBookingId(id);
+
+        if (!bookingPortId.equals(portId)) {
+            throw new ForbiddenException("You do not have access to this booking");
+        }
         return mapToBookingDto(booking);
     }
 
