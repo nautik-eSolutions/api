@@ -57,13 +57,9 @@ public class UserService {
 
             Token token =  jwtService.generateToken(user);
 
-
            return new UserLoginResponse(user.getFirstName(), user.getLastName(), user.getEmail(), user.getUserName(),token );
 
-
-
         }
-
         throw new RuntimeException("Credenciales inválidas");
     }
 
