@@ -156,12 +156,18 @@ public class BookingService {
         return mapToBookingDto(booking);
     }
 
-    public void cancelBooking(Integer id) {
+    public void cancelBooking(Integer id, Integer portId) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found with id"));
 
         if (booking.getStatus() == BookingStatus.CANCELLED) {
             throw new BookingAlreadyCancelledException("Booking is already cancelled");
+        }
+
+        Integer bookingPortId = bookingRepository.getPortIdByBookingId(id);
+
+        if (!bookingPortId.equals(portId)) {
+            throw new ForbiddenException("You do not have access to this booking");
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
@@ -170,9 +176,15 @@ public class BookingService {
         Integer mooringCategoryId = booking.getMooring().getMooringCategory().getId();
         reassignmentService.reassignBookings(mooringCategoryId);
     }
-    public BookingDto updateBookingStatus(Integer id, BookingStatus newStatus) {
+    public BookingDto updateBookingStatus(Integer id, BookingStatus newStatus, Integer portId) {
+
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found "));
+        Integer bookingPortId = bookingRepository.getPortIdByBookingId(id);
+
+        if (!bookingPortId.equals(portId)) {
+            throw new ForbiddenException("You do not have access to this booking");
+        }
         if (newStatus == BookingStatus.CANCELLED) {
             throw new InvalidStatusTransitionException("Cannot change to CANCELLED.");
         }
@@ -199,15 +211,6 @@ public class BookingService {
         if (bookings.isEmpty()) {
             throw new BookingNotFoundException("No bookings we're found");
         }
-
-        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
-    }
-    public List<BookingDto> getBookingsByMooringDimensionsAndAvailability(Integer beam , Integer length, String stringStartDate, String stringEndDate){
-
-        Date startDate =  dateFormater(stringStartDate);
-        Date endDate = dateFormater(stringEndDate);
-
-        List<Booking> bookings = bookingRepository.findAllByMooringMooringCategoryDimensionsMaxLengthGreaterThanEqualAndMooringMooringCategoryDimensionsMaxBeamGreaterThanEqualAndStartDateBeforeAndEndDateAfter(length,beam,endDate,startDate);
 
         return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }

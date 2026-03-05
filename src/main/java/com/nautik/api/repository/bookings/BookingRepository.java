@@ -20,9 +20,8 @@ public interface BookingRepository  extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByMooringMooringCategoryIdAndStartDateBeforeAndEndDateAfter(Integer mooringMooringCategoryId, Date startDateBefore, Date endDateAfter);
 
-    List<Booking> findAllByMooringMooringCategoryDimensionsMaxLengthGreaterThanEqualAndMooringMooringCategoryDimensionsMaxBeamGreaterThanEqualAndStartDateBeforeAndEndDateAfter(Integer mooringMooringCategoryDimensionsMaxLengthIsGreaterThan, Integer mooringMooringCategoryDimensionsMaxBeamIsGreaterThan, Date startDateBefore, Date endDateAfter);
 
-    @Query("select b from Booking b where b.mooring.mooringCategory.zone.port.id = ?1")
+    @Query("select p.id from Port p inner join Booking b on b.mooring.mooringCategory.zone.port = p where b.id = ?1")
     Integer getPortIdByBookingId(Integer bookingId);
 
     @Query("select b from Booking b " +
@@ -32,10 +31,7 @@ public interface BookingRepository  extends JpaRepository<Booking, Integer> {
     List<Booking> findByMooringCategoriesAndAvailability(List<MooringCategory>mooringCategories, Date startDate, Date endDate);
 
 
-    @Query("select b from Booking b " +
-            "inner join Mooring m on b.mooring " +
-            "inner join MooringCategory mc on m.mooringCategory = mc " +
-            "where mc.id = ?1 and b.startDate < ?3 and b.endDate > ?2 and (b.status = 'PAID' or b.status = 'PENDING')")
+    @Query(" select b from Booking b where b.mooring.mooringCategory.id = ?1 and b.startDate < ?3 and b.endDate > ?2 and (b.status = 'PAID' or b.status = 'PENDING')")
     List<Booking> findByMooringCategoryAndStartDateAndStatusConfirmed(Integer mooringCategoryId, Date startDate, Date endDate);
 
     List<Booking> findAllByMooringMooringCategoryZonePortIdAndStartDateAfter(Integer mooringMooringCategoryZonePortId, Date startDateAfter);
@@ -46,8 +42,8 @@ public interface BookingRepository  extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByMooringMooringCategoryZonePortId(Integer mooringMooringCategoryZonePortId);
 
-    @Query("SELECT b FROM Booking b INNER JOIN  b.boat boat INNER JOIN boat.user WHERE b.mooring.mooringCategory.zone.port.id = :portId")
-    Page<Booking> findByPortId(@Param("portId") Integer portId, Pageable pageable);
+    @Query("SELECT b FROM Booking b INNER JOIN  b.boat boat INNER JOIN boat.user WHERE b.mooring.mooringCategory.zone.port.id = ?1")
+    Page<Booking> findByPortId(Integer portId, Pageable pageable);
 
 
 
