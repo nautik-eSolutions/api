@@ -63,6 +63,9 @@ public class BookingsController {
 
 
 
+
+
+
     @PostMapping("/reassignment/mooring-category/{mooringCategoryId}")
     public ResponseEntity<ReassignmentResultDto>reassignBookingsByMooringCategory(
             @PathVariable(name = "mooringCategoryId") Integer mooringCategoryId){
