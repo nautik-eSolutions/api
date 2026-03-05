@@ -16,6 +16,7 @@ import com.nautik.api.dto.user.UserLoginResponse;
 
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
+import com.nautik.api.service.email.EmailService;
 import com.nautik.api.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -40,6 +41,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
 
     public UserLoginResponse login(LoginRequest loginRequest) {
@@ -155,7 +157,7 @@ public class UserService {
         User providedUser = userRepository.save(mappedUser);
 
 
-
+        emailService.sendEmailVerificationEmail(providedUser.getEmail(), providedUser.getFirstName());
         Token token =  jwtService.generateToken(providedUser);
 
         UserLoginResponse response =  new UserLoginResponse();

@@ -23,18 +23,15 @@ public class EmailService {
     @Value("${resend.email}")
     private String from;
 
-    public Map<String, ?> sendEmail( Map<String, String> body) {
-
-        String to = body.get("to");
-        String subject = body.get("subject");
-        String message = body.get("message");
-
+    public Map<String, ?> sendEmailVerificationEmail( String to, String firstName) {
+        String subject = "Email verificaction";
+        String verificationUrl = "";
         try {
             var params = CreateEmailOptions.builder()
                     .from(from)
                     .to(to)
                     .subject(subject)
-                    .html("<p>" + message + "</p>")
+                    .html(EmailTemplates.verificationTemplate(to,firstName,verificationUrl))
                     .build();
 
             var response = resend.emails().send(params);

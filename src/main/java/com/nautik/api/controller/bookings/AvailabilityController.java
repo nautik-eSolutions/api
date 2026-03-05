@@ -30,11 +30,7 @@ public class AvailabilityController {
             @PathVariable("startDate") String startDate,
             @PathVariable("endDate") String endDate
     ){
-        Map<String,String> email = new HashMap<>();
-        email.put("to","mohalemrissani22@gmail.com");
-        email.put("subject","Buenas del SEPBLAC");
-        email.put("message","estas detenido");
-        System.out.println(emailService.sendEmail(email));
+
 
 
 
