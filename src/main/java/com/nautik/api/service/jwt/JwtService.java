@@ -1,6 +1,7 @@
 package com.nautik.api.service.jwt;
 
 import com.nautik.api.domain.Token;
+import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.User;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -24,6 +25,18 @@ public class JwtService {
                 Jwts.builder()
                         .setSubject(user.getId().toString())
                         .claim("userName", user.getUserName())
+                        .setIssuedAt(new Date(System.currentTimeMillis()))
+                        .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                        .signWith(getSecretKey())
+                        .compact()
+        );
+
+    }
+    public Token generateAdminToken(Admin admin){
+        return new Token(
+                Jwts.builder()
+                        .setSubject(admin.getId().toString())
+                        .claim("userName", admin.getUsername())
                         .setIssuedAt(new Date(System.currentTimeMillis()))
                         .setExpiration(new Date(System.currentTimeMillis() + expiration))
                         .signWith(getSecretKey())

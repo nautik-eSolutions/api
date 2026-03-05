@@ -1,7 +1,7 @@
 package com.nautik.api.service.company;
 
 import com.nautik.api.domain.Company;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.dto.port.company.CompanyDto;
 import com.nautik.api.dto.port.company.CompanyDtoResponse;
 import com.nautik.api.repository.port.CompanyRepository;
@@ -25,16 +25,16 @@ public class CompanyService {
 
 
     public CompanyDtoResponse findCompanyByName(String name){
-        Company searchedCompany = companyRepository.findByName(name).orElseThrow(()->new ResourceNotFoundException("Company not found"));
+        Company searchedCompany = companyRepository.findByName(name).orElseThrow(()->new EntityNotFoundException("Company not found"));
 
         return modelMapper.map(searchedCompany, CompanyDtoResponse.class);
     }
 
 
-    public CompanyDtoResponse createCompany(CompanyDto companyDto, Long userId) {
+    public CompanyDtoResponse createCompany(CompanyDto companyDto, Integer userId) {
         Company providedCompany = modelMapper.map(companyDto, Company.class);
 
-        providedCompany.getAdmins().add(adminRepository.findByUser_Id(Math.toIntExact(userId)).orElseThrow(()->new ResourceNotFoundException("Administrador not found")));
+        providedCompany.setAdmin(adminRepository.findById(userId).orElseThrow(()->new EntityNotFoundException("Administrador not found")));
 
         return modelMapper.map(
                 companyRepository.save(providedCompany),
@@ -43,7 +43,7 @@ public class CompanyService {
 
 
     public CompanyDtoResponse updateCompany(CompanyDto companyDto,Long companyId) {
-        Company searchedCompany = companyRepository.findById(companyId).orElseThrow(()->new ResourceNotFoundException("Company not found"));
+        Company searchedCompany = companyRepository.findById(companyId).orElseThrow(()->new EntityNotFoundException("Company not found"));
 
         companyDto.setId(searchedCompany.getId());
 

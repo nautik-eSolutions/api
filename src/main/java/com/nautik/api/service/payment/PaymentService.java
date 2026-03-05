@@ -13,16 +13,22 @@ import com.nautik.api.configuration.redsys.RedsysConfig;
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.booking.BookingStatus;
+import com.nautik.api.domain.booking.Payment;
+import com.nautik.api.domain.booking.PaymentStatus;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.payment.PaymentInitRequestDto;
 import com.nautik.api.dto.payment.PaymentResponseDto;
 import com.nautik.api.repository.bookings.BookingRepository;
+import com.nautik.api.repository.bookings.PaymentRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.repository.user.UserRepository;
+import com.nautik.api.service.bookings.BookingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.Repository;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +53,9 @@ public class PaymentService {
     private final RedsysConfig redsysConfig;
     private final AppConfigImpl appConfig;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final BookingService bookingService;
+    private final PaymentRepository paymentRepository;
+
 
     @Transactional
     public PaymentResponseDto initPayment(PaymentInitRequestDto request, String userName) throws Exception {
@@ -60,29 +69,34 @@ public class PaymentService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Embarcación no encontrada"));
 
-        List<Mooring> availableMoorings = mooringRepository.findFreeMooringsByCategory(
-                request.getMooringCategoryId(), startDate, endDate);
+        Booking pendingBooking = bookingService.createBooking(request.getMooringCategoryId(), boat, startDate, endDate);
 
-        if (availableMoorings.isEmpty()) {
-            throw new RuntimeException("No hay amarres disponibles para las fechas seleccionadas");
-        }
+        String orderNumber = String.format("%012d", System.currentTimeMillis() % 1_000_000_000_000L);
 
-        Mooring mooring = availableMoorings.get(0);
+        pendingBooking.setOrderNumber(orderNumber);
 
-        Double totalCost = 435.00;
 
-        String orderNumber = String.format("%012d", System.currentTimeMillis() % 1_000_000_000_000L); // Ejemplo simple
+        Payment pendingPayment = new Payment(
+                pendingBooking.getTotalCost(),
+                request.getBillingAddress(),
+                request.getCity(),
+                request.getCountry(),
+                PaymentStatus.PENDING
+        );
 
-        Booking pendingBooking = new Booking(startDate, endDate, totalCost, boat, mooring, orderNumber);
-        bookingRepository.save(pendingBooking);
 
+
+        Booking savedBooking = bookingRepository.save(pendingBooking);
+        pendingPayment.setBooking(savedBooking);
+
+        paymentRepository.save(pendingPayment);
         OrderCES orderCES = new OrderCES.Builder(appConfig)
                 .transactionType(TransactionType.AUTORIZACION)
                 .currency(Currency.EUR)
                 .consumerLanguage(Language.SPANISH)
                 .order(orderNumber)
-                .amount((long) (totalCost * 100))
-                .productDescription("Reserva de amarre en " + mooring.getMooringCategory().getZone().getName())
+                .amount((long) (pendingBooking.getTotalCost() * 100))
+                .productDescription("Reserva de amarre en " + pendingBooking.getMooring().getMooringCategory().getZone().getName())
                 .payMethods(PaymentMethod.TARJETA)
                 .urlOk(redsysConfig.getUrlOk() + "?order=" + orderNumber)
                 .urlKo(redsysConfig.getUrlKo() + "?order=" + orderNumber)
@@ -127,17 +141,23 @@ public class PaymentService {
         String errorCode = json.has("Ds_ErrorCode") ? json.get("Ds_ErrorCode").asText() : null;
 
         Booking booking = bookingRepository.findByOrderNumber(orderNumber)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada con número de pedido: " + orderNumber));
+                .orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada con número de pedido: " + orderNumber));
+        Payment payment = booking.getPayment();
+        if (payment == null){
+           throw new EntityNotFoundException("Payment not found");
+        }
 
         boolean isSuccess = responseCode != null && responseCode.matches("0\\d{3}");
 
         if (isSuccess) {
             booking.setStatus(BookingStatus.PAID);
+            payment.setStatus(PaymentStatus.SUCCESS);
         } else {
+            payment.setStatus(PaymentStatus.FAILED);
             booking.setStatus(BookingStatus.FAILED);
         }
-
-        bookingRepository.save(booking);
+        paymentRepository.save(payment);
+        bookingService.saveBookingAfterSuccessPayment(booking);
     }
 
     private boolean validateSignature(String merchantParams, String signature, String secretKey) {
@@ -179,3 +199,5 @@ public class PaymentService {
     }
 
 }
+
+

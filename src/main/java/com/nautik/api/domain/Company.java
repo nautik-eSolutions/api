@@ -18,7 +18,7 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -29,14 +29,16 @@ public class Company {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
+    @Column(name = "namePrefix", length = 100)
+    private String namePrefix;
+
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @OneToMany(mappedBy = "company")
-    private List<Admin> admins;
-    @OneToOne()
-    @JoinColumn(name = "user_id")
-    private User administrator;
+    @OneToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
+
 
     @OneToMany(mappedBy = "company")
     private List<Port> ports;

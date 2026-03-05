@@ -4,7 +4,7 @@ import com.nautik.api.domain.Port;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.PriceConfigurationDto;
 import com.nautik.api.repository.moorings.PriceConfigurationRepository;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.repository.port.PortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,7 +29,7 @@ public class PriceConfigurationService {
 
     public PriceConfigurationDto createPriceConfiguration(Integer portId ,PriceConfigurationDto dto) {
         PriceConfiguration priceConfiguration = modelMapper.map(dto, PriceConfiguration.class);
-        Port port = portRepository.findById(portId).orElseThrow(()->new ResourceNotFoundException("Port not found"));
+        Port port = portRepository.findById(portId).orElseThrow(()->new EntityNotFoundException("Port not found"));
 
         priceConfiguration.setPort(port);
         PriceConfiguration createdPort = priceConfigurationRepository.save(priceConfiguration);
@@ -38,7 +38,7 @@ public class PriceConfigurationService {
 
     public PriceConfigurationDto updatePriceConfiguration(Integer priceConfigurationId, PriceConfigurationDto dto) {
         PriceConfiguration searchedPriceConfiguration = priceConfigurationRepository.findById(priceConfigurationId)
-                .orElseThrow(() -> new ResourceNotFoundException("PriceConfiguration not found"));
+                .orElseThrow(() -> new EntityNotFoundException("PriceConfiguration not found"));
 
         PriceConfiguration providedPriceConfiguration = modelMapper.map(dto, PriceConfiguration.class);
 
@@ -50,7 +50,7 @@ public class PriceConfigurationService {
 
     public void deletePriceConfiguration(Integer priceConfigurationId) {
         if (!priceConfigurationRepository.existsById(priceConfigurationId)) {
-            throw new ResourceNotFoundException("PriceConfiguration not found ");
+            throw new EntityNotFoundException("PriceConfiguration not found ");
         }
         priceConfigurationRepository.deleteById(priceConfigurationId);
     }

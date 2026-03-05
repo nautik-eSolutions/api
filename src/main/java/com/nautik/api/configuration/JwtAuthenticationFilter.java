@@ -2,7 +2,8 @@ package com.nautik.api.configuration;
 
 import com.nautik.api.repository.user.UserRepository;
 import com.nautik.api.service.jwt.JwtService;
-import com.nautik.api.service.users.CustomUserDetailsService;
+import com.nautik.api.service.userDetails.ComposedDetailsService;
+import com.nautik.api.service.userDetails.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public final JwtService jwtService;
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
+    private final ComposedDetailsService composedDetailsService;
 
 
     @Override
@@ -30,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if(authHeader == null || !authHeader.startsWith("Bearer") ){
+        if(authHeader == null || !authHeader.startsWith("Bearer") || authHeader.length()<20){
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String username = jwtService.extractUsername(token);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = composedDetailsService.loadUserByUsername(username);
 
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(

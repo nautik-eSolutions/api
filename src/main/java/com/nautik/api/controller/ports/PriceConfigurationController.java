@@ -19,7 +19,7 @@ public class PriceConfigurationController {
 
 
     @GetMapping
-    public ResponseEntity<List<PriceConfigurationDto>> getAllByPortId(@PathVariable Integer portId) {
+    public ResponseEntity<List<PriceConfigurationDto>> getAllByPortId(@PathVariable(name = "portId") Integer portId) {
         return ResponseEntity.ok(priceConfigurationService.getAllByPortId(portId));
     }
 

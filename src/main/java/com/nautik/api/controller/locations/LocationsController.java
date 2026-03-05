@@ -42,27 +42,32 @@ public class LocationsController {
     }
 
     @GetMapping("/{communityId}/")
-    public ResponseEntity<CommunityDto> getCommunity(@PathVariable Long communityId) {
+    public ResponseEntity<CommunityDto> getCommunity(
+            @PathVariable(name = "communityId") Long communityId) {
         CommunityDto searchedCommunity = locationsService.getCommunity(communityId);
         return ResponseEntity.ok(searchedCommunity);
     }
 
     @PutMapping("/{communityId}/")
-    public ResponseEntity<CommunityDto> updateCommunity(@PathVariable Long communityId, @RequestBody CommunityDto communityDto) {
+    public ResponseEntity<CommunityDto> updateCommunity(
+            @PathVariable(name = "communityId") Long communityId,
+            @RequestBody CommunityDto communityDto) {
         CommunityDto updatedCommunity =  locationsService.updateCommunity(communityId,communityDto);
 
         return ResponseEntity.ok(updatedCommunity);
     }
 
     @DeleteMapping("/{communityId}/")
-    public ResponseEntity<Void> deleteCommunity(@PathVariable Long communityId) {
+    public ResponseEntity<Void> deleteCommunity(
+            @PathVariable(name = "communityId") Long communityId) {
         locationsService.deleteCommunity(communityId);
         return ResponseEntity.ok().build();
     }
 
 
     @PostMapping("/{communityId}/")
-    public ResponseEntity<CityDto> createCity(@PathVariable Long communityId, @RequestBody CityDto cityDto) {
+    public ResponseEntity<CityDto> createCity(
+            @PathVariable(name = "communityId") Long communityId, @RequestBody CityDto cityDto) {
         CityDto createdCity =  locationsService.createCity(cityDto,communityId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCity);
@@ -78,14 +83,19 @@ public class LocationsController {
 //    }
 
     @PutMapping("/{communityId}/{cityId}")
-    public ResponseEntity<CityDto> updateCity(@PathVariable Long communityId, @PathVariable Long cityId, @RequestBody CityDto cityDto) {
+    public ResponseEntity<CityDto> updateCity(
+            @PathVariable(name = "communityId") Long communityId,
+            @PathVariable(name = "cityId") Long cityId,
+            @RequestBody CityDto cityDto) {
         CityDto updatedCity = locationsService.updateCity(cityDto,communityId, cityId);
 
         return ResponseEntity.ok(updatedCity);
     }
 
     @DeleteMapping("/{communityId}/{cityId}")
-    public ResponseEntity<CityDto> deleteCity(@PathVariable Long communityId, @PathVariable Long cityId) {
+    public ResponseEntity<CityDto> deleteCity(
+            @PathVariable(name = "communityId") Long communityId,
+            @PathVariable(name="cityId") Long cityId) {
         locationsService.deleteCity(cityId,communityId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

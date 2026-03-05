@@ -1,28 +1,7 @@
 package com.nautik.api.service.roles;
 
-import com.nautik.api.domain.Company;
-
-import com.nautik.api.domain.Port;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
-
-import com.nautik.api.domain.roles.Capability;
-import com.nautik.api.domain.roles.Role;
-import com.nautik.api.domain.roles.RolesConfiguration;
-import com.nautik.api.dto.roles.CapabilityDto;
-import com.nautik.api.dto.roles.RoleCreateDto;
-import com.nautik.api.dto.roles.RoleResponseDto;
-import com.nautik.api.dto.roles.RolesConfigurationDto;
-import com.nautik.api.repository.port.CompanyRepository;
-import com.nautik.api.repository.roles.CapabilityRepository;
-import com.nautik.api.repository.roles.RoleRepository;
-import com.nautik.api.repository.roles.RolesConfigurationRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.awt.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +22,7 @@ public class RolesService {
         RolesConfiguration providedRoleConfiguration = modelMapper.map(rolesConfigurationDto, RolesConfiguration.class);
 
 
-        Company company = companyRepository.findById(companyId).orElseThrow(()->new ResourceNotFoundException("Company not found"));
+        Company company = companyRepository.findById(companyId).orElseThrow(()->new EntityNotFoundException("Company not found"));
 
 
 
@@ -56,7 +35,7 @@ public class RolesService {
 
 
     public void deleteRolesConfiguration(Long companyId, Long configurationId) {
-        RolesConfiguration rolesConfiguration = rolesConfigurationRepository.findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+        RolesConfiguration rolesConfiguration = rolesConfigurationRepository.findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
         rolesConfigurationRepository.delete(rolesConfiguration);
 
@@ -85,7 +64,7 @@ public class RolesService {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
 
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
         roleToCreate.setRolesConfiguration(rolesConfiguration);
 
@@ -114,13 +93,13 @@ public class RolesService {
 
     public void deleteRole(Long configurationId, Long companyId, Long roleId) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
 
         System.out.println(companyId);
         System.out.println(configurationId);
         System.out.println(roleId);
-        Role roleToDelete = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Role not found"));
+        Role roleToDelete = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new EntityNotFoundException("Role not found"));
 
 
         roleRepository.delete(roleToDelete);
@@ -138,11 +117,11 @@ public class RolesService {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
 
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
         Role roleToExtractIdFrom = roleRepository
                 .findByNameAndRolesConfiguration(roleCreateDto.getName(), rolesConfiguration)
-                .orElseThrow(()->new ResourceNotFoundException("Role not found"));
+                .orElseThrow(()->new EntityNotFoundException("Role not found"));
 
 
         roleToUpdate.setId(roleToExtractIdFrom.getId());
@@ -157,7 +136,7 @@ public class RolesService {
 
     public CapabilityDto createCapability(Long  companyId, Long configurationId, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
         Capability capability = modelMapper.map(capabilityDto, Capability.class);
 
@@ -171,7 +150,7 @@ public class RolesService {
     public CapabilityDto updateCapability(Long companyId, Long configurationId, CapabilityDto capabilityDto) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
 
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
         Capability searchedCapability = capabilityRepository.findByIdAndRolesConfiguration(configurationId, rolesConfiguration);
 
@@ -186,7 +165,7 @@ public class RolesService {
 
     public List<CapabilityDto> getAllCapabilities(Long companyId, Long configurationId) {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
-                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .findByIdAndCompany_Id(configurationId, companyId).orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
         List<Capability> capabilities = capabilityRepository.findByRolesConfiguration(rolesConfiguration);
 
@@ -202,7 +181,7 @@ public class RolesService {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
 
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
 
         Capability capability = capabilityRepository
@@ -221,9 +200,9 @@ public class RolesService {
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
 
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
-        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Role not found"));
+        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new EntityNotFoundException("Role not found"));
 
         Capability capability = capabilityRepository
                 .findByIdAndRolesConfiguration(capabilityId,rolesConfiguration);
@@ -242,9 +221,9 @@ public class RolesService {
             Long capabilityId){
         RolesConfiguration rolesConfiguration = rolesConfigurationRepository
                 .findByIdAndCompany_Id(configurationId, companyId)
-                .orElseThrow(()->new ResourceNotFoundException("Roles configuration not found"));
+                .orElseThrow(()->new EntityNotFoundException("Roles configuration not found"));
 
-        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new ResourceNotFoundException("Role not found"));
+        Role role = roleRepository.findByIdAndRolesConfiguration(roleId,rolesConfiguration).orElseThrow(()->new EntityNotFoundException("Role not found"));
 
 
         Capability capability = capabilityRepository.findByIdAndRolesConfiguration(capabilityId,rolesConfiguration);

@@ -53,19 +53,10 @@ public class User {
     @Column(name = "created_at")
     private Timestamp created_at;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
     @OneToMany(mappedBy = "user")
     private List<Boat> boats;
 
-    @OneToOne(mappedBy = "administrator")
-    private Company company;
 
-    @ManyToOne
-    @JoinColumn(name = "port_id")
-    private Port port;
 
 
     /*

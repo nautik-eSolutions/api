@@ -1,9 +1,8 @@
 package com.nautik.api.service.users;
 
 import com.nautik.api.domain.Token;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.roles.Role;
-import com.nautik.api.domain.users.Admin;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
 import com.nautik.api.domain.users.User;
@@ -17,6 +16,7 @@ import com.nautik.api.dto.user.UserLoginResponse;
 
 import com.nautik.api.repository.user.AdminRepository;
 import com.nautik.api.repository.user.UserRepository;
+import com.nautik.api.service.email.EmailService;
 import com.nautik.api.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -41,6 +41,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
 
     public UserLoginResponse login(LoginRequest loginRequest) {
@@ -63,7 +64,7 @@ public class UserService {
         throw new RuntimeException("Credenciales inválidas");
     }
 
-
+/**
     public AdminLoginResponseDto adminLogin(LoginRequest loginRequest) {
         Token token;
         User user;
@@ -90,15 +91,13 @@ public class UserService {
 
         return new AdminLoginResponseDto(token.getToken(), user.getRole().getName(), portId);
     }
-
+*/
     public Token OAuthLogin(GoogleIdTokenInfo googleIdTokenInfo){
 
         String email = googleIdTokenInfo.getEmail();
         String name  = googleIdTokenInfo.getName();
 
         User user = new User(email, email,name);
-        Role role = roleRepository.findByName("CUSTOMER");
-        user.setRole(role);
         if (userRepository.findByEmail(email).isEmpty()){
            return jwtService.generateToken(userRepository.save(user));
         }
@@ -111,7 +110,7 @@ public class UserService {
 
     public UserLoginResponse loginEmail(LoginEmailRequest loginRequest) {
 
-        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow(()->new ResourceNotFoundException("User not found")).getUserName();
+        String userName = userRepository.findUserByEmail(loginRequest.getEmail()).orElseThrow(()->new EntityNotFoundException("User not found")).getUserName();
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -137,27 +136,24 @@ public class UserService {
 
 
         public UserDtoResponse findUserById(Integer id) {
-        User user = userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
     public UserDtoResponse findUserByFirstName(String firstName) {
-        User user = userRepository.findByFirstName(firstName).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User user = userRepository.findByFirstName(firstName).orElseThrow(()->new EntityNotFoundException("User not found"));
         return modelMapper.map(user, UserDtoResponse.class);
     }
 
 
     public UserLoginResponse createUser(UserDto userDto) {
-        Role role = roleRepository.findByName("CUSTOMER");
-
 
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User mappedUser = modelMapper.map(userDto, User.class);
-        mappedUser.setRole(role);
         User providedUser = userRepository.save(mappedUser);
 
 
-
+        emailService.sendEmailVerificationEmail(providedUser.getEmail(), providedUser.getFirstName());
         Token token =  jwtService.generateToken(providedUser);
 
         UserLoginResponse response =  new UserLoginResponse();
@@ -180,7 +176,7 @@ public class UserService {
 
     public UserDtoResponse updateUser(UserDto userDto, Long userId) {
 
-        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User searchedUser = userRepository.findByid(Math.toIntExact(userId)).orElseThrow(()->new EntityNotFoundException("User not found"));
         User providedUser = modelMapper.map(userDto, User.class);
 
         providedUser.setId(searchedUser.getId());
@@ -193,22 +189,14 @@ public class UserService {
 
 
     public void deleteUser(Long userid) {
-        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User searchedUser = userRepository.findByid(Math.toIntExact(userid)).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         userRepository.deleteById(searchedUser.getId());
     }
 
 
 
-    public UserDtoResponse createAdminUser(UserDto userDto){
-        User providedUser = modelMapper.map(userDto, User.class);
-        User createdUser   = userRepository.save(providedUser);
-        adminRepository.save(new Admin(createdUser));
-        return modelMapper.map(
-                userRepository.save(providedUser),
-                UserDtoResponse.class);
 
-    }
 
     public List<UserDtoResponse> getAllUsers(){
         return userRepository.findAll().stream().map((element) -> modelMapper.map(element, UserDtoResponse.class)).toList();

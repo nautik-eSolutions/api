@@ -1,8 +1,7 @@
 package com.nautik.api.service.port;
 
 import com.nautik.api.domain.ZoneServicesOffered;
-import com.nautik.api.domain.ZoneServicesOffered;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.dto.service.CreateServiceDto;
 import com.nautik.api.dto.service.ServiceDto;
 import com.nautik.api.repository.service.ServiceRepository;
@@ -32,7 +31,7 @@ public class ServicesOffered {
 
     public void delete(Integer serviceId) {
         ZoneServicesOffered service = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Service not found"));
         serviceRepository.delete(service);
     }
 }

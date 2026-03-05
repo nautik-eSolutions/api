@@ -5,7 +5,9 @@ import com.nautik.api.domain.Token;
 import com.nautik.api.domain.users.LoginEmailRequest;
 import com.nautik.api.domain.users.LoginRequest;
 
+import com.nautik.api.dto.admin.AdminResponse;
 import com.nautik.api.dto.user.AdminLoginResponseDto;
+import com.nautik.api.service.admin.AdminService;
 import com.nautik.api.service.users.GoogleIdTokenInfo;
 import com.nautik.api.service.users.GoogleOauthService;
 
@@ -24,6 +26,7 @@ public class AuthController {
 
     private final UserService userService;
     private final GoogleOauthService googleOauthService;
+    private final AdminService adminService;
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> login(@RequestBody LoginRequest login){
@@ -32,8 +35,8 @@ public class AuthController {
     }
 
     @PostMapping("/login/administrator")
-    public ResponseEntity<AdminLoginResponseDto> loginAdmin(@RequestBody LoginRequest login){
-        return ResponseEntity.ok(userService.adminLogin(login));
+    public ResponseEntity<AdminResponse> loginAdmin(@RequestBody LoginRequest login){
+        return ResponseEntity.ok(adminService.login(login));
     }
 
     @PostMapping("login/oauth")

@@ -26,35 +26,40 @@ public class BoatController {
     }
 
     @GetMapping("/{idUser}/{boatId}")
-    public ResponseEntity<BoatDto> getBoat(@PathVariable Long idUser, @PathVariable Long boatId) {
+    public ResponseEntity<BoatDto> getBoat(
+            @PathVariable(name = "idUser") Long idUser,
+            @PathVariable(name="boatId") Long boatId) {
         BoatDto boat = boatService.findById(idUser, boatId);
         return ResponseEntity.ok(boat);
     }
 
     @GetMapping("/{idUser}")
-    public ResponseEntity<List<BoatDto>> getAllBoats(@PathVariable Long idUser) {
+    public ResponseEntity<List<BoatDto>> getAllBoats(
+            @PathVariable (name = "idUser")Long idUser) {
         List<BoatDto> boats = boatService.findByUser(idUser);
         return ResponseEntity.ok(boats);
     }
 
     @PostMapping("/{idUser}")
-    public ResponseEntity<BoatDto> createBoat(@PathVariable Long idUser, @RequestBody CreateBoatDto boatDto){
+    public ResponseEntity<BoatDto> createBoat(
+            @PathVariable(name = "idUser") Long idUser, @RequestBody CreateBoatDto boatDto){
         BoatDto boat = boatService.createBoat(idUser, boatDto );
         return ResponseEntity.ok(boat);
     }
 
     @PatchMapping("/{idUser}/{idBoat}")
     public ResponseEntity<BoatDto> updateBoat(
-            @PathVariable Long idUser,
+            @PathVariable(name = "idUser") Long idUser,
             @RequestBody CreateBoatDto boatDto,
-            @PathVariable Long idBoat){
+            @PathVariable("idBoat") Long idBoat){
 
         BoatDto dto = boatService.updateBoat(idUser,boatDto, idBoat);
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{idBoat}")
-    public ResponseEntity<BoatDto> deleteBoat( @PathVariable Long idBoat){
+    public ResponseEntity<BoatDto> deleteBoat(
+            @PathVariable(name = "idBoat") Long idBoat){
         boatService.deletBoat(idBoat);
         return ResponseEntity.ok().build();
     }

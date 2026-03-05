@@ -2,7 +2,7 @@ package com.nautik.api.service.boat;
 
 import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.BoatType;
-import com.nautik.api.domain.exceptions.ResourceNotFoundException;
+import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.users.User;
 import com.nautik.api.dto.boat.BoatDto;
 import com.nautik.api.dto.boat.BoatTypeDto;
@@ -27,7 +27,7 @@ public class BoatService {
 
 
     public BoatDto findByName (String name, String userName){
-        return modelMapper.map(boatRepository.findAllByNameAndUser_UserName(name, userName).orElseThrow(()->new ResourceNotFoundException("Boats not found")), BoatDto.class);
+        return modelMapper.map(boatRepository.findAllByNameAndUser_UserName(name, userName).orElseThrow(()->new EntityNotFoundException("Boats not found")), BoatDto.class);
     }
     public BoatDto findById(Long userId, Long boatId){
         return modelMapper.map(boatRepository.findByIdAndUser_Id(Math.toIntExact(boatId), Math.toIntExact(userId)), BoatDto.class);
@@ -45,7 +45,7 @@ public class BoatService {
 
     }
     public BoatDto createBoat(Long idUser, CreateBoatDto boatDto){
-        User user = userRepository.findUserById(Math.toIntExact(idUser)).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        User user = userRepository.findUserById(Math.toIntExact(idUser)).orElseThrow(()->new EntityNotFoundException("User not found"));
         BoatType boatType = boatTypeRepository.findByName(boatDto.getBoatType());
         Boat boat = new Boat();
         boat.setBeam(boatDto.getBeam());

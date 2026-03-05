@@ -2,6 +2,7 @@ package com.nautik.api.repository.user;
 
 
 
+import com.nautik.api.domain.Port;
 import com.nautik.api.domain.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

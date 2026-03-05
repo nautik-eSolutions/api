@@ -20,7 +20,7 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(name = "start_date", nullable = false)
     private Date startDate;
@@ -46,6 +46,8 @@ public class Booking {
     @Column(name = "order_number", unique = true)
     private String orderNumber;
 
+    @OneToOne(mappedBy = "booking")
+    private Payment payment;
 
 
     public Booking( Date startDate, Date endDate, Double totalCost, Boat boat, Mooring mooring,String orderNumber){
@@ -58,5 +60,9 @@ public class Booking {
 
     }
 
+    public Booking(Date startDate, Date endDate){
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
 }

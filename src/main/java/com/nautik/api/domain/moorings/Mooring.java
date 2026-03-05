@@ -1,6 +1,7 @@
 package com.nautik.api.domain.moorings;
 
 import com.nautik.api.domain.booking.Booking;
+import com.nautik.api.domain.booking.BookingStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,8 @@ public class Mooring {
 
     @OneToMany(mappedBy = "mooring")
     private List<Booking> bookings;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private BookingStatus status = BookingStatus.PENDING;
 }

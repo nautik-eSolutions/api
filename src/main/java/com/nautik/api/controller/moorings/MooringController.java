@@ -33,13 +33,15 @@ public class MooringController {
     }
 
     @GetMapping("/category/{mooringCategoriesId}")
-    public ResponseEntity<List<MooringDto>> getAllMooringByCategoryId(@PathVariable Integer mooringCategoriesId){
+    public ResponseEntity<List<MooringDto>> getAllMooringByCategoryId(
+            @PathVariable(name = "mooringCategoriesId") Integer mooringCategoriesId){
         List<MooringDto> moorings = mooringService.findByMooringCategoryId(mooringCategoriesId);
         return ResponseEntity.ok(moorings);
     }
 
     @GetMapping("/{mooringId}")
-    public ResponseEntity<MooringDto> getMooringById(@PathVariable Integer mooringId) {
+    public ResponseEntity<MooringDto> getMooringById(
+            @PathVariable(name="mooringId") Integer mooringId) {
         MooringDto mooring = mooringService.findById(mooringId);
         return ResponseEntity.ok(mooring);
     }
@@ -96,11 +98,6 @@ public class MooringController {
         return ResponseEntity.ok(moorings);
     }
 
-    @GetMapping("/zone/{zoneId}/available")
-    public ResponseEntity<List<MooringDto>> getAvailableMooringsByZoneId(@PathVariable Long zoneId) {
-        List<MooringDto> moorings = mooringService.findAllByZoneAvailable(zoneId);
-        return ResponseEntity.ok(moorings);
-    }
 
 
 }
