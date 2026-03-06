@@ -28,6 +28,21 @@ public class Port {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "lat")
+    private Double lat;
+
+    @Column(name = "lon")
+    private Double lon;
+
+    @Column(name = "vhf_channel")
+    private Integer vhfChannel;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phoneNumber")
+    private String phone_number;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "city_id", nullable = false)
@@ -45,7 +60,7 @@ public class Port {
     private List<MooringDimension> mooringDimensions =  new ArrayList<>();
 
     @OneToMany(mappedBy = "port")
-    private List<MooringDimension> photos =  new ArrayList<>();
+    private List<PortImage> photos =  new ArrayList<>();
 
     @OneToMany(mappedBy = "port")
     private List<PriceConfiguration> priceConfigurations = new ArrayList<>();

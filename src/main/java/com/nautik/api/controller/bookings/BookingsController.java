@@ -84,7 +84,7 @@ public class BookingsController {
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<Void> cancelBooking(
             @AuthenticationPrincipal CustomAdminUserDetails currentUser,
-            @PathVariable Integer bookingId) {
+            @PathVariable(name = "bookingId") Integer bookingId) {
 
         Integer portId = currentUser.getPortId();
         bookingService.cancelBooking(bookingId,portId);

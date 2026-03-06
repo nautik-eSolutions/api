@@ -201,6 +201,7 @@ public class BookingService {
         bookingDto.setBoatRegistryNumber(booking.getBoat().getRegistryNumber());
         bookingDto.setClientName(booking.getBoat().getUser().getFirstName() + " " + booking.getBoat().getUser().getLastName());
         bookingDto.setClientEmail(booking.getBoat().getUser().getEmail());
+        bookingDto.setBookingStatus(booking.getStatus());
         bookingDto.setPortId(booking.getMooring().getMooringCategory().getZone().getPort().getId());
         return bookingDto;
     }
