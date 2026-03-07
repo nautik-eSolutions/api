@@ -2,9 +2,11 @@ package com.nautik.api.dto.port;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PortInfoDto {
     private Integer id;
     private String name;
@@ -14,13 +16,13 @@ public class PortInfoDto {
     private Double maxBoatLength;
     private Double maxBoatBeam;
     private Double maxBoatDraft;
-    private Integer totalBerths;
+    private Integer totalMoorings;
     private Boolean fuelStation;
     private Boolean travelLift;
     private Boolean crane;
     private Double lon;
     private Double lat;
-    private String phone;
+    private String phoneNumber;
     private String email;
     private String openingHours;
 

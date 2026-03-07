@@ -110,6 +110,7 @@ public class BookingsController {
 
 
     @GetMapping("/moorings/{mooringId}")
+    @OnlyPortAdministrators
     public List<BookingDto> getBookingsByMooringId(
             @PathVariable(name = "mooringId") Integer mooringId
     ){

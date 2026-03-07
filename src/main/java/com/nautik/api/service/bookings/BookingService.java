@@ -209,9 +209,6 @@ public class BookingService {
 
     public List<BookingDto> getAllBookingsByMooringId(Integer mooringId){
         List <Booking> bookings = bookingRepository.findAllByMooringId(mooringId);
-        if (bookings.isEmpty()) {
-            throw new BookingNotFoundException("No bookings we're found");
-        }
 
         return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).toList();
     }

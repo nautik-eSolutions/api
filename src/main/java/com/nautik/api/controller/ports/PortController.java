@@ -5,6 +5,7 @@ import com.nautik.api.configuration.preAuthorizeConfig.OnlyCompanyAdministrators
 import com.nautik.api.configuration.preAuthorizeConfig.OnlyDevelopers;
 import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.dto.port.PortInfoDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.service.port.PortService;
 import com.nautik.api.service.port.S3PortImageService;
@@ -38,11 +39,13 @@ public class PortController {
     }
 
     @GetMapping("/{id}")
-    @OnlyCompanyAdministrators
-    public ResponseEntity <PortDto> getPortById(@PathVariable Integer id,
-                                                @AuthenticationPrincipal UserDetails userDetails) {
+    @OnlyAdministrators
+    public ResponseEntity <PortInfoDto> getPortById(
+            @PathVariable Integer id,
+            @AuthenticationPrincipal UserDetails userDetails) {
         Integer userId = Integer.parseInt(userDetails.getUsername());
-        PortDto port = portService.findById(id,userId);
+
+        PortInfoDto port = portService.findById(id,userId);
         return ResponseEntity.ok(port);
     }
 
@@ -58,12 +61,12 @@ public class PortController {
 
     @GetMapping("/port-administrator")
     @OnlyPortAdministrators
-    public ResponseEntity<PortDto> getPortByPortAdmin(
+    public ResponseEntity<PortInfoDto> getPortByPortAdmin(
             Authentication authentication
     ) {
         CustomAdminUserDetails adminUserDetails = (CustomAdminUserDetails) authentication.getPrincipal();
         Integer userId = Integer.parseInt(adminUserDetails.getUsername());
-        PortDto portDto = portService.findAllByPortAdmin(userId);
+        PortInfoDto portDto = portService.findPortByPortAdmin(userId);
         return ResponseEntity.ok(portDto);
     }
 

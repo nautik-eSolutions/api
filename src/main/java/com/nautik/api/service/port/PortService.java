@@ -44,23 +44,29 @@ public class PortService {
 
         return ports.stream().map(p-> modelMapper.map(p, PortDto.class)).toList();
     }
-    public PortDto findAllByPortAdmin(Integer portAdminId) {
+    public PortInfoDto findPortByPortAdmin(Integer portAdminId) {
         Admin admin = adminRepository.findById(portAdminId).orElseThrow(()->new EntityNotFoundException("User no found"));
-
         Port port = admin.getPort();
+        PortInfoDto portInfoDto =  modelMapper.map(port, PortInfoDto.class);
 
-        return modelMapper.map(port, PortDto.class);
+        portInfoDto.setMaxBoatBeam(portRepository.getMaxBeamByPortId(port.getId()));
+        portInfoDto.setMaxBoatLength(portRepository.getMaxLengthByPortId(port.getId()));
+        portInfoDto.setMaxBoatDraft(portRepository.getMaxDraftByPortId(port.getId()));
+        portInfoDto.setTotalMoorings(portRepository.mooringNumberOfPort(port.getId()));
+
+        return portInfoDto;
     }
 
-    public PortDto findById(Integer portId, Integer adminId) {
+    public PortInfoDto findById(Integer portId, Integer adminId) {
         Port port = getPortAndValidateOwnership(portId, adminId);
         PortInfoDto portInfoDto =  modelMapper.map(port, PortInfoDto.class);
 
-        Integer maxBeam;
-        Integer maxLength;
-        Integer maxDraft;
-        Integer totalBerth;
+        portInfoDto.setMaxBoatBeam(portRepository.getMaxBeamByPortId(portId));
+        portInfoDto.setMaxBoatLength(portRepository.getMaxLengthByPortId(portId));
+        portInfoDto.setMaxBoatDraft(portRepository.getMaxDraftByPortId(portId));
+        portInfoDto.setTotalMoorings(portRepository.mooringNumberOfPort(portId));
 
+        return portInfoDto;
     }
 
     public PortDto findByName(String name) {
@@ -95,7 +101,7 @@ public class PortService {
 
         providedPort.setCity(city);
         providedPort.setId(port.getId());
-
+        providedPort.setCompany(port.getCompany());
         return modelMapper.map(portRepository.save(providedPort), PortDto.class);
     }
 
