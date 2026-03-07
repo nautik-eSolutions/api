@@ -43,6 +43,13 @@ public class Port {
     @Column(name = "phoneNumber")
     private String phone_number;
 
+    @Column(name = "gas_station")
+    private Boolean gasStation;
+
+    @Column(name = "travel_lift")
+    private Boolean travelLift;
+
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "city_id", nullable = false)
