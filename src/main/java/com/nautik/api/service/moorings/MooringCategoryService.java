@@ -88,7 +88,7 @@ public class MooringCategoryService {
                 .getPriceConfigurations()
                 .stream()
                 .filter(pc-> Objects.equals(pc.getId(), priceConfigurationId))
-                .findFirst().orElseThrow(()->new EntityNotFoundException("MooringD"));
+                .findFirst().orElseThrow(()->new EntityNotFoundException("Price configuration not found"));
         MooringCategory mooringCategory = mooringCategoryRepository
                 .findById(mooringCategoryId).orElseThrow(
                         ()->new EntityNotFoundException("Mooring category not found")

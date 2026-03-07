@@ -1,6 +1,7 @@
 package com.nautik.api.service.bookings;
 
 import com.nautik.api.domain.Port;
+import com.nautik.api.domain.exceptions.ForbiddenException;
 import com.nautik.api.domain.moorings.PriceConfiguration;
 import com.nautik.api.dto.mooring.PriceConfigurationDto;
 import com.nautik.api.repository.moorings.PriceConfigurationRepository;
@@ -11,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,8 @@ public class PriceConfigurationService {
         return modelMapper.map(createdPort, PriceConfigurationDto.class);
     }
 
-    public PriceConfigurationDto updatePriceConfiguration(Integer priceConfigurationId, PriceConfigurationDto dto) {
+    public PriceConfigurationDto updatePriceConfiguration(Integer portId, Integer priceConfigurationId, PriceConfigurationDto dto) {
+        validateOwnerShip(portId, priceConfigurationId);
         PriceConfiguration searchedPriceConfiguration = priceConfigurationRepository.findById(priceConfigurationId)
                 .orElseThrow(() -> new EntityNotFoundException("PriceConfiguration not found"));
 
@@ -48,10 +51,27 @@ public class PriceConfigurationService {
         return modelMapper.map(updated, PriceConfigurationDto.class);
     }
 
-    public void deletePriceConfiguration(Integer priceConfigurationId) {
+    public void deletePriceConfiguration(Integer portId, Integer priceConfigurationId) {
+        validateOwnerShip(portId,priceConfigurationId);
         if (!priceConfigurationRepository.existsById(priceConfigurationId)) {
             throw new EntityNotFoundException("PriceConfiguration not found ");
         }
         priceConfigurationRepository.deleteById(priceConfigurationId);
     }
+
+    public void validateOwnerShip(Integer portId, Integer priceConfigurationId){
+        Port port = portRepository.findById(portId)
+                .orElseThrow(
+                        ()->new EntityNotFoundException("Port not found")
+                );
+
+        PriceConfiguration priceConfiguration = priceConfigurationRepository.findById(priceConfigurationId)
+                .orElseThrow(()->new EntityNotFoundException("Price configuration not found"));
+
+        if (!Objects.equals(port.getId(), priceConfiguration.getPort().getId())){
+            throw new ForbiddenException("Forbidden why you entah, eh");
+        }
+
+    }
+
 }
