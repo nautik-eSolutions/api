@@ -5,16 +5,20 @@ import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
+import com.nautik.api.dto.mooring.MooringIncidentDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
 import com.nautik.api.dto.mooring.create.MooringDimensionCreateDto;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringDimensionRepository;
+import com.nautik.api.repository.moorings.MooringRepository;
 import com.nautik.api.service.moorings.MooringService;
+import com.nautik.api.service.userDetails.CustomAdminUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -107,8 +111,39 @@ public class MooringController {
     }
 
 
-    @OnlyPortAdministrators
-    public ResponseEntity<>
+    @PostMapping("/{mooringId}/incidents")
+    public ResponseEntity<MooringIncidentDto> createMooringIncident(
+            @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails,
+            @PathVariable Integer mooringId,
+            @RequestBody MooringIncidentDto dto) {
+
+        Integer portId = customAdminUserDetails.getPortId();
+        MooringIncidentDto created = mooringService.createMooringIncident(portId, dto,mooringId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
+    }
+
+
+    @GetMapping("/incidents/now")
+    public ResponseEntity<List<MooringIncidentDto>> getMooringIncidentsByDate(
+            @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails
+            ) {
+        Integer portId = customAdminUserDetails.getPortId();
+        List<MooringIncidentDto> incidents = mooringService.getCurrentMooringIncidents(portId);
+        return ResponseEntity.ok(incidents);
+    }
+
+    @GetMapping("/incidents")
+    public ResponseEntity<List<MooringIncidentDto>> getAllMooringIncidents(
+            @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails
+    ) {
+        Integer portId = customAdminUserDetails.getPortId();
+        List<MooringIncidentDto> incidents = mooringService.getAllMooringIncidents(portId);
+        return ResponseEntity.ok(incidents);
+    }
+
+
+
 
 
 
