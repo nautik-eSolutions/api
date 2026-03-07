@@ -72,8 +72,7 @@ public class MooringController {
 
 
 
-
-
+    @OnlyPortAdministrators
     @PostMapping("/category/{categoryId}")
     public ResponseEntity<MooringDto> createMooring(@PathVariable Integer categoryId, @RequestBody CreateMooringDto mooring) {
         MooringDto dto = mooringService.createMooring(categoryId, mooring);
@@ -82,6 +81,7 @@ public class MooringController {
 
     }
 
+    @OnlyPortAdministrators
     @DeleteMapping("/{mooringId}")
     public ResponseEntity<MooringDto> deleteMooringById(@PathVariable Integer mooringId) {
         mooringService.delete(mooringId);
@@ -89,6 +89,7 @@ public class MooringController {
 
     }
 
+    @OnlyPortAdministrators
     @PutMapping("/{mooringId}")
     public ResponseEntity<MooringDto> updateMooring(@RequestBody CreateMooringDto mooring, @PathVariable Integer mooringId) {
 
@@ -97,11 +98,19 @@ public class MooringController {
 
     }
 
+
+    @OnlyPortAdministrators
     @GetMapping("/zone/{zoneId}")
     public ResponseEntity<List<MooringDto>> getMooringByZoneId(@PathVariable Long zoneId) {
         List<MooringDto> moorings = mooringService.findAllByZoneId(Math.toIntExact(zoneId));
         return ResponseEntity.ok(moorings);
     }
+
+
+    @OnlyPortAdministrators
+    public ResponseEntity<>
+
+
 
 
 

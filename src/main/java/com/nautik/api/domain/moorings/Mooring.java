@@ -28,7 +28,7 @@ public class Mooring {
     @OneToMany(mappedBy = "mooring")
     private List<Booking> bookings;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private BookingStatus status = BookingStatus.PENDING;
+
+    @OneToMany(mappedBy = "mooring")
+    private List<MooringIncident> mooringIncidents;
 }
