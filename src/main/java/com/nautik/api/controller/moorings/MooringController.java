@@ -1,6 +1,7 @@
 package com.nautik.api.controller.moorings;
 
 
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
@@ -26,12 +27,14 @@ public class MooringController {
 
     public final MooringService mooringService;
 
+    @OnlyPortAdministrators
     @GetMapping
     public ResponseEntity<List<MooringDto>> getAllMoorings() {
         List<MooringDto> moorings = mooringService.findAll();
         return ResponseEntity.ok(moorings);
     }
 
+    @OnlyPortAdministrators
     @GetMapping("/category/{mooringCategoriesId}")
     public ResponseEntity<List<MooringDto>> getAllMooringByCategoryId(
             @PathVariable(name = "mooringCategoriesId") Integer mooringCategoriesId){
@@ -39,6 +42,7 @@ public class MooringController {
         return ResponseEntity.ok(moorings);
     }
 
+    @OnlyPortAdministrators
     @GetMapping("/{mooringId}")
     public ResponseEntity<MooringDto> getMooringById(
             @PathVariable(name="mooringId") Integer mooringId) {
@@ -47,7 +51,7 @@ public class MooringController {
     }
 
 
-
+    @OnlyPortAdministrators
     @GetMapping("/ports/{portId}")
     public ResponseEntity<List<MooringDto>> getAllMooringsByPort(
             @PathVariable Integer portId) {
@@ -57,6 +61,7 @@ public class MooringController {
         return ResponseEntity.ok(moorings);
     }
 
+    @OnlyPortAdministrators
     @GetMapping("/ports/{portId}/dimensions")
     public ResponseEntity<List<MooringDimensionDto>> getAllDimensionsByPort(
             @PathVariable Integer portId

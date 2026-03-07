@@ -25,7 +25,10 @@ public class PriceConfigurationController {
     @GetMapping
     public ResponseEntity<List<PriceConfigurationDto>> getAllByPortId(
             @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails) {
-        Integer portId = customAdminUserDetails.getAdminId();
+
+
+        Integer portId = customAdminUserDetails.getPortId();
+
         return ResponseEntity.ok(priceConfigurationService.getAllByPortId(portId));
     }
 
@@ -34,7 +37,7 @@ public class PriceConfigurationController {
     public ResponseEntity<PriceConfigurationDto> createPriceConfiguration(
             @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails,
             @RequestBody PriceConfigurationDto dto) {
-        Integer portId = customAdminUserDetails.getAdminId();
+        Integer portId = customAdminUserDetails.getPortId();
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(priceConfigurationService.createPriceConfiguration(portId, dto));
@@ -46,7 +49,7 @@ public class PriceConfigurationController {
             @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails,
             @PathVariable Integer id,
             @RequestBody PriceConfigurationDto dto) {
-        Integer portId = customAdminUserDetails.getAdminId();
+        Integer portId = customAdminUserDetails.getPortId();
 
         return ResponseEntity.ok(priceConfigurationService.updatePriceConfiguration( portId,id, dto));
     }

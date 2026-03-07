@@ -15,6 +15,7 @@ import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringDimensionRepository;
 
+import com.nautik.api.repository.moorings.PriceConfigurationRepository;
 import com.nautik.api.repository.port.PortRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,6 +33,7 @@ public class MooringCategoryService {
     private final ZoneRepository zoneRepository;
     private final ModelMapper modelMapper;
     private final PortRepository portRepository;
+    private final PriceConfigurationRepository priceConfigurationRepository;
 
     public List<MooringCategoryInfoDto> getAllByPortId(Integer portId) {
         return mooringCategoryRepository.findAllByZonePortId(portId).stream().map(mc -> modelMapper.map(mc, MooringCategoryInfoDto.class)).toList();
@@ -97,8 +99,8 @@ public class MooringCategoryService {
             throw new ForbiddenException("You don't have access to this resource");
         }
 
-        mooringCategory.getPriceConfigurations().add(priceConfiguration);
-
+        priceConfiguration.getMooringCategories().add(mooringCategory);
+        priceConfigurationRepository.save(priceConfiguration);
         return modelMapper.map(mooringCategoryRepository.save(mooringCategory),MooringCategoryDto.class);
     }
 
@@ -122,8 +124,9 @@ public class MooringCategoryService {
             throw new ForbiddenException("You don't have access to this resource");
         }
 
-        mooringCategory.getPriceConfigurations().remove(priceConfiguration);
+        priceConfiguration.getMooringCategories().remove(mooringCategory);
 
+        priceConfigurationRepository.save(priceConfiguration);
         return modelMapper.map(mooringCategoryRepository.save(mooringCategory),MooringCategoryDto.class);
     }
 

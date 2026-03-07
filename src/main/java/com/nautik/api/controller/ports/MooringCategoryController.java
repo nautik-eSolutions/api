@@ -70,7 +70,6 @@ public class MooringCategoryController {
             Authentication authentication
     ){
         Integer portId = ((CustomAdminUserDetails) authentication.getPrincipal()).getPortId();
-
        MooringCategoryDto mooringCategoryDto =  mooringCategoryService.assingPriceConfigurationToMooringCategory(portId,priceConfigurationId,mooringCategoryId);
 
        return new ResponseEntity<>(mooringCategoryDto,HttpStatus.OK);
