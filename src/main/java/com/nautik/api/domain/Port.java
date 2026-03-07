@@ -49,6 +49,8 @@ public class Port {
     @Column(name = "travel_lift")
     private Boolean travelLift;
 
+    @Column(name = "opening_hours")
+    private String openingHours;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

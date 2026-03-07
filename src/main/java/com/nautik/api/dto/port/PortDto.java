@@ -15,10 +15,5 @@ public class PortDto implements Serializable {
     Integer id;
     String name;
     String cityName;
-    String vhfChannel;
-    Double lat;
-    Double lon;
-    String email;
-    String phoneNumber;
     String companyName;
 }
