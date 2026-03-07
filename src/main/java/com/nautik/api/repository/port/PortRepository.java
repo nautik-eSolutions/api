@@ -15,6 +15,18 @@ public interface PortRepository extends JpaRepository<Port, Integer> {
     
     Optional<Port> findByNameIgnoreCase(String name);
 
+    @Query("select max(d.maxLength) from MooringDimension d inner join Port p on d.port = p where p.id = ?1")
+    Integer getMaxLengthByPortId(Integer portId);
+
+    @Query("select max(d.maxBeam) from MooringDimension d inner join Port p on d.port = p where p.id = ?1")
+    Integer getMaxBeamByPortId(Integer portId);
+
+    @Query("select max(d.maxDraft) from MooringDimension d inner join Port p on d.port = p where p.id = ?1")
+    Integer getMaxDraftByPortId(Integer portId);
+
+    @Query("select count(m) from Mooring m where m.mooringCategory.zone.port.id = ?1")
+    Integer mooringNumberOfPort(Integer portId);
+
     @Query("select p from Port p inner join Zone z on z.port = p inner join MooringCategory mc on mc.zone = z and mc.id = ?1")
     Optional<Port> findByMooringCategoryId(Integer mooringCategoryId);
 

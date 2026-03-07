@@ -6,6 +6,7 @@ import com.nautik.api.domain.Port;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.dto.port.PortInfoDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.repository.location.CityRepository;
 import com.nautik.api.repository.port.CompanyRepository;
@@ -53,7 +54,13 @@ public class PortService {
 
     public PortDto findById(Integer portId, Integer adminId) {
         Port port = getPortAndValidateOwnership(portId, adminId);
-        return modelMapper.map(port, PortDto.class);
+        PortInfoDto portInfoDto =  modelMapper.map(port, PortInfoDto.class);
+
+        Integer maxBeam;
+        Integer maxLength;
+        Integer maxDraft;
+        Integer totalBerth;
+
     }
 
     public PortDto findByName(String name) {
