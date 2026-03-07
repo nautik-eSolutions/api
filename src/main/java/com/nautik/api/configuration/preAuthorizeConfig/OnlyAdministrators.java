@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyAuthority('DEVELOPER','PORT_ADMIN','ADMIN_COMPANY')")
+@PreAuthorize("hasAnyAuthority('PORT_ADMIN','ADMIN_COMPANY')")
 public @interface OnlyAdministrators {}

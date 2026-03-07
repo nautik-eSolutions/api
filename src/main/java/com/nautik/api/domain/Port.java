@@ -41,7 +41,7 @@ public class Port {
     private String email;
 
     @Column(name = "phoneNumber")
-    private String phone_number;
+    private String phoneNumber;
 
     @Column(name = "gas_station")
     private Boolean gasStation;

@@ -18,6 +18,8 @@ public class PortInfoDto {
     private Boolean fuelStation;
     private Boolean travelLift;
     private Boolean crane;
+    private Double lon;
+    private Double lat;
     private String phone;
     private String email;
     private String openingHours;

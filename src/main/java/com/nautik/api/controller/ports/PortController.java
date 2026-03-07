@@ -1,6 +1,8 @@
 package com.nautik.api.controller.ports;
 
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyAdministrators;
 import com.nautik.api.configuration.preAuthorizeConfig.OnlyCompanyAdministrators;
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyDevelopers;
 import com.nautik.api.configuration.preAuthorizeConfig.OnlyPortAdministrators;
 import com.nautik.api.dto.port.PortDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
@@ -29,14 +31,24 @@ public class PortController {
     private final PortService portService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('DEVELOPER')")
+    @OnlyDevelopers
     public ResponseEntity<List<PortDto>> getAllPorts() {
         List<PortDto> allPorts = portService.findAll();
         return ResponseEntity.ok(allPorts);
     }
 
+    @GetMapping("/{id}")
+    @OnlyCompanyAdministrators
+    public ResponseEntity <PortDto> getPortById(@PathVariable Integer id,
+                                                @AuthenticationPrincipal UserDetails userDetails) {
+        Integer userId = Integer.parseInt(userDetails.getUsername());
+        PortDto port = portService.findById(id,userId);
+        return ResponseEntity.ok(port);
+    }
+
+
     @GetMapping("/company/administrator")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<List<PortDto>> getAllPortsByCompanyAdmin(
             @AuthenticationPrincipal UserDetails userDetails) {
         Integer userId = Integer.parseInt(userDetails.getUsername());
@@ -45,7 +57,7 @@ public class PortController {
     }
 
     @GetMapping("/port-administrator")
-    @PreAuthorize("hasAuthority('ADMIN_PORT')")
+    @OnlyPortAdministrators
     public ResponseEntity<PortDto> getPortByPortAdmin(
             Authentication authentication
     ) {
@@ -55,15 +67,9 @@ public class PortController {
         return ResponseEntity.ok(portDto);
     }
 
-    @GetMapping("/{portId}")
-    @OnlyPortAdministrators
-    public ResponseEntity<PortDto> getPortById(@PathVariable Integer portId) {
-        PortDto port = portService.findById(portId);
-        return ResponseEntity.ok(port);
-    }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyCompanyAdministrators
     public ResponseEntity<PortDto> createPort(
             @RequestBody CreatePortDto dto,
             @AuthenticationPrincipal UserDetails userDetails
@@ -74,7 +80,7 @@ public class PortController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyAdministrators
     public ResponseEntity<PortDto> updatePort(
             @PathVariable Integer id,
             @RequestBody CreatePortDto dto,
@@ -86,7 +92,7 @@ public class PortController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN_COMPANY')")
+    @OnlyAdministrators
     public ResponseEntity<Void> deletePort(
             @PathVariable Integer id,
             @AuthenticationPrincipal UserDetails userDetails

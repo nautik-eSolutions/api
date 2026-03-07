@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +51,9 @@ public class PortService {
         return modelMapper.map(port, PortDto.class);
     }
 
-    public PortDto findById(Integer portId) {
-        return modelMapper.map(portRepository.findById(portId), PortDto.class);
+    public PortDto findById(Integer portId, Integer adminId) {
+        Port port = getPortAndValidateOwnership(portId, adminId);
+        return modelMapper.map(port, PortDto.class);
     }
 
     public PortDto findByName(String name) {
@@ -70,8 +72,7 @@ public class PortService {
         City city = cityRepository.findCityByName(dto.getCityName())
                 .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
-        Port port = new Port();
-        port.setName(dto.getName());
+        Port port = modelMapper.map(dto,Port.class);
         port.setCompany(company);
         port.setCity(city);
 
@@ -79,34 +80,41 @@ public class PortService {
     }
 
     public PortDto update(Integer portId, CreatePortDto dto, Integer adminId) {
-        Company company = getCompanyByAdminId(adminId);
-
-        Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new EntityNotFoundException("Port not found"));
-
-        if (!port.getCompany().getId().equals(company.getId())) {
-            throw new AccessDeniedException("No permission to access this resource");
-        }
+        Port port = getPortAndValidateOwnership(portId,adminId);
+        Port providedPort = modelMapper.map(dto,Port.class);
 
         City city = cityRepository.findCityByName(dto.getCityName())
                 .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
-        port.setName(dto.getName());
-        port.setCity(city);
+        providedPort.setCity(city);
+        providedPort.setId(port.getId());
 
-        return modelMapper.map(portRepository.save(port), PortDto.class);
+        return modelMapper.map(portRepository.save(providedPort), PortDto.class);
     }
 
     public void delete(Integer portId, Integer adminId) {
-        Company company = getCompanyByAdminId(adminId);
+        Port port = getPortAndValidateOwnership(portId,adminId);
 
+        portRepository.delete(port);
+    }
+
+
+    public Port getPortAndValidateOwnership(Integer portId, Integer adminId){
+        Admin admin = adminRepository.findById(adminId).orElseThrow(()->new EntityNotFoundException("admin not found"));
         Port port = portRepository.findById(portId)
                 .orElseThrow(() -> new EntityNotFoundException("Port not found"));
 
-        if (!port.getCompany().getId().equals(company.getId())) {
-            throw new AccessDeniedException("No permission to access this resource");
+        Port portOfAdmin = admin.getPort();
+        if (portOfAdmin == null){
+            Company company = getCompanyByAdminId(adminId);
+            if (!port.getCompany().getId().equals(company.getId())) {
+                throw new AccessDeniedException("No permission to access this resource");
+            }
+        }else {
+            if (!Objects.equals(portOfAdmin.getId(), port.getId())){
+                throw new AccessDeniedException("No permission to access this resource");
+            }
         }
-
-        portRepository.delete(port);
+        return port;
     }
 }
