@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.List;
 
 public interface MooringIncidentRepository extends JpaRepository<MooringIncident, Integer> {
-    @Query("select m FROM MooringIncident m where m.startDate <= :now and m.endDate >= :now and m.mooring.mooringCategory.zone.port.id = ?2 ")
-    List<MooringIncident> findCurrentIncidents(@Param("now") Date now,Integer portId);
+    @Query("select m FROM MooringIncident m where m.startDate <= :now and m.endDate >= ?1 and m.mooring.mooringCategory.zone.port.id = ?2 ")
+    List<MooringIncident> findCurrentIncidents( Date now,Integer portId);
+
+    @Query("select m from MooringIncident m where m.mooring.mooringCategory.zone.port.id = ?1 ")
+    List<MooringIncident> findIncidentsByPort(Integer portId);
+
 }

@@ -110,7 +110,7 @@ public class MooringController {
         return ResponseEntity.ok(moorings);
     }
 
-
+    @OnlyPortAdministrators
     @PostMapping("/{mooringId}/incidents")
     public ResponseEntity<MooringIncidentDto> createMooringIncident(
             @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails,
@@ -122,8 +122,19 @@ public class MooringController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
 
     }
+    @OnlyPortAdministrators
+    @PutMapping("/incidents/{incidentId}")
+    public ResponseEntity<MooringIncidentDto> updateMooringIncident(
+            @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails,
+            @PathVariable Integer incidentId,
+            @RequestBody MooringIncidentDto dto
+    ){
+        Integer portId = customAdminUserDetails.getPortId();
+        MooringIncidentDto created = mooringService.createMooringIncident(portId, dto,incidentId);
+        return ResponseEntity.ok(created);
+    }
 
-
+    @OnlyPortAdministrators
     @GetMapping("/incidents/now")
     public ResponseEntity<List<MooringIncidentDto>> getMooringIncidentsByDate(
             @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails
@@ -133,6 +144,7 @@ public class MooringController {
         return ResponseEntity.ok(incidents);
     }
 
+    @OnlyPortAdministrators
     @GetMapping("/incidents")
     public ResponseEntity<List<MooringIncidentDto>> getAllMooringIncidents(
             @AuthenticationPrincipal CustomAdminUserDetails customAdminUserDetails

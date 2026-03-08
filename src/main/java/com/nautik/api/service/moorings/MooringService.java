@@ -159,21 +159,29 @@ public class MooringService {
 
         return modelMapper.map(mooringIncidentRepository.save(providedMooringIncident), MooringIncidentDto.class);
     }
+    public MooringIncidentDto updateMooringIncident(Integer portId, MooringIncidentDto mooringIncidentDto,Integer incidentId){
+        MooringIncident incident = mooringIncidentRepository.findById(incidentId)
+                .orElseThrow(()->new EntityNotFoundException("Incident not found")
+                );
+        MooringIncident providedMooringIncident = modelMapper.map(mooringIncidentDto, MooringIncident.class);
+        providedMooringIncident.setId(incident.getId());
+        return modelMapper.map(mooringIncidentRepository.save(providedMooringIncident), MooringIncidentDto.class);
+    }
 
     public List<MooringIncidentDto> getCurrentMooringIncidents(Integer portId){
         Date date  = new Date();
         List<MooringIncident> mooringIncidents = mooringIncidentRepository.findCurrentIncidents(date,portId);
 
         return mooringIncidents.stream()
-                .map(m->modelMapper.map(m, MooringIncidentDto.class));
+                .map(m->modelMapper.map(m, MooringIncidentDto.class)).toList();
     }
 
     public List<MooringIncidentDto> getAllMooringIncidents(Integer portId){
         Date date  = new Date();
-        List<MooringIncident> mooringIncidents = mooringIncidentRepository.findCurrentIncidents(date,portId);
+        List<MooringIncident> mooringIncidents = mooringIncidentRepository.findIncidentsByPort(portId);
 
         return mooringIncidents.stream()
-                .map(m->modelMapper.map(m, MooringIncidentDto.class));
+                .map(m->modelMapper.map(m, MooringIncidentDto.class)).toList();
     }
 
 

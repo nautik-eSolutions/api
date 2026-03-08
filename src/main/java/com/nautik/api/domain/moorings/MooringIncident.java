@@ -1,5 +1,6 @@
 package com.nautik.api.domain.moorings;
 
+import com.nautik.api.domain.booking.BookingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -40,4 +41,7 @@ public class MooringIncident {
     private Date endDate;
 
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private MooringIncidentStatus status = MooringIncidentStatus.PENDING;
 }

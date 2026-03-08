@@ -1,5 +1,6 @@
 package com.nautik.api.dto.mooring;
 
+import com.nautik.api.domain.moorings.MooringIncidentStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,5 +14,5 @@ public class MooringIncidentDto {
     private String description;
     private Date startDate;
     private Date endDate;
-
+    private MooringIncidentStatus status;
 }
