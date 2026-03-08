@@ -130,7 +130,7 @@ public class MooringController {
             @RequestBody MooringIncidentDto dto
     ){
         Integer portId = customAdminUserDetails.getPortId();
-        MooringIncidentDto created = mooringService.createMooringIncident(portId, dto,incidentId);
+        MooringIncidentDto created = mooringService.updateMooringIncident(portId, dto,incidentId);
         return ResponseEntity.ok(created);
     }
 

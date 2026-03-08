@@ -155,8 +155,9 @@ public class MooringService {
         Mooring mooring = mooringRepository.findById(mooringId)
                 .orElseThrow(()->new EntityNotFoundException("Mooring not found")
         );
+        System.out.println(mooringIncidentDto.toString());
         MooringIncident providedMooringIncident = modelMapper.map(mooringIncidentDto, MooringIncident.class);
-
+        providedMooringIncident.setMooring(mooring);
         return modelMapper.map(mooringIncidentRepository.save(providedMooringIncident), MooringIncidentDto.class);
     }
     public MooringIncidentDto updateMooringIncident(Integer portId, MooringIncidentDto mooringIncidentDto,Integer incidentId){
@@ -165,6 +166,7 @@ public class MooringService {
                 );
         MooringIncident providedMooringIncident = modelMapper.map(mooringIncidentDto, MooringIncident.class);
         providedMooringIncident.setId(incident.getId());
+        providedMooringIncident.setMooring(incident.getMooring());
         return modelMapper.map(mooringIncidentRepository.save(providedMooringIncident), MooringIncidentDto.class);
     }
 

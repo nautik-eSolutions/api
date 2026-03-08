@@ -29,10 +29,6 @@ public class MooringIncident {
     private Mooring mooring;
 
     @NotNull
-    @Column(name = "description", nullable = false)
-    private Long mooringStatus;
-
-    @NotNull
     @Column(name = "start_date", nullable = false)
     private Date startDate;
 
@@ -40,6 +36,9 @@ public class MooringIncident {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
+
+    @Column(name = "description")
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

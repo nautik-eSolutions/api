@@ -9,10 +9,11 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 public class MooringIncidentDto {
-    private Integer id;
-    private Integer mooringId;
+    private Long id;
+    private Long mooringId;
+    private String mooringNumber;
     private String description;
     private Date startDate;
     private Date endDate;
-    private MooringIncidentStatus status;
+    private String status;
 }
