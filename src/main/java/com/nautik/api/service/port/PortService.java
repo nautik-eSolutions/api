@@ -6,6 +6,7 @@ import com.nautik.api.domain.Port;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
 import com.nautik.api.domain.users.Admin;
 import com.nautik.api.dto.port.PortDto;
+import com.nautik.api.dto.port.PortInfoDto;
 import com.nautik.api.dto.port.create.CreatePortDto;
 import com.nautik.api.repository.location.CityRepository;
 import com.nautik.api.repository.port.CompanyRepository;
@@ -17,6 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,16 +44,29 @@ public class PortService {
 
         return ports.stream().map(p-> modelMapper.map(p, PortDto.class)).toList();
     }
-    public PortDto findAllByPortAdmin(Integer portAdminId) {
+    public PortInfoDto findPortByPortAdmin(Integer portAdminId) {
         Admin admin = adminRepository.findById(portAdminId).orElseThrow(()->new EntityNotFoundException("User no found"));
-
         Port port = admin.getPort();
+        PortInfoDto portInfoDto =  modelMapper.map(port, PortInfoDto.class);
 
-        return modelMapper.map(port, PortDto.class);
+        portInfoDto.setMaxBoatBeam(portRepository.getMaxBeamByPortId(port.getId()));
+        portInfoDto.setMaxBoatLength(portRepository.getMaxLengthByPortId(port.getId()));
+        portInfoDto.setMaxBoatDraft(portRepository.getMaxDraftByPortId(port.getId()));
+        portInfoDto.setTotalMoorings(portRepository.mooringNumberOfPort(port.getId()));
+
+        return portInfoDto;
     }
 
-    public PortDto findById(Integer portId) {
-        return modelMapper.map(portRepository.findById(portId), PortDto.class);
+    public PortInfoDto findById(Integer portId, Integer adminId) {
+        Port port = getPortAndValidateOwnership(portId, adminId);
+        PortInfoDto portInfoDto =  modelMapper.map(port, PortInfoDto.class);
+
+        portInfoDto.setMaxBoatBeam(portRepository.getMaxBeamByPortId(portId));
+        portInfoDto.setMaxBoatLength(portRepository.getMaxLengthByPortId(portId));
+        portInfoDto.setMaxBoatDraft(portRepository.getMaxDraftByPortId(portId));
+        portInfoDto.setTotalMoorings(portRepository.mooringNumberOfPort(portId));
+
+        return portInfoDto;
     }
 
     public PortDto findByName(String name) {
@@ -70,8 +85,7 @@ public class PortService {
         City city = cityRepository.findCityByName(dto.getCityName())
                 .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
-        Port port = new Port();
-        port.setName(dto.getName());
+        Port port = modelMapper.map(dto,Port.class);
         port.setCompany(company);
         port.setCity(city);
 
@@ -79,34 +93,41 @@ public class PortService {
     }
 
     public PortDto update(Integer portId, CreatePortDto dto, Integer adminId) {
-        Company company = getCompanyByAdminId(adminId);
-
-        Port port = portRepository.findById(portId)
-                .orElseThrow(() -> new EntityNotFoundException("Port not found"));
-
-        if (!port.getCompany().getId().equals(company.getId())) {
-            throw new AccessDeniedException("No permission to access this resource");
-        }
+        Port port = getPortAndValidateOwnership(portId,adminId);
+        Port providedPort = modelMapper.map(dto,Port.class);
 
         City city = cityRepository.findCityByName(dto.getCityName())
                 .orElseThrow(() -> new EntityNotFoundException("City not found"));
 
-        port.setName(dto.getName());
-        port.setCity(city);
-
-        return modelMapper.map(portRepository.save(port), PortDto.class);
+        providedPort.setCity(city);
+        providedPort.setId(port.getId());
+        providedPort.setCompany(port.getCompany());
+        return modelMapper.map(portRepository.save(providedPort), PortDto.class);
     }
 
     public void delete(Integer portId, Integer adminId) {
-        Company company = getCompanyByAdminId(adminId);
+        Port port = getPortAndValidateOwnership(portId,adminId);
 
+        portRepository.delete(port);
+    }
+
+
+    public Port getPortAndValidateOwnership(Integer portId, Integer adminId){
+        Admin admin = adminRepository.findById(adminId).orElseThrow(()->new EntityNotFoundException("admin not found"));
         Port port = portRepository.findById(portId)
                 .orElseThrow(() -> new EntityNotFoundException("Port not found"));
 
-        if (!port.getCompany().getId().equals(company.getId())) {
-            throw new AccessDeniedException("No permission to access this resource");
+        Port portOfAdmin = admin.getPort();
+        if (portOfAdmin == null){
+            Company company = getCompanyByAdminId(adminId);
+            if (!port.getCompany().getId().equals(company.getId())) {
+                throw new AccessDeniedException("No permission to access this resource");
+            }
+        }else {
+            if (!Objects.equals(portOfAdmin.getId(), port.getId())){
+                throw new AccessDeniedException("No permission to access this resource");
+            }
         }
-
-        portRepository.delete(port);
+        return port;
     }
 }

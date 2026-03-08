@@ -32,7 +32,7 @@ public class PriceConfiguration {
     @JoinColumn(name = "port_id")
     private Port port;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
     name = "mooring_category_price_configuration",
     joinColumns = @JoinColumn(name = "price_configuration_id"),

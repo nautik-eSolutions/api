@@ -1,26 +1,35 @@
 package com.nautik.api.service.moorings;
 
 
+import com.nautik.api.domain.Port;
 import com.nautik.api.domain.exceptions.EntityNotFoundException;
+import com.nautik.api.domain.exceptions.ForbiddenException;
 import com.nautik.api.domain.exceptions.MooringHasBookingsException;
 import com.nautik.api.domain.moorings.Mooring;
 import com.nautik.api.domain.moorings.MooringCategory;
 import com.nautik.api.domain.moorings.MooringDimension;
+import com.nautik.api.domain.moorings.MooringIncident;
 import com.nautik.api.dto.mooring.MooringCategoryDto;
 import com.nautik.api.dto.mooring.MooringDimensionDto;
 import com.nautik.api.dto.mooring.MooringDto;
+import com.nautik.api.dto.mooring.MooringIncidentDto;
 import com.nautik.api.dto.mooring.create.CreateMooringDto;
 import com.nautik.api.dto.mooring.create.MooringDimensionCreateDto;
 import com.nautik.api.repository.location.ZoneRepository;
 import com.nautik.api.repository.moorings.MooringCategoryRepository;
 import com.nautik.api.repository.moorings.MooringDimensionRepository;
+import com.nautik.api.repository.moorings.MooringIncidentRepository;
 import com.nautik.api.repository.moorings.MooringRepository;
+import com.nautik.api.repository.port.PortRepository;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.common.util.count.report.qual.ReportCreation;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -32,6 +41,8 @@ public class MooringService {
     public final ModelMapper modelMapper;
     public final MooringDimensionRepository dimensionRepository;
     public final ZoneRepository zoneRepository;
+    private final PortRepository portRepository;
+    private final MooringIncidentRepository mooringIncidentRepository;
 
     public List<MooringDto> findAll() {
         return mooringRepository.findAll().stream().map(mooring -> modelMapper.map(mooring, MooringDto.class)).toList();
@@ -139,5 +150,54 @@ public class MooringService {
                         .findByDimensions_IdAndZone_Id((long) dimensionsId, zoneId), MooringCategoryDto.class);
     }
 
+    public MooringIncidentDto createMooringIncident(Integer portId, MooringIncidentDto mooringIncidentDto,Integer mooringId){
+        validateOwnerShip(portId, mooringId);
+        Mooring mooring = mooringRepository.findById(mooringId)
+                .orElseThrow(()->new EntityNotFoundException("Mooring not found")
+        );
+        System.out.println(mooringIncidentDto.toString());
+        MooringIncident providedMooringIncident = modelMapper.map(mooringIncidentDto, MooringIncident.class);
+        providedMooringIncident.setMooring(mooring);
+        return modelMapper.map(mooringIncidentRepository.save(providedMooringIncident), MooringIncidentDto.class);
+    }
+    public MooringIncidentDto updateMooringIncident(Integer portId, MooringIncidentDto mooringIncidentDto,Integer incidentId){
+        MooringIncident incident = mooringIncidentRepository.findById(incidentId)
+                .orElseThrow(()->new EntityNotFoundException("Incident not found")
+                );
+        MooringIncident providedMooringIncident = modelMapper.map(mooringIncidentDto, MooringIncident.class);
+        providedMooringIncident.setId(incident.getId());
+        providedMooringIncident.setMooring(incident.getMooring());
+        return modelMapper.map(mooringIncidentRepository.save(providedMooringIncident), MooringIncidentDto.class);
+    }
+
+    public List<MooringIncidentDto> getCurrentMooringIncidents(Integer portId){
+        Date date  = new Date();
+        List<MooringIncident> mooringIncidents = mooringIncidentRepository.findCurrentIncidents(date,portId);
+
+        return mooringIncidents.stream()
+                .map(m->modelMapper.map(m, MooringIncidentDto.class)).toList();
+    }
+
+    public List<MooringIncidentDto> getAllMooringIncidents(Integer portId){
+        Date date  = new Date();
+        List<MooringIncident> mooringIncidents = mooringIncidentRepository.findIncidentsByPort(portId);
+
+        return mooringIncidents.stream()
+                .map(m->modelMapper.map(m, MooringIncidentDto.class)).toList();
+    }
+
+
+
+    public void validateOwnerShip(Integer portId, Integer mooringId){
+        Mooring mooring = mooringRepository.findById(mooringId)
+                .orElseThrow(()->new EntityNotFoundException("Mooring not found")
+                );
+
+
+       if (!Objects.equals(mooring.getMooringCategory().getZone().getPort().getId(), portId))
+       {
+        throw new ForbiddenException("You dont have access");
+       }
+    }
 
 }

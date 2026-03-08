@@ -1,20 +1,22 @@
-package com.nautik.api.dto.port.create;
+package com.nautik.api.dto.port;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.stereotype.Service;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePortDto {
+public class PortInfoDto {
     private Integer id;
     private String name;
-    private Integer vhfChannel;
     private String cityName;
+    private String companyName;
+    private Integer vhfChannel;
+    private Double maxBoatLength;
+    private Double maxBoatBeam;
+    private Double maxBoatDraft;
+    private Integer totalMoorings;
     private Boolean fuelStation;
     private Boolean travelLift;
     private Boolean crane;
@@ -23,4 +25,5 @@ public class CreatePortDto {
     private String phoneNumber;
     private String email;
     private String openingHours;
+
 }

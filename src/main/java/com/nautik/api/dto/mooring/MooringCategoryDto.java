@@ -26,6 +26,7 @@ public class MooringCategoryDto {
      private double dimensionsMaxDraft;
      private int minPricePerDay;
      private MooringDimensionDto dimensions;
+     private List<PriceConfigurationDto> priceConfigurations;
 
 
 

@@ -4,6 +4,7 @@ import com.nautik.api.domain.Zone;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class MooringCategory {
     private MooringDimension dimensions;
 
 
-    @ManyToMany(mappedBy = "mooringCategories")
+    @ManyToMany(mappedBy = "mooringCategories", fetch = FetchType.EAGER)
     private List<PriceConfiguration> priceConfigurations = new ArrayList<>();
 
 
