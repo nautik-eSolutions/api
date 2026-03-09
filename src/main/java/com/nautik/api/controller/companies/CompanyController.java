@@ -1,5 +1,6 @@
 package com.nautik.api.controller.companies;
 
+import com.nautik.api.configuration.preAuthorizeConfig.OnlyDevelopers;
 import com.nautik.api.dto.port.company.CompanyDto;
 import com.nautik.api.dto.port.company.CompanyDtoResponse;
 import com.nautik.api.service.company.CompanyService;
@@ -33,11 +34,12 @@ public class CompanyController {
     }
 
 
-    @PostMapping("/administrators/{idUser}")
+    @PostMapping("/administrators/{username}/{password}")
+    @OnlyDevelopers
     public ResponseEntity<CompanyDtoResponse> createCompany(
             @RequestBody CompanyDto companyDto,
-            @PathVariable(name = "idUser") Integer idUser){
-        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,idUser));
+            @PathVariable(name = "username") String username, @PathVariable String password){
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(companyDto,username, password));
     }
 
     @PatchMapping("/{companyId}")

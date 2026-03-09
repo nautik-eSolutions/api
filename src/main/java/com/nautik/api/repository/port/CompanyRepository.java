@@ -23,4 +23,5 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
     Optional<Company> findById(Long id);
 
     Optional<Company>findByAdmin(Admin admin);
+
 }
