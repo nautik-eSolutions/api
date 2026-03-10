@@ -106,6 +106,12 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    @ExceptionHandler(UserHasABooking.class)
+    public ResponseEntity<ProblemDetail> handleUserHasBookings(UserHasABooking ex) {
+        ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        error.setProperty("timestamp", Instant.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 
 
 

@@ -46,7 +46,8 @@ public interface MooringRepository extends JpaRepository<Mooring, Integer> {
     @Query("select m from Mooring m inner join MooringCategory mc on m.mooringCategory = mc inner join Zone z on mc.zone = z inner join Port p on z.port = p where p.id = ?1")
     List<Mooring> findMooringsByPortId(Integer portId);
 
-
+    @Query("select m from Mooring m where m.mooringCategory.id = ?1 and m not in (select mi.mooring from MooringIncident mi where mi.startDate < ?3 and  mi.endDate > ?2 )")
+    List<Mooring>findByMooringCategoryWithNoIncidents(Integer id, Date startDate, Date endDate);
     List<Mooring> findByMooringCategoryId(Integer mooringCategoryId);
 
 }

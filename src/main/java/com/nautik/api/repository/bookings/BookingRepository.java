@@ -1,5 +1,6 @@
 package com.nautik.api.repository.bookings;
 
+import com.nautik.api.domain.Boat;
 import com.nautik.api.domain.booking.Booking;
 import com.nautik.api.domain.moorings.MooringCategory;
 import org.springframework.data.domain.Page;
@@ -42,10 +43,11 @@ public interface BookingRepository  extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByMooringMooringCategoryZonePortId(Integer mooringMooringCategoryZonePortId);
 
-    @Query("SELECT b FROM Booking b INNER JOIN  b.boat boat INNER JOIN boat.user WHERE b.mooring.mooringCategory.zone.port.id = ?1")
+    @Query("select b from Booking b inner join  b.boat boat inner join boat.user where b.mooring.mooringCategory.zone.port.id = ?1")
     Page<Booking> findByPortId(Integer portId, Pageable pageable);
 
-
+    @Query("SELECT b FROM Booking b WHERE b.boat.user.id = ?1 AND b.startDate < ?3 AND b.endDate > ?2 AND (b.status = 'PAID' OR b.status = 'PENDING')")
+    List<Booking> findBookingUserBooking(Integer userId, Date startDate, Date endDate);
 
 
 }

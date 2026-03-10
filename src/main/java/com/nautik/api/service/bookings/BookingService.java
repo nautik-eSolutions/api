@@ -58,8 +58,12 @@ public class BookingService {
 
     public Booking createBooking(Integer mooringCategoryId ,Boat boat,Date startDate, Date endDate){
         //falta implementar status, a decidir si sera con registro o sin
-        List<Mooring> availableMoorings =  mooringRepository.findMooringsByMooringCategory(mooringCategoryId);
+        List<Mooring> availableMoorings =  mooringRepository.findByMooringCategoryWithNoIncidents(mooringCategoryId,startDate,endDate);
 
+        List<Booking> bookingsOfUser = bookingRepository.findBookingUserBooking(boat.getUser().getId(),startDate,endDate);
+        if (!bookingsOfUser.isEmpty()){
+            throw new UserHasABooking();
+        }
         if (availableMoorings.isEmpty()){
             throw new NoAvailabilityException();
         }
@@ -114,8 +118,6 @@ public class BookingService {
         MooringCategory  mooringCategory = mooring.getMooringCategory();
         Double totalPrice = mooringCategory.getMinPricePerDay();
         double iva = 1.21;
-
-        //Query bd quitar predicates
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);

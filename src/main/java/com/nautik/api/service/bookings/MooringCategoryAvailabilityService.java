@@ -73,8 +73,7 @@ public class MooringCategoryAvailabilityService {
     private boolean mooringCategoryIsAvailable(MooringCategory mooringCategory, Date startDate, Date endDate){
 
         List<Mooring> mooringsInMooringCategory =
-                mooringRepository.findByMooringCategoryId(mooringCategory.getId());
-        System.out.println("Ingeniero hay que validar el status de mooring, ES DECIR QUE NO ESTE EN MANTENIMIENTO? EL PUERTO SE QUEDÓ SIN AGUA ");
+                mooringRepository.findByMooringCategoryWithNoIncidents(mooringCategory.getId(),startDate,endDate);
 
         if (mooringsInMooringCategory.isEmpty()){
             throw new NoAvailabilityException();
