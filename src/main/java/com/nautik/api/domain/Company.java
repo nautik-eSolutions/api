@@ -35,12 +35,12 @@ public class Company {
     @Column(name = "phone", nullable = false, length = 100)
     private String phone;
 
-    @OneToOne
+    @OneToOne( cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Port> ports;
 
 /*

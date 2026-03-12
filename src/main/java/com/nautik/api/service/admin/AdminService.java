@@ -226,7 +226,7 @@ public class AdminService {
         response.setId(admin.getId());
         response.setUsername(admin.getUsername());
         response.setRole(admin.getRole().getName());
-        if (admin.getRole() != null){
+        if (admin.getPort() != null){
             response.setPortId(admin.getPort().getId());
             response.setPortName(admin.getPort().getName());
         }
