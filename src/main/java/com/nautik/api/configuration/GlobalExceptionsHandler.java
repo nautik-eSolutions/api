@@ -1,6 +1,7 @@
 package com.nautik.api.configuration;
 
 import com.nautik.api.domain.exceptions.*;
+import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Configuration;
@@ -111,6 +112,13 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         error.setProperty("timestamp", Instant.now());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(ConcurrentException.class)
+    public ResponseEntity<ProblemDetail> handleConcurrentException(ConcurrentException ex) {
+        ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        error.setProperty("timestamp", Instant.now());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
     }
 
 

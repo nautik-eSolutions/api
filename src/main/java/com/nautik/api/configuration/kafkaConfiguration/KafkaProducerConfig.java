@@ -25,10 +25,10 @@ public class KafkaProducerConfig {
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
+                org.apache.kafka.common.serialization.StringSerializer.class);
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
+                org.apache.kafka.common.serialization.StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
