@@ -118,7 +118,8 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ProblemDetail> handleConcurrentException(ConcurrentException ex) {
         ProblemDetail error = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
         error.setProperty("timestamp", Instant.now());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE
+        ).body(error);
     }
 
 

@@ -1,13 +1,11 @@
 package com.nautik.api.controller.messaging;
 
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.nautik.api.dto.messaging.MessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +26,7 @@ public class EmailController {
     private String topicName;
 
     @PostMapping
-    public MessageDto   sendMessage (@RequestBody MessageDto message) throws ExecutionException, InterruptedException {
+    public Object   sendMessage (@RequestBody MessageDto message) throws ExecutionException, InterruptedException {
         CompletableFuture<SendResult<String, MessageDto >> future = kafkaTemplate.send(topicName, message);
         return future.get().getProducerRecord().value();
     }

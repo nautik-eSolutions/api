@@ -1,6 +1,7 @@
 package com.nautik.api.configuration.kafkaConfiguration;
 
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;
+import com.nautik.api.dto.messaging.MessageDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,8 @@ public class KafkaProducerConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, MessageDto> producerFactory() {
+
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
@@ -28,12 +31,20 @@ public class KafkaProducerConfig {
                 org.apache.kafka.common.serialization.StringSerializer.class);
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                org.apache.kafka.common.serialization.StringSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
+                org.springframework.kafka.support.serializer.JacksonJsonSerializer.class);
+
+
+
+
+
+        return new DefaultKafkaProducerFactory<>(
+                configProps,
+                new JacksonJsonSerializer<String>(),
+                new JacksonJsonSerializer<MessageDto>());
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    public KafkaTemplate<String, MessageDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

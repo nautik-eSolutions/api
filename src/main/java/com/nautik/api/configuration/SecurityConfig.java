@@ -112,6 +112,7 @@ public class SecurityConfig {
         return source;
     }
 
+
     @Bean
     public AuthenticationProvider authenticationProvider(ComposedDetailsService composedDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(composedDetailsService);
