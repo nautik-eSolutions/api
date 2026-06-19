@@ -117,7 +117,7 @@ public class BookingService {
     protected Double getPriceForBooking(Mooring mooring, Date startDate, Date endDate) {
         MooringCategory  mooringCategory = mooring.getMooringCategory();
         Double totalPrice = mooringCategory.getMinPricePerDay();
-        double iva = 1.21;
+        double iva = 1.21;// need to be dynamic
         Predicate<PriceConfiguration> priceConfStartDateFilter = (PriceConfiguration pc) -> pc.getStartDate().before(endDate);
         Predicate<PriceConfiguration> priceConfEndDateFilter = (PriceConfiguration pc) -> pc.getEndDate().after(startDate);
         Predicate<PriceConfiguration> priceConfigurationDateFilter = priceConfStartDateFilter.and(priceConfEndDateFilter);
